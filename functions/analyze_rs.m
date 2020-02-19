@@ -19,7 +19,11 @@ TA = TR - (TR/nr_slices);
 SO = [nr_slices:-1:1];  
 RS = floor(nr_slices/2);
 
-steps = {'slice_timing', 'realign'}; %, 'coreg'
+if subinfo.old_struct == 1
+    steps = {'slice_timing', 'realign'}; %, 'coreg'
+elseif subinfo.new_struct == 1
+    steps = {'slice_timing', 'realign', 'coreg'}; %, 'coreg'
+end
 
 subjStructDir = [projFolder, filesep ,subID filesep, Sess, filesep, 'T1', filesep];
 
@@ -92,7 +96,9 @@ for ii = 1:length(steps)
                 'RestingState', filesep 'realign'], 'matlabbatch')
             spm_jobman('run', matlabbatch);
             clear matlabbatch
-
+        
+        % check if coregistration is added to the preprocessing steps
+        % above. Most likely should not be selected..
         case 'coreg'
 
             % retrieve the structural
@@ -110,17 +116,17 @@ for ii = 1:length(steps)
             rsim2  = cellstr([repmat(funcDir,size(rsim1,1),1) rsim1]);
 
             % define reference (mean EPI) and source (struct)
-            matlabbatch{1}.spm.spatial.coreg.estwrite.ref =  {fullfile([funcDir_loc, filesep, mean_image_loc])}; %f2struct;
-            matlabbatch{1}.spm.spatial.coreg.estwrite.source = {fullfile([funcDir, filesep, mean_image])};
-            matlabbatch{1}.spm.spatial.coreg.estwrite.other = {''};%rsim2;
-            matlabbatch{1}.spm.spatial.coreg.estwrite.eoptions.cost_fun = 'nmi';
-            matlabbatch{1}.spm.spatial.coreg.estwrite.eoptions.sep = [4 2];
-            matlabbatch{1}.spm.spatial.coreg.estwrite.eoptions.tol = [0.02 0.02 0.02 0.001 0.001 0.001 0.01 0.01 0.01 0.001 0.001 0.001];
-            matlabbatch{1}.spm.spatial.coreg.estwrite.eoptions.fwhm = [7 7];
-            matlabbatch{1}.spm.spatial.coreg.estwrite.roptions.interp = 4;
-            matlabbatch{1}.spm.spatial.coreg.estwrite.roptions.wrap = [0 0 0];
-            matlabbatch{1}.spm.spatial.coreg.estwrite.roptions.mask = 0;
-            matlabbatch{1}.spm.spatial.coreg.estwrite.roptions.prefix = 'r';
+            matlabbatch{1}.spm.spatial.coreg.estimate.ref =  f2struct; %f2struct;
+            matlabbatch{1}.spm.spatial.coreg.estimate.source = {fullfile([funcDir, filesep, mean_image])};
+            matlabbatch{1}.spm.spatial.coreg.estimate.other = {''};%rsim2;
+            matlabbatch{1}.spm.spatial.coreg.estimate.eoptions.cost_fun = 'nmi';
+            matlabbatch{1}.spm.spatial.coreg.estimate.eoptions.sep = [4 2];
+            matlabbatch{1}.spm.spatial.coreg.estimate.eoptions.tol = [0.02 0.02 0.02 0.001 0.001 0.001 0.01 0.01 0.01 0.001 0.001 0.001];
+            matlabbatch{1}.spm.spatial.coreg.estimate.eoptions.fwhm = [7 7];
+%             matlabbatch{1}.spm.spatial.coreg.estwrite.roptions.interp = 4;
+%             matlabbatch{1}.spm.spatial.coreg.estwrite.roptions.wrap = [0 0 0];
+%             matlabbatch{1}.spm.spatial.coreg.estwrite.roptions.mask = 0;
+%             matlabbatch{1}.spm.spatial.coreg.estwrite.roptions.prefix = 'r';
 
             % save the batch, run it and clear it
             save([projFolder filesep subID filesep Sess, filesep,...

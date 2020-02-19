@@ -22,7 +22,7 @@ function varargout = prep_NFB(varargin)
 
 % Edit the above text to modify the response to help prep_NFB
 
-% Last Modified by GUIDE v2.5 04-Feb-2020 19:12:30
+% Last Modified by GUIDE v2.5 19-Feb-2020 14:18:01
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -75,6 +75,11 @@ addpath([pwd filesep 'functions'])
             set(handles.eb_session,'String', settings.sess_c);
             set(handles.eb_imp_t1_2_sn, 'String', settings.dcm.t1_2)
             set(handles.eb_analyze_rs_2_sn, 'String', settings.dcm.rs_2)
+            
+            set(handles.cb_old_struct, 'Value', settings.old_struct);
+            set(handles.cb_new_struct, 'Value',settings.new_struct);
+            set(handles.eb_imp_t1_2_sn, 'Enable', settings.dcm.t1_2_flag)
+    
             
         catch
             fprintf('\nOne or more Values were not correctly set, please check the interface!\n')
@@ -413,6 +418,31 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
     set(hObject,'BackgroundColor','white');
 end
 
+% --- Executes on button press in cb_old_struct.
+function cb_old_struct_Callback(hObject, eventdata, handles)
+% hObject    handle to cb_old_struct (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+    if get(handles.cb_new_struct,'Value') == 1
+        set(handles.cb_new_struct,'Value', 0);
+    end
+    
+    if get(hObject,'Value') == 1
+        set(handles.eb_imp_t1_2_sn, 'Enable', 'off')
+    end
+    
+
+function cb_new_struct_Callback(hObject, eventdata, handles)
+% hObject    handle to cb_new_struct (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+    if get(handles.cb_old_struct,'Value') == 1
+        set(handles.cb_old_struct,'Value', 0);
+    end
+    if get(hObject,'Value') == 1
+        set(handles.eb_imp_t1_2_sn, 'Enable', 'on');
+    end
 
 % --- Executes on button press in pb_import_t1_2.
 function pb_import_t1_2_Callback(hObject, eventdata, handles)
@@ -421,25 +451,33 @@ function pb_import_t1_2_Callback(hObject, eventdata, handles)
     projFolder      = get(handles.eb_projectFolder, 'String');
     watchFolder     = get(handles.eb_watchFolder, 'String'); 
     currentSession  = sprintf('%02s', get(handles.eb_session,'String'));
+    
+    if get(handles.cb_old_struct,'Value') == 1 
 
-    %copy t1 session 1 to current session (for template) 
-    getDir    = [projFolder, filesep, subID, filesep, 'Session_01', filesep, 'T1'];
-    goDir     = [projFolder, filesep, subID, filesep, ['Session_' currentSession], filesep, 'T1'];
+        %copy t1 session 1 to current session (for template) 
+        getDir    = [projFolder, filesep, subID, filesep, 'Session_01', filesep, 'T1'];
+        goDir     = [projFolder, filesep, subID, filesep, ['Session_' currentSession], filesep, 'T1'];
+
+        struct2copy   = spm_select('List', getDir, ['^s' '.*192-01.nii']);
+
+        copyfile([getDir, filesep, struct2copy], [goDir, filesep, struct2copy])
+        fprintf(['Structural scan copied from Session 1 --> Session ' currentSession '.\n'])
+
+        fprintf('Please check/re-set the origin\n')
+        spm_image('Display', [goDir, filesep, struct2copy])
     
-    struct2copy   = spm_select('List', getDir, ['^s' '.*192-01.nii']);
+    % if a new T1 is taken for each session 
+    elseif get(handles.cb_new_struct,'Value') == 1
+      
+        dicom_imp('struct', subID, watchFolder, projFolder,...
+            get(handles.eb_imp_t1_2_sn, 'String'), 0, 1, ['Session_' sprintf('%02s', get(handles.eb_session,'String'))], 192);
+    end
     
-    copyfile([getDir, filesep, struct2copy], [goDir, filesep, struct2copy])
-    fprintf(['Structural scan copied from Session 1 --> Session ' currentSession '.\n'])
-    
-    fprintf('Please check/re-set the origin\n')
-    spm_image('Display', [goDir, filesep, struct2copy])
-    
-%     % if a new T1 is taken for each session 
-%     dicom_imp('struct', handles.subID, watchFolder, projFolder,...
-%         handles.impT1_2_sn, 0, 1, ['Session_' sprintf('%02s', get(handles.eb_session,'String'))], 192);
     
 function eb_imp_t1_2_sn_Callback(hObject, eventdata, handles)
     handles.impT1_2_sn = get(hObject,'String');
+    
+
     guidata(hObject, handles);
 
 % --- Executes during object creation, after setting all properties.
@@ -459,6 +497,8 @@ function pb_analyze_rs_2_Callback(hObject, eventdata, handles)
     subinfo.watchFolder = get(handles.eb_watchFolder, 'String');  
     subinfo.dcmSeries   = get(handles.eb_analyze_rs_2_sn, 'String');
     subinfo.session     = ['Session_' sprintf('%02s', get(handles.eb_session,'String'))];
+    subinfo.new_struct  = get(handles.cb_new_struct,'Value');
+    subinfo.old_struct  = get(handles.cb_old_struct,'Value');
     
     analyze_rs(subinfo);
 
@@ -551,6 +591,7 @@ function pb_run_famTask_2_Callback(hObject, eventdata, handles)
 % --- Executes on button press in pb_quit.
 function pb_quit_Callback(hObject, eventdata, handles)
    quit_dlg()
+   
 
 
 % --- Executes on button press in pb_save_settings.
@@ -568,6 +609,9 @@ function pb_save_settings_Callback(hObject, eventdata, handles)
     settings.sess_c           = get(handles.eb_session, 'String'); 
     settings.dcm.t1_2         = get(handles.eb_imp_t1_2_sn, 'String');
     settings.dcm.rs_2         = get(handles.eb_analyze_rs_2_sn, 'String');
+    settings.old_struct       = get(handles.cb_old_struct, 'Value');
+    settings.new_struct       = get(handles.cb_new_struct, 'Value');
+    settings.dcm.t1_2_flag    = get(handles.eb_imp_t1_2_sn, 'Enable');
     
     save([pwd, filesep, 'Settings', filesep, 'Settings_Main'], 'settings')
     fprintf('\nSettings main window saved in Settings folder\n')
@@ -637,3 +681,5 @@ function edit20_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+

@@ -143,6 +143,7 @@ function pb_yes_Callback(hObject, eventdata, handles)
 % hObject    handle to pb_yes (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+clc
 fprintf('closing prepNFB tool...\n')
 close all
 
@@ -176,6 +177,7 @@ function pb_restart_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 close all
+clc
 fprintf('restarting prepNFB tool...\n')
 prep_NFB()
 

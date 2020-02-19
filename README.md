@@ -1,5 +1,5 @@
 # prepNFB
-This is a tool to prepare for and coregister between OpenNFT Neurofeedback session(s).<br/> 
+This is a Matlab based tool to prepare for and coregister between OpenNFT Neurofeedback session(s).<br/> 
 It is a combination of my own code as well as a few adapted SPM functions.<br/>
 <br/>
 Several modules are available:

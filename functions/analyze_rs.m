@@ -92,7 +92,9 @@ for ii = 1:length(steps)
                 'RestingState', filesep 'realign'], 'matlabbatch')
             spm_jobman('run', matlabbatch);
             clear matlabbatch
-
+        
+        % check if coregistration is added to the preprocessing steps
+        % above. Most likely should not be selected..
         case 'coreg'
 
             % retrieve the structural

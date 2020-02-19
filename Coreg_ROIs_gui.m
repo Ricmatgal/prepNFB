@@ -22,7 +22,7 @@ function varargout = Coreg_ROIs_gui(varargin)
 
 % Edit the above text to modify the response to help Coreg_ROIs_gui
 
-% Last Modified by GUIDE v2.5 05-Feb-2020 14:24:01
+% Last Modified by GUIDE v2.5 19-Feb-2020 13:08:27
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -94,8 +94,30 @@ folderNames = {'Session_01', ['Session_' sprintf('%02d', handles.subinfo.session
 
     guidata(hObject, handles);
 
+% --- Executes on button press in cb_struct_templ.
+function cb_struct_templ_Callback(hObject, eventdata, handles)
+% hObject    handle to cb_struct_templ (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
 
-% --- Outputs from this function are returned to the command line.
+	if get(handles.cb_epi_templ,'Value') == 1
+        set(handles.cb_epi_templ,'Value', 0);
+    end
+    if get(handles.cb_struct_templ,'Value') == 1
+        set(handles.cb_coreg_struct,'Value', 0);
+    end
+
+
+% --- Executes on button press in cb_epi_templ.
+function cb_epi_templ_Callback(hObject, eventdata, handles)
+% hObject    handle to cb_epi_templ (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+	if get(handles.cb_struct_templ,'Value') == 1
+        set(handles.cb_struct_templ,'Value', 0);
+    end
+
 function varargout = Coreg_ROIs_gui_OutputFcn(hObject, eventdata, handles) 
 
     varargout{1} = handles.output;
@@ -157,7 +179,10 @@ function pb_run_Callback(hObject, eventdata, handles)
     coreg.ROIs          = get(handles.lb_ROIs, 'String');
     coreg.structs       = {handles.ROInfo.Session.struct}';
     coreg.sflag         = get(handles.cb_coreg_struct, 'Value');
+    coreg.struct_flag   = get(handles.cb_struct_templ, 'Value');
+    coreg.epi_flag      = get(handles.cb_epi_templ, 'Value');
     coreg.ROInfo        = handles.ROInfo;
+    
     coreg_ROIs(handles.subinfo, coreg)
 
 
@@ -177,23 +202,39 @@ function pb_clear_Callback(hObject, eventdata, handles)
 
 % --- Executes on button press in pb_get.
 function pb_get_Callback(hObject, eventdata, handles)
+    
+    % if coreg templates are structural scans
+    if get(handles.cb_struct_templ, 'Value') == 1
+        % set the mask names in the available msk list box
+        if ~isempty(handles.ROInfo)
+            onset = 1;       
+            % set reference path
+            set(handles.eb_ref, 'String', handles.ROInfo.Session(2).struct(onset:end));       
+            % set source path
+            set(handles.eb_source, 'String', handles.ROInfo.Session(1).struct(1,onset:end));
+            % set ROI paths
+            set(handles.lb_ROIs, 'String', {handles.ROInfo.Session(1).ROI.Fpath});
 
-    % set the mask names in the available msk list box
-    if ~isempty(handles.ROInfo)
-%         onset = strfind(handles.ROInfo.Session(2).epi, 'ContTask_NFB');
-%         set(handles.eb_ref, 'String', [handles.ROInfo.Session(2).epi(1:3) '...\',...
-%             handles.ROInfo.Session(2).epi(onset:end)]);
-        onset = 1;       
-        % set reference path
-        set(handles.eb_ref, 'String', handles.ROInfo.Session(2).epi(onset:end));       
-        % set source path
-        set(handles.eb_source, 'String', handles.ROInfo.Session(1).epi(1,onset:end));
-        % set ROI paths
-        set(handles.lb_ROIs, 'String', {handles.ROInfo.Session(1).ROI.Fpath});
-        
-    elseif isempty(ROIs_available)
-        folderNames={'ERROR: no session directories'};
-        set(handles.lb_ROIs, 'String', msks_available);
+        elseif isempty(ROIs_available)
+            folderNames={'ERROR: no session directories'};
+            set(handles.lb_ROIs, 'String', msks_available);
+        end
+    % if coreg templates are epi scans 
+    elseif get(handles.cb_epi_templ, 'Value') == 1
+          % set the mask names in the available msk list box
+        if ~isempty(handles.ROInfo)
+            onset = 1;       
+            % set reference path
+            set(handles.eb_ref, 'String', handles.ROInfo.Session(2).epi(onset:end));       
+            % set source path
+            set(handles.eb_source, 'String', handles.ROInfo.Session(1).epi(1,onset:end));
+            % set ROI paths
+            set(handles.lb_ROIs, 'String', {handles.ROInfo.Session(1).ROI.Fpath});
+
+        elseif isempty(ROIs_available)
+            folderNames={'ERROR: no session directories'};
+            set(handles.lb_ROIs, 'String', msks_available);
+        end
     end
 
 % --- Executes on button press in pb_br_ROIs.
@@ -209,8 +250,13 @@ function pb_br_ROIs_Callback(hObject, eventdata, handles)
 
 % --- Executes on button press in cb_coreg_struct.
 function cb_coreg_struct_Callback(hObject, eventdata, handles)
-% hObject    handle to cb_coreg_struct (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-guidata(hObject, handles);
-% Hint: get(hObject,'Value') returns toggle state of cb_coreg_struct
+    % hObject    handle to cb_coreg_struct (see GCBO)
+    % eventdata  reserved - to be defined in a future version of MATLAB
+    % handles    structure with handles and user data (see GUIDATA)
+	if get(handles.cb_struct_templ,'Value') == 1
+        set(handles.cb_coreg_struct,'Value', 0);
+    end
+    guidata(hObject, handles);
+    % Hint: get(hObject,'Value') returns toggle state of cb_coreg_struct
+
+

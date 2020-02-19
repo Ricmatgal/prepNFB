@@ -17,6 +17,6 @@ Several modules are available:
 
 Dependencies: SPM12 
 
-The GUI is build with guide from matlab
+The GUI is build with guide from matlab. While guide generated code can apear messy, changing and adding elements and routines to the interface is more efficient. For all SPM based computations the generic spm_jobman(matlabbatch, 'run') structure is maintained. 
 
 ![Overview of prepNFB tool ](https://github.com/lucp88/prepNFB/raw/master/Others/all_features_prepNFB.PNG)

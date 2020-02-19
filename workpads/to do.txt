@@ -1,0 +1,18 @@
+To do:
+
+- implement stim set checkbox/radio buttons 
+- coregister t1 from session 1 to session 2 during coreg ROI step - in case of taking t1 only once
+- within the ROI tool, check for ove rlapping regions, NaNs and if output .nii are accepted and working in openNFT
+- ROI to ROI coreg in sess2 do some checks as well and consider visualizations
+
+- make localizer button working, change from cogent to psychtoolbox for consitency
+
+Test everything in BBL
+
+Select final stimuli and paradigm
+
+Talk with patrik about including reward sensitivity measures in project 2
+- IOWA gambling task or other task --> card task from Msc.
+- questionnaire 
+- skind conductance.. 
+Having a screening measure would be great..

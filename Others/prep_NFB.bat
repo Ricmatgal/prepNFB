@@ -1,0 +1,1 @@
+matlab -nosplash -r "cd('D:\LABNIC\PEEKACHU\prepNFB\'); prep_NFB"

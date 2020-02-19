@@ -497,6 +497,8 @@ function pb_analyze_rs_2_Callback(hObject, eventdata, handles)
     subinfo.watchFolder = get(handles.eb_watchFolder, 'String');  
     subinfo.dcmSeries   = get(handles.eb_analyze_rs_2_sn, 'String');
     subinfo.session     = ['Session_' sprintf('%02s', get(handles.eb_session,'String'))];
+    subinfo.new_struct  = get(handles.cb_new_struct,'Value');
+    subinfo.old_struct  = get(handles.cb_old_struct,'Value');
     
     analyze_rs(subinfo);
 
@@ -589,6 +591,7 @@ function pb_run_famTask_2_Callback(hObject, eventdata, handles)
 % --- Executes on button press in pb_quit.
 function pb_quit_Callback(hObject, eventdata, handles)
    quit_dlg()
+   
 
 
 % --- Executes on button press in pb_save_settings.

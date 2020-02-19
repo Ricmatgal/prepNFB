@@ -37,7 +37,7 @@ function coreg_ROIs(subinfo, coreg)
         for ii = 1:size(coreg.ROIs,1)
             matlabbatch{1}.spm.spatial.coreg.estimate.other{ii,1} = [current_sess_templ_folder, filesep, coreg.ROInfo.Session(1).ROI(ii).name];
         end
-        matlabbatch{1}.spm.spatial.coreg.estimate.other{ii+1,1} = spm_select('FPList', [current_sess_mc_templ_folder, filesep],  '.*\.nii');
+%         matlabbatch{1}.spm.spatial.coreg.estimate.other{ii+1,1} = spm_select('FPList', [current_sess_mc_templ_folder, filesep],  '.*\.nii');
         
         matlabbatch{1}.spm.spatial.coreg.estimate.eoptions.cost_fun = 'ncc'; % ncc for within modality coregistration
         matlabbatch{1}.spm.spatial.coreg.estimate.eoptions.sep = [4 2];

@@ -15,4 +15,6 @@ Several modules are available:
 
 Dependencies: SPM12 
 
+The GUI is build with guide from matlab
+
 ![Overview of prepNFB tool ](https://github.com/lucp88/prepNFB/raw/master/Others/all_features_prepNFB.PNG)

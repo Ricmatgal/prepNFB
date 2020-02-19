@@ -9,7 +9,7 @@ Several modules are available:
 2) Automated Motion Correction template creation<br/> 
 3) Autmoated .ini file creation<br/>
 4) Running PTB experiments and creating experiments parameters<br/>
-5) Session to sesion coregistration with visualization<br/>
+5) Session to session coregistration with visualization<br/>
    A) based on structural scans<br/>
    B) based on epi scans<br/>
 

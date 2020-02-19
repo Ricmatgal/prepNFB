@@ -164,12 +164,12 @@ function cb_struct_Callback(hObject, eventdata, handles)
 % handles.cb_struct = get(hObject,'Value');
 % handles.flags.struct = get(hObject,'Value');
    
-if get(handles.cb_epi,'Value') == 1
-    set(handles.cb_epi, 'Value', 0)
-end
-if get(handles.cb_none,'Value') == 1
-    set(handles.cb_none, 'Value', 0)
-end
+% % if get(handles.cb_epi,'Value') == 1
+% %     set(handles.cb_epi, 'Value', 0)
+% % end
+% % if get(handles.cb_none,'Value') == 1
+% %     set(handles.cb_none, 'Value', 0)
+% % end
 guidata(hObject, handles);
 
 
@@ -177,12 +177,12 @@ guidata(hObject, handles);
 function cb_epi_Callback(hObject, eventdata, handles)
 % handles.cb_epi = get(hObject,'Value');
 
-if get(handles.cb_struct,'Value') == 1
-    set(handles.cb_struct, 'Value', 0)
-end
-if get(handles.cb_none,'Value') == 1
-    set(handles.cb_none, 'Value', 0)
-end
+% % if get(handles.cb_struct,'Value') == 1
+% %     set(handles.cb_struct, 'Value', 0)
+% % end
+% % if get(handles.cb_none,'Value') == 1
+% %     set(handles.cb_none, 'Value', 0)
+% % end
 guidata(hObject, handles);
 
 % --- Executes on button press in cb_none.
@@ -207,18 +207,27 @@ templ1 = {};
 templ2 = {};
 ROI_1 = {};         % All available ROIs from Session A
 ROI_2 = {};         % All available ROIs from Session B
+epi_overlay_1 = {};
+epi_overlay_2 = {};
 overlay_flag = 1;
     
-if get(handles.cb_struct,'Value') == 1 
+if get(handles.cb_struct,'Value') == 1 && get(handles.cb_epi,'Value') == 0
     templ1 = handles.ROInfo.Session(get(handles.lb_sess1,'Value')).struct;
     if get(handles.cb_single_sess,'Value') == 0
         templ2 = handles.ROInfo.Session(get(handles.lb_sess2,'Value')).struct;
     end
-elseif get(handles.cb_epi,'Value') == 1 
+elseif get(handles.cb_epi,'Value') == 1 && get(handles.cb_struct,'Value') == 0 
     templ1 = handles.ROInfo.Session(get(handles.lb_sess1,'Value')).epi;
     if get(handles.cb_single_sess,'Value') == 0
         templ2 = handles.ROInfo.Session(get(handles.lb_sess2,'Value')).epi;
     end
+elseif get(handles.cb_struct,'Value') == 1 && get(handles.cb_epi,'Value') == 1
+    templ1 = handles.ROInfo.Session(get(handles.lb_sess1,'Value')).struct;
+    epi_overlay_1 = handles.ROInfo.Session(get(handles.lb_sess1,'Value')).epi;
+    if get(handles.cb_single_sess,'Value') == 0
+        templ2 = handles.ROInfo.Session(get(handles.lb_sess2,'Value')).struct;
+        epi_overlay_2 = handles.ROInfo.Session(get(handles.lb_sess2,'Value')).epi;
+    end   
 end
 
 ROI_1 = {handles.ROInfo.Session(get(handles.lb_sess1,'Value')).ROI(get(handles.lb_rois,'Value')).Fpath};
@@ -232,7 +241,7 @@ if get(handles.cb_none,'Value') == 1
     my_spm_check_registration([ROI_1;ROI_2],{}, 0);
 else
     % otherwise display as default
-    my_spm_check_registration([{templ1};{templ2}],{ROI_1, ROI_2}, overlay_flag);
+    my_spm_check_registration([{templ1};{templ2}],{ROI_1, ROI_2},{epi_overlay_1, epi_overlay_2}, overlay_flag);
 end
 
 % --- Executes on button press in cb_single_sess.

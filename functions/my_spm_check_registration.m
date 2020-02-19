@@ -1,4 +1,4 @@
-function my_spm_check_registration(s, f, overlay_flag)
+function my_spm_check_registration(s, f, d, overlay_flag)
 %s, f, overlay_flag
 
 % This spm_check_registration function was adapted (simplified) for the
@@ -87,11 +87,25 @@ if overlay_flag
     for sess=1:numel(ff)
         % for each image ;
         tmpf = cellstr(ff{sess});
-        for roi = 1:numel(tmpf);
+        for roi = 1:numel(tmpf)
             tmpf{roi};
             % for each blob
             c = cc(roi);
             spm_orthviews('AddColouredImage',sess,tmpf{roi},colours(c,:));
+        end
+    end
+    
+    dd={d{find(~cellfun(@isempty,d'))}};
+    colours = [0 0.2 0.9]; % 6 colors are hard coded!
+    cc=[1:6];
+    for sess=1:numel(dd)
+        % for each image ;
+        tmpd = cellstr(dd{sess});
+        for roi = 1:numel(tmpd)
+            tmpd{roi};
+            % for each blob
+            c = cc(roi);
+            spm_orthviews('AddColouredImage',sess,tmpd{roi},colours(1,:));
         end
     end
 end

@@ -1,6 +1,6 @@
 # prepNFB
 This is a tool to prepare for and coregister between OpenNFT Neurofeedback session(s). 
-It is a combination of my own code as well as a fewe adapted SPM functions
+It is a combination of my own code as well as a few adapted SPM functions
 
 Several modules are available:
 1) Region of interest tool 

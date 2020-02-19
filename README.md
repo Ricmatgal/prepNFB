@@ -13,4 +13,6 @@ Several modules are available:
    A) based on structural scans<br/>
    B) based on epi scans<br/>
 
+Dependencies: SPM 2012 
+
 ![Overview of prepNFB tool ](https://github.com/lucp88/prepNFB/raw/master/Others/all_features_prepNFB.PNG)

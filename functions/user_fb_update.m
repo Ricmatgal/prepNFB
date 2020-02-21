@@ -1,16 +1,28 @@
-function [] = user_fb_update(message)
+function [] = user_fb_update(message, main_module_flag)
     user_fb = evalin('base','user_fb');
     
-    t = datestr(datetime);
-    t = t(end-7:end-3);
+%     t = datestr(datetime);
+%     t = t(end-7:end-3);
  
     message_a = {};
     for ii = 1:size(message,1)
+        if isempty(message{ii})
+            t = '';
+        else
+            t = datestr(datetime);
+            t = t(end-7:end-3);
+        end
+        
         message_a = [message_a; t ' ' message{ii}];
         
         fprintf(['\n' message{ii}])
     end
-    user_fb = [user_fb; message_a; '  '];
+    
+    if main_module_flag == 0
+        user_fb = [user_fb; message_a; '  ']; 
+    elseif main_module_flag == 1
+        user_fb = [user_fb; '---------------------------------'; '  '; message_a; '  '];
+    end
     
     handles.lb_feedback_window=findall(0,'tag','fb_window');
     set(handles.lb_feedback_window, 'String', user_fb);

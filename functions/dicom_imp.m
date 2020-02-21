@@ -30,11 +30,11 @@ if s_flag
         % set origin
         spm_image('Display', spm_select('FPList', [expDir, filesep], ['^s' '.*192-01.nii$']));
     elseif isempty(s1)
-        user_fb_update({'No structural images found'; 'check watchfolder or dicom series number!'})
+        user_fb_update({'No structural images found'; 'check watchfolder/dicom nr!'},0)
 %         fprintf('\nNo structural images found, check the watchfolder or dicom series number in GUI!\n')
         return
     elseif size(s1,1) ~= 192
-         user_fb_update({'Not enough images found'; 'check watchfolder or dicom series number!'})
+         user_fb_update({'Not enough images found'; 'check watchfolder/dicom nr!'},0)
 %         fprintf('\nNot enough images found, check the watchfolder or dicom series number in GUI!\n')
         return
     end
@@ -69,9 +69,9 @@ if f_flag
         clear matlabbatch
         
      elseif isempty(f1)
-         user_fb_update({'No functional images found'; 'check watchfolder or dicom series number!'})
+         user_fb_update({'No functional images found'; 'check watchfolder/dicom nr!'},0)
      elseif size(f1,1) ~= expNrIms
-         user_fb_update({'Not enough images found'; 'check watchfolder or dicom series number!'})
+         user_fb_update({'Not enough images found'; 'check watchfolder/dicom nr!'},0)
      end
 
 end

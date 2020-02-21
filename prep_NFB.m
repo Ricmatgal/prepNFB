@@ -22,7 +22,7 @@ function varargout = prep_NFB(varargin)
 
 % Edit the above text to modify the response to help prep_NFB
 
-% Last Modified by GUIDE v2.5 21-Feb-2020 16:40:14
+% Last Modified by GUIDE v2.5 21-Feb-2020 21:38:41
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -81,11 +81,11 @@ addpath([pwd filesep 'functions'])
     
             
         catch
-            user_fb_update(['One or more values we not correctly set';'please check the interface!'])
+            user_fb_update({'One or more values we not correctly set';'please check the interface!'},0)
         end
 
      catch 
-         user_fb_update('\nNo Settings file found. Fill out the parameters and click save.\n')
+         user_fb_update({'No Settings file found. Fill out the parameters and save'},0)
     end
     
     set(handles.lb_feedback_window,'tag','fb_window')
@@ -133,6 +133,12 @@ function eb_subjID_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'String') returns contents of eb_subjID as text
 %        str2double(get(hObject,'String')) returns contents of eb_subjID as a double
 handles.subID = get(hObject,'String');
+user_fb = evalin('base','user_fb');
+message = ['Subject: ' handles.subID];
+user_fb = [user_fb; message; '  '];
+set(handles.lb_feedback_window, 'String', user_fb);
+assignin('base', 'user_fb', user_fb);
+
 guidata(hObject, handles);
 
 
@@ -218,17 +224,30 @@ guidata(hObject, handles);
 
 % --- Executes on button press in pb_runLocTask.
 function pb_runLocTask_Callback(hObject, eventdata, handles)
-    user_fb_update('Running localizer task...')
-    run_offa_loc(handles.subID, handles.projFolder)
+     m = 'Running localizer task...';
+     subID       = get(handles.eb_subjID, 'String');
+     projFolder  = get(handles.eb_projectFolder, 'String');
+     if isempty(str2num(subID)) 
+        user_fb_update({m;'';'Subject ID not specified!';'Check settings and re-launch'},1)
+        return
+    elseif isdir(projFolder) == 0 
+        user_fb_update({m;'';'Project Folder does not exist!';'Check path and re-launch'},1)
+        return
+     else
+        user_fb_update({m},1)
+        run_offa_loc(subID, projFolder)
+    end
+    
 
 
 % --- Executes on button press in pb_import_t1_1.
 function pb_import_t1_1_Callback(hObject, eventdata, handles)
-    user_fb_update({'Importing T1 to session 1';'Get ready to set origin!'})
+    user_fb_update({'Importing T1 to session 1...'},1)
+    user_fb_update({'Get ready to set origin at AC!'},0)
     subID           = get(handles.eb_subjID, 'String');
     projFolder      = get(handles.eb_projectFolder,'String');
     watchFolder     = get(handles.eb_watchFolder,'String');
-    
+%     
     dicom_imp('struct', subID, watchFolder, projFolder,...
         handles.impT1_1_sn, 0, 1, 'Session_01', 192);
 
@@ -255,26 +274,23 @@ function eb_imp_t1_1_sn_CreateFcn(hObject, eventdata, handles)
 
 % --- Executes on button press in pb_analyze_loc.
 function pb_analyze_loc_Callback(hObject, eventdata, handles)
-    fprintf('Initiating Localizer Tool...\n\n')
+    m = 'Localizer Tool..';
 
     subinfo.subID       = get(handles.eb_subjID, 'String');
     subinfo.projFolder  = get(handles.eb_projectFolder, 'String');
     subinfo.watchFolder = get(handles.eb_watchFolder, 'String');  
     subinfo.dcmSeries   = get(handles.eb_analyze_loc_sn, 'String');
-    if isempty(subinfo.subID) 
-        fprintf('Subject ID not specified!\n')
-        fprintf('Check settings and launch ROI tool again.\n')
+    if isempty(str2num(subinfo.subID)) 
+        user_fb_update({m;'';'Subject ID not specified!';'Check settings and re-launch'},1)
         return
     elseif isdir(subinfo.projFolder) == 0 
-        fprintf('Project Folder directory does not exist!\n')
-        fprintf('Check path and launch ROI tool again.\n')
+        user_fb_update({m;'';'Project Folder does not exist!';'Check path and re-launch'},1)
         return
     elseif isdir(subinfo.watchFolder) == 0 
-        fprintf('Watch Folder directory does not exist!\n')
-        fprintf('Check path and launch ROI tool again.\n')
+        user_fb_update({m;'';'Watch Folder does not exist!';'Check path and re-launch'},1)
         return
     else 
-        %(handles.subID, handles.watchFolder, handles.projFolder, handles.analyze_loc_sn, 'Session_01', 179);
+        user_fb_update({m},1)
         analyze_loc(subinfo) 
     end
 
@@ -296,7 +312,7 @@ function eb_analyze_loc_sn_CreateFcn(hObject, eventdata, handles)
     
 % --- Executes on button press in pb_ROI.
 function pb_ROI_Callback(hObject, eventdata, handles)
-    fprintf('\nInitiating ROI analyses...\n\n')
+    user_fb_update({'Initiating ROI analyses..',1})
 %     create_ROIs(handles.subID, handles.projFolder) 
     subinfo.subID = handles.subID;
     subinfo.projFolder  = get(handles.eb_projectFolder, 'String');
@@ -707,9 +723,33 @@ function lb_feedback_window_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','black');
 end
-handles.user_fb = {'prepNFB log';datestr(datetime);'-----------------------';''};
+handles.user_fb = {'prepNFB log';datestr(datetime);'---------------------------------';...
+    ''; '- Enter Subject ID';'- Double check watch folder!';'';'=================================';''};
 set(hObject, 'String', handles.user_fb);
 
 assignin('base', 'user_fb', handles.user_fb);
 
 
+% --- Executes on button press in pb_save_log.
+function pb_save_log_Callback(hObject, eventdata, handles)
+    user_fb     = evalin('base','user_fb');
+    subID       = get(handles.eb_subjID,'String');
+    projFolder  = get(handles.eb_projectFolder, 'String');
+    
+    save_dir    = [projFolder, filesep, subID];
+    file_name   = ['logfile_' datestr(now,'dd-mm-yyyy HH-MM') '.txt'];
+    
+    if isdir(save_dir)
+        user_fb_update({['logfile saved in:' save_dir]},1);
+        fid = fopen([save_dir, filesep, file_name],'w');
+        CT = user_fb.';
+        fprintf(fid,'%s\n', CT{:});
+        fclose(fid);   
+    else
+        user_fb_update({'cant save logfile, directory invalid'},1);
+    end
+        
+    
+    
+%     writecell(user_fb,[save_dir, filesep, 'logfile_' datestr(now,'dd-mm-yyyy HH-MM') '.txt'])
+    

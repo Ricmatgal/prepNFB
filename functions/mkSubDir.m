@@ -1,6 +1,6 @@
 function mkSubDir(subID, projFolder)
     % link to gui where user can specify how many sessions, runs and ROIs 
-
+    
 if ~exist([projFolder, filesep, subID])
     
     mkdir([projFolder, filesep, subID])
@@ -60,10 +60,11 @@ if ~exist([projFolder, filesep, subID])
     mkdir([subRootPath, filesep, 'Session_02', filesep, 'TaskFolder', filesep 'stimParams']);
     mkdir([subRootPath, filesep, 'Session_02', filesep, 'TaskFolder', filesep 'taskResults']);
     
-    fprintf(['Project directories created for subject: ', subID, '\n'])
+    message = ['Project directories created for subject: ', subID, '\n'];
 else 
-    fprintf(['Project directories for subject: ', subID, ' already exist!\n'])
-end
+    message = ['Project directories for subject: ', subID, ' already exist!\n'];
 
+end
+    user_fb_update(message)
 end
 

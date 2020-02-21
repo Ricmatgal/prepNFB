@@ -22,7 +22,7 @@ function varargout = prep_NFB(varargin)
 
 % Edit the above text to modify the response to help prep_NFB
 
-% Last Modified by GUIDE v2.5 19-Feb-2020 14:18:01
+% Last Modified by GUIDE v2.5 21-Feb-2020 16:40:14
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -55,7 +55,6 @@ function prep_NFB_OpeningFcn(hObject, eventdata, handles, varargin)
 handles.output = hObject;
 handles.watchFolder = '';
 handles.projFolder = '';
-
 addpath([pwd filesep 'functions'])
 
     try
@@ -82,13 +81,14 @@ addpath([pwd filesep 'functions'])
     
             
         catch
-            fprintf('\nOne or more Values were not correctly set, please check the interface!\n')
+            user_fb_update(['One or more values we not correctly set';'please check the interface!'])
         end
 
      catch 
-         fprintf('\nNo Settings file found. Fill out the parameters and click save.\n')
-     end
-
+         user_fb_update('\nNo Settings file found. Fill out the parameters and click save.\n')
+    end
+    
+    set(handles.lb_feedback_window,'tag','fb_window')
     % Update handles structure
     guidata(hObject, handles);
 
@@ -106,6 +106,7 @@ function varargout = prep_NFB_OutputFcn(hObject, eventdata, handles)
 % Get default command line output from handles structure
 varargout{1} = handles.output;
 assignin('base', 'outp', handles);
+% assignin('base', 'user_fb', handles.user_fb);
 
 % ================================================================
 %% ========================== Top panel ==========================
@@ -143,6 +144,8 @@ function pb_initialize_Callback(hObject, eventdata, handles)
 subID       = get(handles.eb_subjID, 'String');
 subFolder   = get(handles.eb_projectFolder,'String');
 mkSubDir(subID, subFolder)
+
+guidata(hObject, handles);
 
 function eb_projectFolder_Callback(hObject, eventdata, handles)
 % hObject    handle to eb_projectFolder (see GCBO)
@@ -215,14 +218,13 @@ guidata(hObject, handles);
 
 % --- Executes on button press in pb_runLocTask.
 function pb_runLocTask_Callback(hObject, eventdata, handles)
-    fprintf('\nRunning localizer task...')
+    user_fb_update('Running localizer task...')
     run_offa_loc(handles.subID, handles.projFolder)
 
 
 % --- Executes on button press in pb_import_t1_1.
 function pb_import_t1_1_Callback(hObject, eventdata, handles)
-    fprintf('\nimporting structural scan to session 1...')
-    fprintf('\nget ready to set the origin!\n')
+    user_fb_update({'Importing T1 to session 1';'Get ready to set origin!'})
     subID           = get(handles.eb_subjID, 'String');
     projFolder      = get(handles.eb_projectFolder,'String');
     watchFolder     = get(handles.eb_watchFolder,'String');
@@ -681,5 +683,33 @@ function edit20_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+
+
+% --- Executes on selection change in lb_feedback_window.
+function lb_feedback_window_Callback(hObject, eventdata, handles)
+% hObject    handle to lb_feedback_window (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: contents = cellstr(get(hObject,'String')) returns lb_feedback_window contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from lb_feedback_window
+
+
+% --- Executes during object creation, after setting all properties.
+function lb_feedback_window_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to lb_feedback_window (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+% Hint: listbox controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','black');
+end
+handles.user_fb = {'prepNFB log';datestr(datetime);'-----------------------';''};
+set(hObject, 'String', handles.user_fb);
+
+assignin('base', 'user_fb', handles.user_fb);
 
 

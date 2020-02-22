@@ -49,7 +49,7 @@ function write_clust(subinfo, ROIinfo)
     ROI = spm_select('FPList', mskPath, ['^', 'msk_' conName, '.*.nii$']);
     
     % launch visualization
-    my_spm_check_registration([{templ1}],{ROI}, 1);
+    my_spm_check_registration([{templ1}],{ROI},{}, 1);
     
     % snap cross-hairs back to centre
     spm_orthviews('Reposition',outcentre);

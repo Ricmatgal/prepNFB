@@ -175,6 +175,7 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
     set(hObject,'BackgroundColor','white');
 end
 
+
 % --- Executes on button press in pb_browse_proj.
 function pb_browse_proj_Callback(hObject, eventdata, handles)
 % hObject    handle to pb_browse_proj (see GCBO)
@@ -290,7 +291,7 @@ function pb_analyze_loc_Callback(hObject, eventdata, handles)
         user_fb_update({m;'';'Watch Folder does not exist!';'Check path and re-launch'},1)
         return
     else 
-        user_fb_update({m},1)
+        user_fb_update({m; ' '; ['WatchFolder: ' subinfo.watchFolder]; ['dcm series: ' subinfo.dcmSeries]},1)
         analyze_loc(subinfo) 
     end
 
@@ -312,7 +313,7 @@ function eb_analyze_loc_sn_CreateFcn(hObject, eventdata, handles)
     
 % --- Executes on button press in pb_ROI.
 function pb_ROI_Callback(hObject, eventdata, handles)
-    user_fb_update({'Initiating ROI analyses..',1})
+    user_fb_update({'Initiating ROI analyses..'},1)
 %     create_ROIs(handles.subID, handles.projFolder) 
     subinfo.subID = handles.subID;
     subinfo.projFolder  = get(handles.eb_projectFolder, 'String');
@@ -723,8 +724,21 @@ function lb_feedback_window_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','black');
 end
-handles.user_fb = {'prepNFB log';datestr(datetime);'---------------------------------';...
-    ''; '- Enter Subject ID';'- Double check watch folder!';'';'=================================';''};
+
+% opening message
+handles.user_fb{1,1} = 'prepNFB log';
+handles.user_fb{2,1} = datestr(datetime);
+handles.user_fb{3,1} = '---------------------------------';
+handles.user_fb{4,1} = '';
+handles.user_fb{5,1} = '- Enter Subject ID';
+handles.user_fb{6,1} = '- Double check watch folder!';
+handles.user_fb{7,1} = '';
+handles.user_fb{9,1} = '=================================';
+handles.user_fb{10,1} = '';
+
+% handles.user_fb = {'prepNFB log';datestr(datetime);'---------------------------------';...
+%     ''; '- Enter Subject ID';'- Double check watch folder!';'';'=================================';''};
+
 set(hObject, 'String', handles.user_fb);
 
 assignin('base', 'user_fb', handles.user_fb);

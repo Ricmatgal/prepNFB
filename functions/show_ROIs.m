@@ -126,7 +126,7 @@ function [roiFinal] = show_ROIs(subinfo, hROI)
     templ1 = spm_select('FPList', subjStructDir, ['^s' '.*192-01.nii$']);
     
     % visualize
-    my_spm_check_registration([{templ1}],{[ROIs]}, 1);
+    my_spm_check_registration([{templ1}],{[ROIs]},{}, 1);
     
     % prep structure for saving routine
     roiFinal.hdrs = hdrs;

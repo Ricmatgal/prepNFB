@@ -69,7 +69,7 @@ if f_flag
         clear matlabbatch
         
      elseif isempty(f1)
-         user_fb_update({'No functional images found'; 'check watchfolder/dicom nr!'},0)
+         user_fb_update({'No functional images found'; 'check watchfolder/dicom nr!'},0)      
      elseif size(f1,1) ~= expNrIms
          user_fb_update({'Not enough images found'; 'check watchfolder/dicom nr!'},0)
      end

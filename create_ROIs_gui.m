@@ -244,7 +244,7 @@ function pb_show_msk_Callback(hObject, eventdata, handles)
         templ1 = spm_select('FPList', handles.subinfo.epiPath, ['^mean' '.*.nii$']);
     end
     try 
-        my_spm_check_registration([{templ1}],{{handles.tmpData.mskFP{get(handles.lb_ROIs,'Value')}}}, 1);
+        my_spm_check_registration([{templ1}],{{handles.tmpData.mskFP{get(handles.lb_ROIs,'Value')}}},{}, 1);
     catch
         warning('something went wrong, did you create the ROI masks and refresh?')
     end

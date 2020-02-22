@@ -326,7 +326,11 @@ function pb_run_Callback(hObject, eventdata, handles)
     end
 
     handles.data.contrasts = get(handles.uitable_cons,'Data');
-
+    
+  
+    message{1,1} = 'Initiating Analyses..';
+    
+    user_fb_update(message, 0)
     analyze_loc_func(handles.subinfo, handles.data)
 
 

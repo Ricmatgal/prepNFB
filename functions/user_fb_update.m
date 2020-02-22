@@ -6,16 +6,17 @@ function [] = user_fb_update(message, main_module_flag)
  
     message_a = {};
     for ii = 1:size(message,1)
-        if isempty(message{ii})
+        if isempty(message{ii}) || ii > 1
             t = '';
         else
             t = datestr(datetime);
-            t = t(end-7:end-3);
+            t = [t(end-7:end-3) ' '];
         end
         
-        message_a = [message_a; t ' ' message{ii}];
+        message_a = [message_a; t message{ii}];
         
-        fprintf(['\n' message{ii}])
+%         fprintf(['\n' message{ii}])
+        fprintf('%s\n', message{ii})
     end
     
     if main_module_flag == 0

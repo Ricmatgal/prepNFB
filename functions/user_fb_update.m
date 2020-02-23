@@ -27,6 +27,10 @@ function [] = user_fb_update(message, main_module_flag)
     
     handles.lb_feedback_window=findall(0,'tag','fb_window');
     set(handles.lb_feedback_window, 'String', user_fb);
+%     set(handles.lb_feedback_window, 'ForegroundColor', 'r');
+    
+    set(handles.lb_feedback_window,'ListboxTop',size(get(handles.lb_feedback_window,'String'),1))
+    
     assignin('base', 'user_fb', user_fb);
     
     

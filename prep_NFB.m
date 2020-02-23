@@ -133,12 +133,8 @@ function eb_subjID_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'String') returns contents of eb_subjID as text
 %        str2double(get(hObject,'String')) returns contents of eb_subjID as a double
 handles.subID = get(hObject,'String');
-user_fb = evalin('base','user_fb');
-message = ['Subject: ' handles.subID];
-user_fb = [user_fb; message; '  '];
-set(handles.lb_feedback_window, 'String', user_fb);
-assignin('base', 'user_fb', user_fb);
-
+message = {['Subject: ' handles.subID]};
+user_fb_update(message,1);
 guidata(hObject, handles);
 
 
@@ -161,6 +157,10 @@ function eb_projectFolder_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'String') returns contents of eb_projectFolder as text
 %        str2double(get(hObject,'String')) returns contents of eb_projectFolder as a double
 handles.projFolder = get(hObject,'String');
+
+message = {['Project Folder updated: '  get(hObject,'String')]};
+user_fb_update(message, 0);
+
 guidata(hObject, handles);
 
 % --- Executes during object creation, after setting all properties.
@@ -184,6 +184,10 @@ function pb_browse_proj_Callback(hObject, eventdata, handles)
 projFolder = uigetdir();
 handles.projFolder = projFolder;
 set(handles.eb_projectFolder, 'String', handles.projFolder);
+
+message = {['Project Folder updated: '  handles.projFolder]};
+user_fb_update(message, 0);
+
 guidata(hObject, handles);
 
 
@@ -192,8 +196,9 @@ function eb_watchFolder_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of eb_watchFolder as text
-%        str2double(get(hObject,'String')) returns contents of eb_watchFolder as a double
+message = {['Watch Folder updated: '  get(hObject,'String')]};
+user_fb_update(message, 0);
+
 handles.watchFolder = get(hObject,'String');
 guidata(hObject, handles);
 
@@ -217,6 +222,10 @@ function pb_browse_watch_Callback(hObject, eventdata, handles)
 watchFolder         = uigetdir('D:\TBV_input');
 handles.watchFolder = watchFolder;
 set(handles.eb_watchFolder, 'String', handles.watchFolder);
+
+message = {['Watch Folder updated: '  handles.watchFolder]};
+user_fb_update(message, 0);
+
 guidata(hObject, handles);
 
 % ================================================================
@@ -225,14 +234,14 @@ guidata(hObject, handles);
 
 % --- Executes on button press in pb_runLocTask.
 function pb_runLocTask_Callback(hObject, eventdata, handles)
-     m = 'Running localizer task...';
+     m = 'Initiating localizer task...';
      subID       = get(handles.eb_subjID, 'String');
      projFolder  = get(handles.eb_projectFolder, 'String');
      if isempty(str2num(subID)) 
-        user_fb_update({m;'';'Subject ID not specified!';'Check settings and re-launch'},1)
+        user_fb_update({m;' ';'ERROR';'Subject ID not specified!';'Check settings and re-launch'},1)
         return
     elseif isdir(projFolder) == 0 
-        user_fb_update({m;'';'Project Folder does not exist!';'Check path and re-launch'},1)
+        user_fb_update({m;' ';'ERROR','Project Folder does not exist!';'Check path and re-launch'},1)
         return
      else
         user_fb_update({m},1)
@@ -702,8 +711,6 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 
-
-
 % --- Executes on selection change in lb_feedback_window.
 function lb_feedback_window_Callback(hObject, eventdata, handles)
 % hObject    handle to lb_feedback_window (see GCBO)
@@ -712,7 +719,6 @@ function lb_feedback_window_Callback(hObject, eventdata, handles)
 
 % Hints: contents = cellstr(get(hObject,'String')) returns lb_feedback_window contents as cell array
 %        contents{get(hObject,'Value')} returns selected item from lb_feedback_window
-
 
 % --- Executes during object creation, after setting all properties.
 function lb_feedback_window_CreateFcn(hObject, eventdata, handles)
@@ -725,7 +731,17 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
     set(hObject,'BackgroundColor','black');
 end
 
-% opening message
+pfolder = 'None';
+wfolder = 'None';
+try 
+    load([pwd, filesep, 'Settings', filesep, 'Settings_Main.mat']);
+    pfolder = settings.projFolder;
+    wfolder = settings.watchFolder; 
+catch
+    
+end
+
+% opening message log file
 handles.user_fb{1,1} = 'prepNFB log';
 handles.user_fb{2,1} = datestr(datetime);
 handles.user_fb{3,1} = '---------------------------------';
@@ -735,7 +751,9 @@ handles.user_fb{6,1} = '- Double check watch folder!';
 handles.user_fb{7,1} = '';
 handles.user_fb{9,1} = '=================================';
 handles.user_fb{10,1} = '';
-
+handles.user_fb{11,1} = ['Project Folder: ' pfolder];
+handles.user_fb{12,1} = ['Watch Folder: ' wfolder];
+handles.user_fb{13,1} = '';
 % handles.user_fb = {'prepNFB log';datestr(datetime);'---------------------------------';...
 %     ''; '- Enter Subject ID';'- Double check watch folder!';'';'=================================';''};
 

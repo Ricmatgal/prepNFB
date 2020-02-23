@@ -65,6 +65,6 @@ else
     message = ['Project directories for subject: ', subID, ' already exist!'];
 
 end
-    user_fb_update({message})
+    user_fb_update({message},1)
 end
 

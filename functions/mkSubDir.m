@@ -61,10 +61,11 @@ if ~exist([projFolder, filesep, subID])
     mkdir([subRootPath, filesep, 'Session_02', filesep, 'TaskFolder', filesep 'taskResults']);
     
     message = ['Project directories created for subject: ', subID];
+    m_color = 1;
 else 
     message = ['Project directories for subject: ', subID, ' already exist!'];
-
+    m_color = 2;
 end
-    user_fb_update({message},1)
+    user_fb_update({message},1, m_color)
 end
 

@@ -39,14 +39,14 @@ message{5,1} = 'Preprocessing steps: ';
 for ii = 1:size(stepNames,2)
     message{5+ii,1} = ['- ' stepNames{ii}];
 end
-user_fb_update(message, 0)
+user_fb_update(message, 0, 1)
 clear message
 
 message{2,1} = 'Contrasts: ';
 for ii = 1: size(data.contrasts,1)
     message{2+ii,1} = [data.contrasts{ii,1} ':      ' data.contrasts{ii,2}];
 end
-user_fb_update(message, 0)
+user_fb_update(message, 0, 1)
 
 % flags to preprocess and/or do stats
 preprocFlag = 1;

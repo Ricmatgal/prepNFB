@@ -330,7 +330,7 @@ function pb_run_Callback(hObject, eventdata, handles)
   
     message{1,1} = 'Initiating Analyses..';
     
-    user_fb_update(message, 0)
+    user_fb_update(message, 0, 1)
     analyze_loc_func(handles.subinfo, handles.data)
 
 

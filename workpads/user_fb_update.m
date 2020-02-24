@@ -1,18 +1,10 @@
-function [] = user_fb_update(message, main_module_flag,color_flag)
-    user_fb = evalin('base','user_fb'); % for html 
+function [] = user_fb_update(message, main_module_flag)
+    user_fb = evalin('base','user_fb');
     
-    if color_flag == 1
-        color = [255 255 255];   % white
-    elseif color_flag == 2
-        color = [255 140 0];    % orange
-    elseif color_flag == 3
-        color = [255 0 0];      % red
-    end
-    
-    pre = '<HTML><FONT color="';
-    post = '</FONT></HTML>';
-    
-    message_a = {}; % for the html 
+%     t = datestr(datetime);
+%     t = t(end-7:end-3);
+ 
+    message_a = {};
     for ii = 1:size(message,1)
         if isempty(message{ii}) || ii > 1
             t = '';
@@ -20,9 +12,10 @@ function [] = user_fb_update(message, main_module_flag,color_flag)
             t = datestr(datetime);
             t = [t(end-7:end-3) ' '];
         end
-        tmp = [pre rgb2Hex(color) '">' t message{ii} post];
-        message_a = [message_a; tmp];
         
+        message_a = [message_a; t message{ii}];
+        
+%         fprintf(['\n' message{ii}])
         fprintf('%s\n', message{ii})
     end
     
@@ -32,14 +25,11 @@ function [] = user_fb_update(message, main_module_flag,color_flag)
         user_fb = [user_fb; '---------------------------------'; '  '; message_a; '  '];
     end
     
-%     user_fb = [user_fb; '>>'];
-    
     handles.lb_feedback_window=findall(0,'tag','fb_window');
     set(handles.lb_feedback_window, 'String', user_fb);
+%     set(handles.lb_feedback_window, 'ForegroundColor', 'r');
     
     set(handles.lb_feedback_window,'ListboxTop',size(get(handles.lb_feedback_window,'String'),1))
-    set(handles.lb_feedback_window,'Value', size(get(handles.lb_feedback_window,'String'),1))
-%     set(handles.lb_feedback_window,'Value', [])
     
     assignin('base', 'user_fb', user_fb);
     

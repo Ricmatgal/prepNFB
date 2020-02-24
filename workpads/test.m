@@ -17,8 +17,3 @@ end
 
 figure; hListBox = uicontrol('Style','list', 'Position', [20 20 100 100], 'String', listboxStr );
 
-function hexStr = rgb2Hex( rgbColour )
-
-hexStr = reshape( dec2hex( rgbColour, 2 )',1, 6);
-
-end

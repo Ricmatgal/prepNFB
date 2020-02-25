@@ -258,9 +258,10 @@ function pb_import_t1_1_Callback(hObject, eventdata, handles)
     subID           = get(handles.eb_subjID, 'String');
     projFolder      = get(handles.eb_projectFolder,'String');
     watchFolder     = get(handles.eb_watchFolder,'String');
+    impT1_1_sn      = get(handles.eb_imp_t1_1_sn, 'String');
 %     
     dicom_imp('struct', subID, watchFolder, projFolder,...
-        handles.impT1_1_sn, 0, 1, 'Session_01', 192);
+        impT1_1_sn, 0, 1, 'Session_01', 192);
 
 function eb_imp_t1_1_sn_Callback(hObject, eventdata, handles)
 
@@ -305,7 +306,7 @@ function pb_analyze_loc_Callback(hObject, eventdata, handles)
         user_fb_update({'Watch Folder does not exist!'},0, 3)
         return
     else 
-        user_fb_update({['WatchFolder: ' subinfo.watchFolder]; ['dcm series: ' subinfo.dcmSeries]},0, 1)
+%         user_fb_update({['WatchFolder: ' subinfo.watchFolder]; ['dcm series: ' subinfo.dcmSeries]},0, 1)
         analyze_loc(subinfo) 
     end
 
@@ -769,7 +770,7 @@ assignin('base', 'user_fb', handles.user_fb);
 
 % --- Executes on button press in pb_save_log.
 function pb_save_log_Callback(hObject, eventdata, handles)
-    user_fb     = evalin('base','user_fb');
+    
     subID       = get(handles.eb_subjID,'String');
     projFolder  = get(handles.eb_projectFolder, 'String');
     
@@ -778,6 +779,7 @@ function pb_save_log_Callback(hObject, eventdata, handles)
     
     if isdir(save_dir)
         user_fb_update({['logfile saved in: ' save_dir]},1, 1);
+        user_fb     = evalin('base','user_fb');
         fid = fopen([save_dir, filesep, file_name],'w');
         
         % clean user_fb html so it can be saved in txt file

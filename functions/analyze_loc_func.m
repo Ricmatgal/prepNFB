@@ -30,15 +30,13 @@ stepNames = fieldnames(steps);
 stepFlags = cell2mat(struct2cell(steps));
 stepNames = {stepNames{find(stepFlags==1)}};
 
-message{1,1} = '';
+% message{1,1} = '';
+message{1,1} = 'SETTINGS';
 message{2,1} = ['Slices: ' num2str(nr_slices)];
 message{3,1} = ['TR: ' num2str(TR)];
 message{4,1} = ['Volumes: ' num2str(expNrIms)];
 message{5,1} = 'Preprocessing steps: ';
-
-for ii = 1:size(stepNames,2)
-    message{5+ii,1} = ['- ' stepNames{ii}];
-end
+message{6,1} = stepNames;
 user_fb_update(message, 0, 1)
 clear message
 
@@ -47,6 +45,8 @@ for ii = 1: size(data.contrasts,1)
     message{2+ii,1} = [data.contrasts{ii,1} ':      ' data.contrasts{ii,2}];
 end
 user_fb_update(message, 0, 1)
+
+WaitSecs(1);
 
 % flags to preprocess and/or do stats
 preprocFlag = 1;
@@ -81,14 +81,14 @@ if preprocFlag == 1
                 matlabbatch{1}.spm.temporal.st.scans = {f2}; 
 
                 if isempty(f2{1})
-                    fprintf('\nNo functional images loaded in: %s\n', steps{ii})
+                    user_fb_update({['No functional images loaded in: %s\n', steps{ii}]},0,3)
 %                     close Finter Fgraph
                     return
                 elseif size(f1,1) ~= expNrIms
-                    fprintf('\nIncorrect number of images found, check the watchfolder or dicom series number in GUI!\n')
-                    fprintf(['Images expected: ', num2str(expNrIms) '\n']);
-                    fprintf(['Images found: ', num2str(size(f1,1)), '\n']);
-                    fprintf('Please check images_found variable in workspace\n');
+                    user_fb_update({'Incorrect number of images found, check watchfolder/dicom series!'})
+                    user_fb_update({['Images expected: ', num2str(expNrIms)]});
+                    user_fb_update({['Images found: ', num2str(size(f1,1))]});
+                    user_fb_update({['Please check images_found variable in workspace']});
                     images_found = f2;
                     assignin('base', 'images_found', images_found);
 %                     close Finter Fgraph

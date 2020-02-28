@@ -1,4 +1,4 @@
-function [] = user_fb_update(message, main_module_flag,color_flag)
+function user_fb_update(message, main_module_flag,color_flag)
     user_fb = evalin('base','user_fb'); % for html 
     
     if color_flag == 1
@@ -12,31 +12,47 @@ function [] = user_fb_update(message, main_module_flag,color_flag)
     pre = '<HTML><FONT color="';
     post = '</FONT></HTML>';
     
+    % unpack message and color code each line if multiple
     message_a = {}; 
+    % for each line
     for ii = 1:size(message,1)
-        if isempty(message{ii}) || ii > 1
-            t = '';
-        else
-            t = datestr(datetime);
-            t = [t(end-7:end-3) ' '];
-        end 
+        % if the current line is a cell
         if iscell(message{ii})
+            % we loop over those cell elements first (when printing steps
+            % of preprocessing for instance..
             for jj = 1:size(message{ii},2)
-                tmp = [pre rgb2Hex(color) '">' '-' t message{ii}{1,jj} post];
+                tmp = [pre rgb2Hex(color) '">' '-' message{ii}{1,jj} post];
                 message_a = [message_a; tmp];
                 fprintf('%s\n', message{ii}{1,jj})
             end
+        % Otherwiese we just color code this cell element
         else
-            tmp = [pre rgb2Hex(color) '">' t message{ii} post];
+            tmp = [pre rgb2Hex(color) '">' message{ii} post];
+%             tmp = message{ii};
             message_a = [message_a; tmp];
             fprintf('%s\n', message{ii})
         end
     end
     
-    if main_module_flag == 0
+    % depending on the type of message we change the layout of the print
+    t = datestr(datetime);
+    t = [t(end-7:end-3) ' '];
+    % if just a normal message / or warning 
+    if main_module_flag == 0 && color_flag ~= 3
         user_fb = [user_fb; message_a; '  ']; 
+    % if error message
+    elseif main_module_flag == 0 && color_flag == 3 
+        t = [pre rgb2Hex(color) '">' [t 'ERROR'] post];
+        dashes = [pre rgb2Hex(color) '">' '----------------------------------------' post];
+        
+        user_fb = [user_fb; t; dashes ;message_a; dashes;'  '];
+    % if title message of a main action
     elseif main_module_flag == 1
-        user_fb = [user_fb; '---------------------------------';message_a; '  '];
+        dashes = [pre rgb2Hex(color) '">' '----------------------------------------' post];
+        
+%         user_fb = [user_fb; t; dashes ;message_a; '  '];
+        message_b = [pre rgb2Hex(color) '">' [t message_a{:}] post];
+        user_fb = [user_fb; message_b; dashes;  '  '];
     end
     
 %     user_fb = [user_fb; '>>'];
@@ -48,8 +64,7 @@ function [] = user_fb_update(message, main_module_flag,color_flag)
     set(handles.lb_feedback_window,'Value', size(get(handles.lb_feedback_window,'String'),1))
 %     set(handles.lb_feedback_window,'Value', [])
     
+    drawnow()
     assignin('base', 'user_fb', user_fb);
-    
-    
 end
 

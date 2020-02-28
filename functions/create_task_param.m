@@ -54,7 +54,9 @@ function create_task_param(subID, projFolder, Sess)
     face_c = 1;
     obje_c = 1;
     for row = 1:size(general_order,1)
-        fprintf(['\nLoading images run: ' num2str(row)])
+        
+        user_fb_update({['Loading images run: ' num2str(row)]},0,1);        
+   
         tic
         trial = 1;
         for col = 1:size(general_order, 2)
@@ -105,13 +107,14 @@ function create_task_param(subID, projFolder, Sess)
         Stims{trial} = I;
         trial = trial +1;
         end
+    
+        user_fb_update({['took: ' num2str(toc) ' sec']},0,1);
         
-        fprintf([' took: ' num2str(toc) ' sec']);
-        fprintf('\nSaving...')
+        user_fb_update({'Saving...'}, 0, 1)
         tic
         save([projFolder, filesep subID, filesep, Sess, filesep, 'TaskFolder',...
              filesep, 'stimParams', filesep, 'StimsRun_' num2str(row)], 'Stims');
-        fprintf([' took: ' num2str(toc) ' sec']);
+        user_fb_update({['took: ' num2str(toc) ' sec']}, 0, 1);
       
     end
  
@@ -119,5 +122,5 @@ function create_task_param(subID, projFolder, Sess)
         filesep, 'stimParams', filesep, 'NFB_task_param_' subID '_' Sess]);
     
     % report back to user
-    fprintf(['\nNFB task stimuli and parameters are saved\n'])
+    user_fb_update({'NFB task stimuli and parameters: SAVED'},0,1)
 end

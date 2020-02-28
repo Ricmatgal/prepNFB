@@ -11,7 +11,11 @@ rawFormat   = 'nii';
 smoothK = [6 6 6];
 
 % import funcitonal images, call funcion:
-dicom_imp('RestingState', subID, watchFolder, projFolder, imSer, 1, 0, Sess , 15);
+import_flag = dicom_imp('RestingState', subID, watchFolder, projFolder, imSer, 1, 0, Sess , 15);
+
+if import_flag == 1
+    return
+end
 
 nr_slices = 35;
 TR = 2;

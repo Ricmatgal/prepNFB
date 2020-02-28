@@ -209,7 +209,7 @@ function pb_get_Callback(hObject, eventdata, handles)
         if ~isempty(handles.ROInfo)
             onset = 1;       
             % set reference path
-            set(handles.eb_ref, 'String', handles.ROInfo.Session(2).struct(onset:end));       
+            set(handles.eb_ref, 'String', handles.ROInfo.Session(2).struct(1,onset:end));       
             % set source path
             set(handles.eb_source, 'String', handles.ROInfo.Session(1).struct(1,onset:end));
             % set ROI paths

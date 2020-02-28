@@ -356,7 +356,7 @@ function pb_saveSettings_Callback(hObject, eventdata, handles)
     settings.contrasts = handles.data.contrasts;
     
     save([pwd, filesep, 'Settings', filesep, 'Settings_Analyse_Loc'], 'settings')
-    fprintf('\nSettings saved in Settings folder\n')
+    user_fb_update({'Localiser Settings saved:';[pwd, filesep, 'Settings']},0,1)
 
 
 

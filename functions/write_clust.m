@@ -55,8 +55,8 @@ function write_clust(subinfo, ROIinfo)
     spm_orthviews('Reposition',outcentre);
     
     % print message (voxelsize) in figure and in command window
-    str = ['Mask size: ' num2str(numel(j)) ' functional voxels'];
-    fprintf([str '\n'])
+    str ={['Mask size: ' num2str(numel(j)) ' functional voxels']};
+    user_fb_update(str, 0, 1)
     
     hMIPax = axes('Parent',spm_figure('GetWin','Graphics'),'Position',...
         [0.05 0.60 0.55 0.36],'Visible','off');

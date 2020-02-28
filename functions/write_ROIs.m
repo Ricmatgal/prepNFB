@@ -31,4 +31,4 @@ function write_ROIs(subinfo, hROI)
         spm_write_vol(hdrs{ii}, vols{ii});
     end
     
-    fprintf('DONE! All ROIs written to final OpenNFT directories...\n')
+    user_fb_update({'DONE! All ROIs written to final OpenNFT directories'},0,1)

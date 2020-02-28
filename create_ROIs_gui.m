@@ -246,7 +246,9 @@ function pb_show_msk_Callback(hObject, eventdata, handles)
     try 
         my_spm_check_registration([{templ1}],{{handles.tmpData.mskFP{get(handles.lb_ROIs,'Value')}}},{}, 1);
     catch
+        user_fb_update({'Did you create the masks and refresh?'},0,3)
         warning('something went wrong, did you create the ROI masks and refresh?')
+        
     end
 
 % --- Executes on button press in pb_refresh.

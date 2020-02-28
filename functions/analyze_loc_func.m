@@ -40,13 +40,16 @@ message{6,1} = stepNames;
 user_fb_update(message, 0, 1)
 clear message
 
-message{2,1} = 'Contrasts: ';
+message{1,1} = 'Contrasts: ';
 for ii = 1: size(data.contrasts,1)
-    message{2+ii,1} = [data.contrasts{ii,1} ':      ' data.contrasts{ii,2}];
+    message{1+ii,1} = [data.contrasts{ii,1} ':      ' data.contrasts{ii,2}];
 end
-user_fb_update(message, 0, 1)
 
-WaitSecs(1);
+
+user_fb_update(message, 0, 1)
+clear message
+
+% uiwait();
 
 % flags to preprocess and/or do stats
 preprocFlag = 1;
@@ -70,7 +73,13 @@ if preprocFlag == 1
             case 'impDcm'
                 clear matlabbatch
                 % import funcitonal images, call funcion:
-                dicom_imp('Localizer', subID, watchFolder, projFolder, dcmSeries, 1, 0, Sess, expNrIms);
+                user_fb_update({[num2str(ii) ') Importing dicom...']}, 0, 1)
+                
+                import_flag = dicom_imp('Localizer', subID, watchFolder, projFolder, dcmSeries, 1, 0, Sess, expNrIms);
+                
+                if import_flag == 0 
+                    return
+                end
                 
             case 'sliceTiming'
                 clear matlabbatch
@@ -85,10 +94,11 @@ if preprocFlag == 1
 %                     close Finter Fgraph
                     return
                 elseif size(f1,1) ~= expNrIms
-                    user_fb_update({'Incorrect number of images found, check watchfolder/dicom series!'})
-                    user_fb_update({['Images expected: ', num2str(expNrIms)]});
-                    user_fb_update({['Images found: ', num2str(size(f1,1))]});
-                    user_fb_update({['Please check images_found variable in workspace']});
+                    message{1,1} = 'Incorrect number of images found!';
+                    message{2,1} = ['Expected: ', num2str(expNrIms)];
+                    message{3,1} = ['Found: ', num2str(size(f1,1))];
+                    message{4,1} = ['Please check images_found variable in workspace'];
+                    user_fb_update(message, 0, 3);
                     images_found = f2;
                     assignin('base', 'images_found', images_found);
 %                     close Finter Fgraph
@@ -106,7 +116,9 @@ if preprocFlag == 1
 
                 % save the batch, run it and clear it
                 save([projFolder filesep subID filesep 'Localizer' filesep 'slice_timing'], 'matlabbatch');
+                user_fb_update({[num2str(ii) ') Slicetime corretion...']}, 0, 1)
                 spm_jobman('run', matlabbatch);
+                user_fb_update({'Completed'}, 0, 1)
                 clear matlabbatch
 
             case 'Realign'
@@ -131,7 +143,11 @@ if preprocFlag == 1
 
                 % save the batch, run it and clear it
                 save([projFolder, filesep, subID, filesep, 'Localizer', filesep, 'realign'], 'matlabbatch')
+                
+                user_fb_update({[num2str(ii) ') Realignment...']}, 0, 1)
                 spm_jobman('run', matlabbatch);
+                user_fb_update({'Completed'}, 0, 1)
+                
                 clear matlabbatch
 
             case 'Coregistration'
@@ -162,7 +178,11 @@ if preprocFlag == 1
 
                 % save the batch, run it and clear it
                 save([projFolder filesep subID filesep 'Localizer' filesep 'coregistration'], 'matlabbatch')
+                
+                user_fb_update({[num2str(ii) ') Coregistration...']}, 0, 1)
                 spm_jobman('run', matlabbatch);
+                user_fb_update({'Completed'}, 0, 1)
+                
                 clear matlabbatch
                 
                 % Copy mean to epi template folder for MC template within
@@ -187,7 +207,11 @@ if preprocFlag == 1
                 matlabbatch{1}.spm.spatial.smooth.prefix = 's';
 
                 save([projFolder filesep subID filesep 'Localizer' filesep 'smooth_test'], 'matlabbatch')
+                
+                user_fb_update({[num2str(ii) ') Smoothing...']}, 0, 1)
                 spm_jobman('run', matlabbatch);
+                user_fb_update({'Completed'}, 0, 1)
+                
                 clear matlabbatch
                
         end
@@ -247,8 +271,10 @@ if stats == 1
         matlabbatch{3}.spm.stats.con.delete = 0;
         
     end
-
+    
+    user_fb_update({[num2str(ii) ') Parameter estimation & Contrasts...']}, 0, 1)
     spm_jobman('run',matlabbatch); 
+    user_fb_update({'Completed'}, 0, 1)
     
     clear matlabbatch 
 

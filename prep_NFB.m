@@ -333,8 +333,7 @@ function pb_ROI_Callback(hObject, eventdata, handles)
     subinfo.subID = handles.subID;
     subinfo.projFolder  = get(handles.eb_projectFolder, 'String');
     if isempty(subinfo.subID) || isdir(subinfo.projFolder) == 0 
-        fprintf('Subject ID and/or Project Folder not (correctly) specified!\n')
-        fprintf('Check settings and launch ROI tool again.\n')
+        user_fb_update({'Subject ID and/or Project Folder not (correctly) specified!'; 'Check Settings'}, 0, 3)
         return
     else 
         create_ROIs_gui(subinfo)      
@@ -346,7 +345,7 @@ function pb_analyze_rs_1_Callback(hObject, eventdata, handles)
     % %     fprintf('\nAnalyzing first images of resting state to get EPI template...')
     % %     analyze_rs(handles.subID, handles.watchFolder, handles.projFolder, handles.analyze_rs_1_sn,...
     % %         'Session_01');
-     fprintf('\nButton deactivated! See prep_NFB line 254...\n')
+     user_fb_update({'Button deactivated!'},1,2)
 
 function eb_analyze_rs_1_sn_Callback(hObject, eventdata, handles)
     % hObject    handle to eb_analyze_rs_1_sn (see GCBO)
@@ -412,7 +411,9 @@ function cb_stimSet2_1_Callback(hObject, eventdata, handles)
 function pb_task_param_1_Callback(hObject, eventdata, handles)
     subID       = get(handles.eb_subjID, 'String');
     projFolder  = get(handles.eb_projectFolder,'String');
-
+    
+    user_fb_update({'Creating task parameters...'},1,1)
+    
     creat_fam_param(subID, projFolder, 'Session_01')
     
     create_task_param(subID, projFolder, 'Session_01')
@@ -495,14 +496,17 @@ function pb_import_t1_2_Callback(hObject, eventdata, handles)
         struct2copy   = spm_select('List', getDir, ['^s' '.*192-01.nii']);
 
         copyfile([getDir, filesep, struct2copy], [goDir, filesep, struct2copy])
-        fprintf(['Structural scan copied from Session 1 --> Session ' currentSession '.\n'])
+        user_fb_update({['T1 copied: Session 1 --> Session ' currentSession]; 'Please check/re-set the origin.'},1 , 1)
+     
+       
+        spm_image('Display', [goDir, filesep, struct2copy]) 
+%         uiwait();
+%         user_fb_update({'Origin at: '},0,1)
 
-        fprintf('Please check/re-set the origin\n')
-        spm_image('Display', [goDir, filesep, struct2copy])
-    
     % if a new T1 is taken for each session 
     elseif get(handles.cb_new_struct,'Value') == 1
-      
+        user_fb_update({['Importing T1 to session ' currentSession]; 'Get ready to set origin at AC!'},1,1)
+        
         dicom_imp('struct', subID, watchFolder, projFolder,...
             get(handles.eb_imp_t1_2_sn, 'String'), 0, 1, ['Session_' sprintf('%02s', get(handles.eb_session,'String'))], 192);
     end
@@ -648,7 +652,7 @@ function pb_save_settings_Callback(hObject, eventdata, handles)
     settings.dcm.t1_2_flag    = get(handles.eb_imp_t1_2_sn, 'Enable');
     
     save([pwd, filesep, 'Settings', filesep, 'Settings_Main'], 'settings')
-    fprintf('\nSettings main window saved in Settings folder\n')
+    user_fb_update({'Settings main window saved in:'; [pwd, filesep, 'Settings', filesep, 'Settings_Main']},1,1)
 
 function eb_nr_sessions_Callback(hObject, eventdata, handles)
 % hObject    handle to eb_nr_sessions (see GCBO)

@@ -190,17 +190,22 @@ function pb_show_results_Callback(hObject, eventdata, handles)
     handles.ROInfo.ext_tresh   = str2double(get(handles.eb_extend_tresh,'String'));
     handles.ROInfo.struct      = get(handles.cb_str,'Value');
     handles.ROInfo.epi         = get(handles.cb_epi,'Value');
-
+    
     show_contrast_results(handles.subinfo, handles.ROInfo);
     
     % update the ROIinfo structure to contain the contrast info
-    handles.ROInfo.conInfo = conInfo;
+    try
+        handles.ROInfo.conInfo = conInfo;
+         % save the ROInfo structure
+        ROInfo = handles.ROInfo;
+        save([handles.subinfo.roiPath, filesep, 'roiPrep', filesep,...
+            'ROI_' num2str(handles.ROInfo.conInfo.conNr), filesep...
+            'ROInfo_ROI_' num2str(handles.ROInfo.conInfo.conNr)], 'ROInfo');
+    catch
+        return
+    end
     
-    % save the ROInfo structure
-    ROInfo = handles.ROInfo;
-    save([handles.subinfo.roiPath, filesep, 'roiPrep', filesep,...
-        'ROI_' num2str(handles.ROInfo.conInfo.conNr), filesep...
-        'ROInfo_ROI_' num2str(handles.ROInfo.conInfo.conNr)], 'ROInfo');
+   
 
     guidata(hObject, handles);
 

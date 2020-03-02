@@ -121,7 +121,7 @@ function run_fam_task(subID, projFolder, Sess)
 
     % text font, size and style
     Screen('TextFont',ptb.Screen.wPtr, 'Courier New');
-    Screen('TextSize', ptb.Screen.wPtr, 12);
+    Screen('TextSize', ptb.Screen.wPtr, 18);
     Screen('TextStyle',ptb.Screen.wPtr, 3);
     
     % fixation cross

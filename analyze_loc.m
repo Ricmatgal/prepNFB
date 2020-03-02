@@ -254,6 +254,15 @@ set(handles.uitable_cons,'Data', handles.data.contrasts);
 set(handles.eb_conName,'String', '');
 set(handles.eb_contrast,'String', '');
 
+user_fb_update({'Contrast added!';['Name: ' input{1}];['Conrast: ' input{2}]},0,2)
+
+% message = '';
+for ii = 1:size(handles.data.contrasts,1)
+    message{ii,1} = [handles.data.contrasts{ii,1} ': ' handles.data.contrasts{ii,2}];
+end
+
+user_fb_update({'All contrasts: '; message'},0, 1)
+
 guidata(hObject, handles);
 
 

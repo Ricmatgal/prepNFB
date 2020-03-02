@@ -210,39 +210,80 @@ ROI_2 = {};         % All available ROIs from Session B
 epi_overlay_1 = {};
 epi_overlay_2 = {};
 overlay_flag = 1;
-    
+
+% is overlay is struct and not epi
 if get(handles.cb_struct,'Value') == 1 && get(handles.cb_epi,'Value') == 0
+    % get path to struct based on first window
     templ1 = handles.ROInfo.Session(get(handles.lb_sess1,'Value')).struct;
+    
+    % record session name for reporting to user in gui
+    sess_name{1,1} = handles.ROInfo.Session(get(handles.lb_sess1,'Value')).ROI(1).sess;
+    templ_name{1,1} = 'Structural template(s)';
+    % if not a single session display
     if get(handles.cb_single_sess,'Value') == 0
+        % also get the path to the struct of the second window
         templ2 = handles.ROInfo.Session(get(handles.lb_sess2,'Value')).struct;
+        sess_name{1,2} = handles.ROInfo.Session(get(handles.lb_sess2,'Value')).ROI(1).sess;
     end
+    
+% if overlay is epi and not struct    
 elseif get(handles.cb_epi,'Value') == 1 && get(handles.cb_struct,'Value') == 0 
+    % get path to epi from first window
     templ1 = handles.ROInfo.Session(get(handles.lb_sess1,'Value')).epi;
+    
+    sess_name{1,1} = handles.ROInfo.Session(get(handles.lb_sess1,'Value')).ROI(1).sess;
+    templ_name{1,1} = 'EPI template(s)';
+    % if not a single session 
     if get(handles.cb_single_sess,'Value') == 0
+        % also get the path to the current session epi based on second
+        % window
         templ2 = handles.ROInfo.Session(get(handles.lb_sess2,'Value')).epi;
+        sess_name{1,2} = handles.ROInfo.Session(get(handles.lb_sess2,'Value')).ROI(1).sess;
     end
+    
+% if overlay are both struct and epi (functional overlay on struct)    
 elseif get(handles.cb_struct,'Value') == 1 && get(handles.cb_epi,'Value') == 1
+    % get overlays from first window 
     templ1 = handles.ROInfo.Session(get(handles.lb_sess1,'Value')).struct;
+    
+    sess_name{1,1} = handles.ROInfo.Session(get(handles.lb_sess1,'Value')).ROI(1).sess;
+    templ_name{1,1} = 'Structural + EPI template(s)';
+    
     epi_overlay_1 = handles.ROInfo.Session(get(handles.lb_sess1,'Value')).epi;
+    
+    % and of second window if not single session
     if get(handles.cb_single_sess,'Value') == 0
         templ2 = handles.ROInfo.Session(get(handles.lb_sess2,'Value')).struct;
+        sess_name{1,2} = handles.ROInfo.Session(get(handles.lb_sess2,'Value')).ROI(1).sess;
         epi_overlay_2 = handles.ROInfo.Session(get(handles.lb_sess2,'Value')).epi;
     end   
 end
 
+% get the ROIs accordingly of first session (based in windows)
 ROI_1 = {handles.ROInfo.Session(get(handles.lb_sess1,'Value')).ROI(get(handles.lb_rois,'Value')).Fpath};
+roi_names = {handles.ROInfo.Session(get(handles.lb_sess1,'Value')).ROI(get(handles.lb_rois,'Value')).name};
 
+% and if not single session also of the current session
 if get(handles.cb_single_sess,'Value') == 0
     ROI_2 = {handles.ROInfo.Session(get(handles.lb_sess2,'Value')).ROI(get(handles.lb_rois,'Value')).Fpath};
 end
 
-% move ROIs to template position if no overlap selected
+% move ROIs to template position if no overlay selected
 if get(handles.cb_none,'Value') == 1
     my_spm_check_registration([ROI_1;ROI_2],{}, 0);
 else
     % otherwise display as default
     my_spm_check_registration([{templ1};{templ2}],{ROI_1, ROI_2},{epi_overlay_1, epi_overlay_2}, overlay_flag);
 end
+
+message{1,1} = 'Showing ROI(s): ';
+message{2,1} = roi_names;
+message{3,1} = 'Of: ';
+message{4,1} = sess_name;
+message{5,1} = 'On: ';
+message{6,1} = templ_name;
+
+user_fb_update(message,0,1);
 
 % --- Executes on button press in cb_single_sess.
 function cb_single_sess_Callback(hObject, eventdata, handles)

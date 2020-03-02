@@ -240,18 +240,15 @@ function pb_runLocTask_Callback(hObject, eventdata, handles)
      subID       = get(handles.eb_subjID, 'String');
      projFolder  = get(handles.eb_projectFolder, 'String');
      if isempty(str2num(subID)) 
-        user_fb_update({'ERROR';'Subject ID not specified!';'Check settings and re-launch'},0, 3)
+        user_fb_update({'Subject ID not specified!';'Check settings and re-launch'},0, 3)
         return
     elseif isdir(projFolder) == 0 
-        user_fb_update({'ERROR','Project Folder does not exist!';'Check path and re-launch'},0, 3)
+        user_fb_update({'Project Folder does not exist!';'Check path and re-launch'},0, 3)
         return
      else
         run_offa_loc(subID, projFolder)
     end
     
-
-
-% --- Executes on button press in pb_import_t1_1.
 function pb_import_t1_1_Callback(hObject, eventdata, handles)
     user_fb_update({'Importing T1 to session 1...'},1, 1)
     user_fb_update({'Get ready to set origin at AC!'},0, 2)
@@ -330,8 +327,8 @@ function eb_analyze_loc_sn_CreateFcn(hObject, eventdata, handles)
 function pb_ROI_Callback(hObject, eventdata, handles)
     user_fb_update({'Initiating ROI analyses..'},1, 1)
 %     create_ROIs(handles.subID, handles.projFolder) 
-    subinfo.subID = handles.subID;
-    subinfo.projFolder  = get(handles.eb_projectFolder, 'String');
+    subinfo.subID           = get(handles.eb_subjID, 'String');
+    subinfo.projFolder      = get(handles.eb_projectFolder, 'String');
     if isempty(subinfo.subID) || isdir(subinfo.projFolder) == 0 
         user_fb_update({'Subject ID and/or Project Folder not (correctly) specified!'; 'Check Settings'}, 0, 3)
         return
@@ -377,6 +374,7 @@ function pb_create_ini_1_Callback(hObject, eventdata, handles)
     subID       = get(handles.eb_subjID, 'String');
     projFolder  = get(handles.eb_projectFolder,'String');
     watchFolder = get(handles.eb_watchFolder,'String');
+    
     create_ini(subID, watchFolder, projFolder, 'Session_01')
 
     
@@ -420,7 +418,8 @@ function pb_task_param_1_Callback(hObject, eventdata, handles)
     
 % --- Executes on button press in pb_run_famTask_1.
 function pb_run_famTask_1_Callback(hObject, eventdata, handles)
-    fprintf('\nRunning familiarization task...')
+    
+    user_fb_update({'Running familiarization task...'},1,1)
     
     subID       = get(handles.eb_subjID, 'String');
     projFolder  = get(handles.eb_projectFolder,'String');4
@@ -494,18 +493,32 @@ function pb_import_t1_2_Callback(hObject, eventdata, handles)
         goDir     = [projFolder, filesep, subID, filesep, ['Session_' currentSession], filesep, 'T1'];
 
         struct2copy   = spm_select('List', getDir, ['^s' '.*192-01.nii']);
+        
+        % check if dir is empty
+        if numel(dir(goDir))>2 % skip 2 to take into account two dots..
+            a = dir(goDir);
+            filenames = {a.name};
+            
+            user_fb_update({'T1 folder should be but is NOT empty!';'';'Files found:';...
+                {filenames{3:end}};'';['Dir: ' goDir];'';'Import aborted'},0,3);
+            
+            % open windows explorer for user to inspect folder contents
+            winopen(goDir);
+            
+            return
+        else
+                 
+            copyfile([getDir, filesep, struct2copy], [goDir, filesep, struct2copy])
+            user_fb_update({['T1 copied: Session 1 --> Session ' currentSession]; 'Please check/re-set the origin.'},1 , 1)
 
-        copyfile([getDir, filesep, struct2copy], [goDir, filesep, struct2copy])
-        user_fb_update({['T1 copied: Session 1 --> Session ' currentSession]; 'Please check/re-set the origin.'},1 , 1)
-     
-       
-        spm_image('Display', [goDir, filesep, struct2copy]) 
-%         uiwait();
-%         user_fb_update({'Origin at: '},0,1)
 
+            spm_image('Display', [goDir, filesep, struct2copy]) 
+        end
+        
     % if a new T1 is taken for each session 
     elseif get(handles.cb_new_struct,'Value') == 1
-        user_fb_update({['Importing T1 to session ' currentSession]; 'Get ready to set origin at AC!'},1,1)
+        user_fb_update({['Importing T1 to session ' currentSession]},1,1)
+        user_fb_update({'Get ready to set origin at AC!'},0, 2)
         
         dicom_imp('struct', subID, watchFolder, projFolder,...
             get(handles.eb_imp_t1_2_sn, 'String'), 0, 1, ['Session_' sprintf('%02s', get(handles.eb_session,'String'))], 192);
@@ -514,7 +527,6 @@ function pb_import_t1_2_Callback(hObject, eventdata, handles)
     
 function eb_imp_t1_2_sn_Callback(hObject, eventdata, handles)
     handles.impT1_2_sn = get(hObject,'String');
-    
 
     guidata(hObject, handles);
 
@@ -528,7 +540,7 @@ function eb_imp_t1_2_sn_CreateFcn(hObject, eventdata, handles)
 
 % --- Executes on button press in pb_analyze_rs_2.
 function pb_analyze_rs_2_Callback(hObject, eventdata, handles)
-    fprintf('\nAnalyzing first images of resting state to get EPI template...')
+    user_fb_update({'Creating MC template...'},1,1)
     
     subinfo.subID       = get(handles.eb_subjID, 'String');
     subinfo.projFolder  = get(handles.eb_projectFolder, 'String');
@@ -538,7 +550,18 @@ function pb_analyze_rs_2_Callback(hObject, eventdata, handles)
     subinfo.new_struct  = get(handles.cb_new_struct,'Value');
     subinfo.old_struct  = get(handles.cb_old_struct,'Value');
     
-    analyze_rs(subinfo);
+    if isempty(str2num(subinfo.subID)) 
+        user_fb_update({'Subject ID not specified!';'Check settings and re-launch'},0, 3)
+        return
+    elseif isdir(subinfo.projFolder) == 0 
+        user_fb_update({'Project Folder does not exist!';'Check path and re-launch'},0, 3)
+        return
+    elseif isdir(subinfo.watchFolder) == 0
+        user_fb_update({'Watch Folder does not exist!';'Check path and re-launch'},0, 3)
+        return
+    else 
+        analyze_rs(subinfo);
+    end
 
 function eb_analyze_rs_2_sn_Callback(hObject, eventdata, handles)
     handles.analyze_rs_2_sn = get(hObject,'String');
@@ -560,13 +583,13 @@ function eb_analyze_rs_2_sn_CreateFcn(hObject, eventdata, handles)
 function pb_coreg_rois_Callback(hObject, eventdata, handles)
 
     if isempty(str2num(get(handles.eb_subjID,'String')))
-        fprintf('Subject ID not specified!\n')
+        user_fb_update({'Subject ID not specified!'},0,3)
     else
         subinfo.subID       = get(handles.eb_subjID,'String');
         subinfo.session     = str2double(get(handles.eb_session,'String'));
         subinfo.projFolder  = get(handles.eb_projectFolder, 'String');
         
-        fprintf(['\nROIs Sess ' num2str(subinfo.session) ' --> ROIs Sess1 coregristration...\n'])
+        user_fb_update({['Coreg ROIs: Sess 1 --> Sess ' num2str(subinfo.session)]},1,1)
         Coreg_ROIs_gui(subinfo);
     end
     
@@ -577,6 +600,9 @@ function pb_coreg_rois_Callback(hObject, eventdata, handles)
 function pb_coreg_results_Callback(hObject, eventdata, handles)
     subinfo.subID       = get(handles.eb_subjID,'String');
     subinfo.projFolder  = get(handles.eb_projectFolder, 'String');
+    
+    user_fb_update({'ROI visualization..'}, 1,1)
+    
     coreg_results(subinfo)
     
 
@@ -585,6 +611,7 @@ function pb_create_ini_2_Callback(hObject, eventdata, handles)
     subID       = get(handles.eb_subjID,'String');
     projFolder  = get(handles.eb_projectFolder, 'String');
     watchFolder = get(handles.eb_watchFolder, 'String'); 
+    
     create_ini(subID, watchFolder, projFolder, 'Session_02')
 
 % --- Executes on button press in cb_stimSet1_2.
@@ -615,6 +642,7 @@ function pb_task_param_2_Callback(hObject, eventdata, handles)
     creat_fam_param(subID, projFolder, 'Session_02')
     
     % create task parameters 
+    user_fb_update({'Creating Task Parameters'},1,1)
     create_task_param(subID, projFolder, 'Session_02')
 
 % --- Executes on button press in pb_run_famTask_2.
@@ -622,8 +650,8 @@ function pb_run_famTask_2_Callback(hObject, eventdata, handles)
     subID       = get(handles.eb_subjID,'String');
     projFolder  = get(handles.eb_projectFolder, 'String');
     
+    user_fb_update({'Running Familiarization Task'},1,1)
     run_fam_task(subID, projFolder, 'Session_02')
-
 
 
 % --- Executes on button press in pb_quit.

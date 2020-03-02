@@ -29,6 +29,8 @@ function write_ROIs(subinfo, hROI)
         
         % write the volume
         spm_write_vol(hdrs{ii}, vols{ii});
+        
+        user_fb_update({['ROI: ' tmpName{1} ' written']},0,2)
     end
     
     user_fb_update({'DONE! All ROIs written to final OpenNFT directories'},0,1)

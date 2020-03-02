@@ -26,21 +26,21 @@ function [roiFinal] = show_ROIs(subinfo, hROI)
         tValMasks{ii}   = tmaps{ii}(voxIDs{ii});            % t values of clust voxels
         voxCount(ii)    = numel(voxIDs{ii});                % number of voxels in clust
         
-        fprintf(['\nROI ', num2str(ii), ' cluster has: ', num2str(voxCount(ii)), ' voxels']);
+        user_fb_update({['ROI ', num2str(ii), ' cluster has: ', num2str(voxCount(ii)), ' voxels']},0,2);
     end   
 
      % set final roi size.
      if sum(voxCount>=roiSize) == nrROIs
         % first see if both rois have a voxel count higher than minimum. If
         % so set roisize to user input roiSize
-        fprintf(['\nAll Mask voxel counts are at or supersede your chosed threshhold of: ',...
-            num2str(roiSize), '\nWe will trim them to max, selecting the ones with highest T values...\n']);
+        user_fb_update({['All voxel counts are at or supersede threshhold of: ' num2str(roiSize)];...
+           'We will trim them to max, selecting the ones with highest T values'},0,2);
         C = roiSize;
      else
          % In any other case, set the final roisize to size of the smallers
          % mask
          [minCount, minROI] = min(voxCount);
-         fprintf(['\n' hROI.ROI{minROI}.mskName ' is smallest, we will trim the others to the same size\n'])
+         user_fb_update({[hROI.ROI{minROI}.mskName ' is smallest, we will trim the others to the same size']},0,2)
          C = voxCount(minROI);
      end
      
@@ -61,10 +61,9 @@ function [roiFinal] = show_ROIs(subinfo, hROI)
     %check for overlapping voxels
     if ~isempty(find(tally(:,2)>1))
         % in case there is overlap:
-        fprintf(['\n' num2str(sum(tally(:,2)>1)) ' overlapping voxels found!']);
-        fprintf('\nremoving overlapping voxels from ROIs..');
-        fprintf('\n\nfinal ROI size:');
-        
+        user_fb_update({[num2str(sum(tally(:,2)>1)) ' overlapping voxels found!'];...
+            'removing overlapping voxels from ROIs..'; 'Final ROI size: '},0,2);
+      
         % find the overlapping voxel IDs 
         overlap_IDs = tally(find(tally(:,2)>1),1);
         
@@ -84,7 +83,7 @@ function [roiFinal] = show_ROIs(subinfo, hROI)
             rois_new{ii}(topVox{ii}) = 1;   
             
             % report final roi size back to user command window
-            fprintf(['\nROI_' num2str(ii) ': ', num2str(numel(topVox{ii}))])
+            user_fb_update({['ROI_' num2str(ii) ': ', num2str(numel(topVox{ii}))]},0,2)
         end   
     else
         % if no overlap is found simply use the equalized ROI IDs to set
@@ -93,12 +92,10 @@ function [roiFinal] = show_ROIs(subinfo, hROI)
             rois_new{ii}(topVox{ii}) = 1;
             
             % report final roi size back to user command window           
-            fprintf(['\n' hROI.ROI{ii}.mskName ': ', num2str(numel(topVox{ii}))])
+            user_fb_update({'Final ROI size: '; [hROI.ROI{ii}.mskName ': ', num2str(numel(topVox{ii}))]},0,2)
         end
     end
     
-    % next line for subsequent message.
-    fprintf('\n')
    
     % now we are ready to visualize the results. We write the ROIs to
     % tmpROI.nii files in roiPrep so that the spm_check_registration can display them.

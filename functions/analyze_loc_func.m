@@ -77,7 +77,8 @@ if preprocFlag == 1
                 
                 import_flag = dicom_imp('Localizer', subID, watchFolder, projFolder, dcmSeries, 1, 0, Sess, expNrIms);
                 
-                if import_flag == 0 
+                if import_flag == 0
+                    user_fb_update({'Dir not empty, analysis aborted...'},0,3)
                     return
                 end
                 
@@ -272,7 +273,7 @@ if stats == 1
         
     end
     
-    user_fb_update({[num2str(ii) ') Parameter estimation & Contrasts...']}, 0, 1)
+    user_fb_update({[num2str(6) ') Parameter estimation & Contrasts...']}, 0, 1)
     spm_jobman('run',matlabbatch); 
     user_fb_update({'Completed'}, 0, 1)
     

@@ -6,12 +6,15 @@ imported_flag = 1;
 if s_flag
     if strcmp(sequence, 'struct') == 1
         expDir    = [projFolder, filesep, subID, filesep, Sess, filesep, 'T1'];
-        if numel(dir(expDir))>2
+        if numel(dir(expDir))> 2 % skip 2 for two dots..
             a = dir(expDir);
             filenames = {a.name};
             
             user_fb_update({'T1 folder should be but is NOT empty!';'';'Files found:';...
                 {filenames{3:end}};'';['Dir: ' expDir];'';'Import aborted'},0,3);
+            
+            % open windows explorer for user to inspect folder contents
+            winopen(expDir);
             
             imported_flag = 0;
             return
@@ -59,12 +62,15 @@ if f_flag
     
     if strcmp(sequence, 'Localizer') == 1
         expDir    = [projFolder, filesep, subID, filesep, 'Localizer', filesep, 'func'];
-        if numel(dir(expDir))>2
+        if numel(dir(expDir)) > 2
             a = dir(expDir);
             filenames = {a.name};
             
             user_fb_update({'Func folder should be but is NOT empty!';'';'Files found:';...
                 {filenames{3:end}};'';['Dir: ' expDir];'';'Import aborted'},0,3);
+            
+            % open windows explorer for user to inspect folder contents
+            winopen(expDir);
             
             imported_flag = 0;
             
@@ -74,12 +80,15 @@ if f_flag
         
     elseif strcmp(sequence, 'RestingState') == 1
         expDir    = [projFolder, filesep, subID, filesep, Sess, filesep, 'RestingState'];
-        if numel(dir(expDir))>2
+        if numel(dir(expDir)) > 2
             a = dir(expDir);
             filenames = {a.name};
             
             user_fb_update({'Func folder should be but is NOT empty!';'';'Files found:';...
                 {filenames{3:end}};'';['Dir: ' expDir];'';'Import aborted'},0,3);
+            
+            % open windows explorer for user to inspect folder contents
+            winopen(expDir);
             
             imported_flag = 0;            
             

@@ -20,8 +20,15 @@ function write_clust(subinfo, ROIinfo)
     u       = ROIinfo.conInfo.u;
     k       = ROIinfo.conInfo.k;
     conName = ROIinfo.conInfo.conName;       
-%     conName = 'FFA';
     conNr   = ROIinfo.conInfo.conNr;
+    
+    if ROIinfo.FWE == 1
+        correction = 'FWE';
+        pval = ROIinfo.FWE_p;
+    elseif ROIinfo.none == 1
+        correction = 'none';
+        pval = ROIinfo.none_p;
+    end
     
     
     % set path to write .nii mask to 
@@ -39,24 +46,27 @@ function write_clust(subinfo, ROIinfo)
      V   = spm_write_filtered(Z, XYZ, DIM, M, sprintf('SPM{%c}-filtered: u = %5.3f, k = %d',STAT,u,k),...
          [mskPath, filesep, 'msk_' conName]);
     
-    % report to user that mask was saved in specific location (provide
-    % link)
-    cmd = 'spm_image(''display'',''%s'')';
-    fprintf('Written %s\n',spm_file(V.fname,'link',cmd));  % F   = V.fname;
-    
     % prep visualisation
     templ1 = spm_select('FPList', subinfo.subjStructDir, ['^s' '.*192-01.nii$']);
     ROI = spm_select('FPList', mskPath, ['^', 'msk_' conName, '.*.nii$']);
     
     % launch visualization
-    my_spm_check_registration([{templ1}],{ROI}, 1);
+    my_spm_check_registration([{templ1}],{ROI},{}, 1);
     
     % snap cross-hairs back to centre
     spm_orthviews('Reposition',outcentre);
     
     % print message (voxelsize) in figure and in command window
-    str = ['Mask size: ' num2str(numel(j)) ' functional voxels'];
-    fprintf([str '\n'])
+    cmd = 'spm_image(''display'',''%s'')';
+    str ={['Contrast: ' conName];['Mask size: ' num2str(numel(j)) ' functional voxels']};
+    str2 = {['Contrast: ' conName];['Correction: ' correction ' at p = ' num2str(pval)];['Mask size: ' num2str(numel(j)) ' functional voxels'];...
+        ['at xyz coords: ' num2str(centre')];'Mask written:';[spm_file(V.fname,'link',cmd)]};
+    user_fb_update(str2, 0, 1)
+    
+    % report to user that mask was saved in specific location (provide
+    % link)
+   
+    
     
     hMIPax = axes('Parent',spm_figure('GetWin','Graphics'),'Position',...
         [0.05 0.60 0.55 0.36],'Visible','off');

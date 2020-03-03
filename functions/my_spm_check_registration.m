@@ -96,7 +96,7 @@ if overlay_flag
     end
     
     dd={d{find(~cellfun(@isempty,d'))}};
-    colours = [0 0.2 0.9]; % 6 colors are hard coded!
+    colours = [0.3686 0.9686 0.4196]; % 6 colors are hard coded!
     cc=[1:6];
     for sess=1:numel(dd)
         % for each image ;

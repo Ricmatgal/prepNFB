@@ -178,10 +178,41 @@ function pb_run_Callback(hObject, eventdata, handles)
     coreg.sourcePath    = get(handles.eb_source, 'String');
     coreg.ROIs          = get(handles.lb_ROIs, 'String');
     coreg.structs       = {handles.ROInfo.Session.struct}';
-    coreg.sflag         = get(handles.cb_coreg_struct, 'Value');
-    coreg.struct_flag   = get(handles.cb_struct_templ, 'Value');
-    coreg.epi_flag      = get(handles.cb_epi_templ, 'Value');
+    coreg.sflag         = get(handles.cb_coreg_struct, 'Value');    % incl struct in coregistration
+    coreg.struct_flag   = get(handles.cb_struct_templ, 'Value');    % coreg based on struct
+    coreg.epi_flag      = get(handles.cb_epi_templ, 'Value');       % coreg based on epi
     coreg.ROInfo        = handles.ROInfo;
+    
+%     % construct settings message:
+%     message{1,1} = 'SETTINGS:'
+%     if coreg.struct_flag == 1
+%         message{2,1}='Struct based Coregistration';
+%     elseif coreg.epi_flag == 1
+%         message{2,1} = 'EPI based Coregistration';
+%     end
+%     message{3,1} = 'Reference: ';
+%     message{4,1} = coreg.refPath;
+%     message{5,1} = 'Source: ';
+%     message{6,1} = coreg.sourcePath;
+%     message{7,1} = 'ROIs: ';
+%     message{8,1} = coreg.ROIs;    
+    % construct settings message:
+    message{1,1} = 'SETTINGS:';
+    if coreg.struct_flag == 1
+        message{2,1}='Struct based Coregistration';
+    elseif coreg.epi_flag == 1
+        message{2,1} = 'EPI based Coregistration';
+    end
+    message{3,1} = 'Reference: ';
+    message{4,1}{1,1} = coreg.refPath;
+    message{5,1} = 'Source: ';
+    message{6,1}{1,1} = coreg.sourcePath;
+    message{7,1} = 'ROIs: ';
+    for ii = 1:numel(coreg.ROIs)
+        message{8,1}{1,ii} = coreg.ROIs{ii};   
+    end
+    
+    user_fb_update(message,0,1)
     
     coreg_ROIs(handles.subinfo, coreg)
 
@@ -209,7 +240,7 @@ function pb_get_Callback(hObject, eventdata, handles)
         if ~isempty(handles.ROInfo)
             onset = 1;       
             % set reference path
-            set(handles.eb_ref, 'String', handles.ROInfo.Session(2).struct(onset:end));       
+            set(handles.eb_ref, 'String', handles.ROInfo.Session(2).struct(1,onset:end));       
             % set source path
             set(handles.eb_source, 'String', handles.ROInfo.Session(1).struct(1,onset:end));
             % set ROI paths

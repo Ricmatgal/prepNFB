@@ -129,6 +129,7 @@ function show_contrast_results(subinfo, ROI)
         fprintf('\n');                                                  %-#
         sw = warning('off','backtrace');
         warning('SPM:NoVoxels','No %s survive extent threshold at k=%0.2g',str,k);
+        user_fb_update({['No Voxels survive threshold k = ' num2str(k)]},0,2); 
         warning(sw);
     end
 
@@ -156,16 +157,21 @@ function show_contrast_results(subinfo, ROI)
         img = spm_select('FPList', subinfo.subjStructDir, ['^s' '.*192-01.nii$']);
         if isempty(img)
             fprintf('\n');                                                  %-#
-            error('prepNFB:create_ROIs_gui:show_contrast:fileNotFound', 'No T1 template found make sure you have one!\nPlease check: %s', subinfo.epiPath);
+            user_fb_update({'No T1 template found. Check: '; subinfo.subjStructDir},0,3)
+%             error('prepNFB:create_ROIs_gui:show_contrast:fileNotFound', 'No T1 template found make sure you have one!\nPlease check: %s', subinfo.subjStructDir);
+            return
         end
     elseif ROI.epi == 1
         img = spm_select('FPList', subinfo.epiPath, ['^mean' '.*.nii$']);     
         if isempty(img)
-            fprintf('\n');                                                  %-#
-            sw = warning('off','backtrace');
-            warning(['No EPI template found make sure you have one!\n']);
-            warning(['Please check: ' subinfo.epiPath])
-            warning(sw);
+%             fprintf('\n');                                                  %-#
+%             sw = warning('off','backtrace');   
+%             warning(['No EPI template found make sure you have one!\n']);
+%             warning(['Please check: ' subinfo.epiPath])
+%             warning(sw);
+            
+            user_fb_update({'No EPI template found! Check: ';subinfo.epiPath},0,3)
+            return
         end
     end
 

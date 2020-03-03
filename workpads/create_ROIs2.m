@@ -117,7 +117,7 @@ function create_ROIs(subID, projFolder)
     % retrieve t1 name for current sub
     s = spm_select('FPList', subjStructDir, ['^s' '.*192-01.nii$']);
     % this will open only the structural with blobs
-    my_spm_check_registration(s,[hdr_ROI_1.fname;hdr_ROI_2.fname]);  
+    my_spm_check_registration(s,[hdr_ROI_1.fname;hdr_ROI_2.fname],{});  
     
     % this will open the results gui show structurual and blobs but also
     % all the other info: header cross hair position etc.

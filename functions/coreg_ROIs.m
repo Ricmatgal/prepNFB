@@ -29,7 +29,10 @@ function coreg_ROIs(subinfo, coreg)
         for ii = 1:size(coreg.ROIs,1)
             copyfile(char(coreg.ROIs(ii)),[current_sess_templ_folder, filesep, coreg.ROInfo.Session(1).ROI(ii).name]);
         end
-
+        
+        user_fb_update({['-Source copied to: Session_0' num2str(subinfo.session)]; '-Temp name: struct_template_sess_01.nii'},0,1)
+        user_fb_update({['-ROIs copied to: Session_0' num2str(subinfo.session)]},0,1)
+        
         % define reference and source 
         matlabbatch{1}.spm.spatial.coreg.estimate.ref = {coreg.refPath};
         matlabbatch{1}.spm.spatial.coreg.estimate.source = {[current_sess_templ_folder, filesep, 'struct_template_sess_01.nii']};
@@ -47,7 +50,11 @@ function coreg_ROIs(subinfo, coreg)
         % save the batch, run it and clear it
         save([subinfo.projFolder, filesep, subinfo.subID, filesep, 'Localizer',...
             filesep, 'ROIs', filesep, 'coregROIs_D2'], 'matlabbatch')
-        spm_jobman('run', matlabbatch);
+        
+        user_fb_update({'>>Coregistration<<'}, 0, 1)      
+        spm_jobman('run', matlabbatch);       
+        user_fb_update({'Completed...'}, 0, 4)
+        
         clear matlabbatch
 
         % move new rois to their respective locations where openNFBT will
@@ -60,18 +67,21 @@ function coreg_ROIs(subinfo, coreg)
             tmpFolder2get = current_sess_templ_folder;
 
             tmpFolder2go = [subinfo.projFolder, filesep, subinfo.subID, filesep, 'Localizer',...
-                filesep, 'ROIs', filesep, 'Session_02', filesep, 'ROI_' tmp.folder(end), filesep];
+                filesep, 'ROIs', filesep,  'Session_0' num2str(subinfo.session), filesep, 'ROI_' tmp.folder(end), filesep];
             % tmp.folder(end) to get the ROI nr might not be the best/safest practsise -->
             % reconsider
 
     %         movefile([spm_select('FPList',  tmpFolder2get, ['^sess2_' '.*\.' rawFormat '$'])], tmpFolder2go);
             movefile([spm_select('FPList',  tmpFolder2get, [coreg.ROInfo.Session(1).ROI(ii).name])], tmpFolder2go);
+           
         end
-
+        user_fb_update({['-CoregROIs moved to: Session_0' num2str(subinfo.session)]},0,1)
+        
         % delete remaining files that were created in the process to keep a
         % clean folder
         delete([current_sess_templ_folder, filesep, 'struct_template_sess_01.nii']);
- 
+        
+        user_fb_update({'-struct_template_sess_01.nii deleted..'},0,1)
     
     elseif coreg.epi_flag == 1
         % copy original first session MC template and corresponding ROIs to
@@ -86,6 +96,9 @@ function coreg_ROIs(subinfo, coreg)
         for ii = 1:size(coreg.ROIs,1)
             copyfile(char(coreg.ROIs(ii)),[current_sess_templ_folder, filesep, coreg.ROInfo.Session(1).ROI(ii).name]);
         end
+        
+        user_fb_update({['-Source copied to: Session_0' num2str(subinfo.session)]; '-Temp name: EPI_template_sess_01.nii'},0,1)
+        user_fb_update({['-ROIs copied to: Session_0' num2str(subinfo.session)]},0,1)
 
         % define reference and source 
         matlabbatch{1}.spm.spatial.coreg.estwrite.ref = {coreg.refPath};
@@ -106,7 +119,11 @@ function coreg_ROIs(subinfo, coreg)
         % save the batch, run it and clear it
         save([subinfo.projFolder, filesep, subinfo.subID, filesep, 'Localizer',...
             filesep, 'ROIs', filesep, 'coregROIs_D2'], 'matlabbatch')
+        
+        user_fb_update({'>>Coregistration<<'},0,1)   
         spm_jobman('run', matlabbatch);
+        user_fb_update({'Completed...'}, 0, 4)
+        
         clear matlabbatch
 
         % move new rois to their respective locations where openNFBT will
@@ -120,14 +137,16 @@ function coreg_ROIs(subinfo, coreg)
             tmpFolder2get = current_sess_templ_folder;
 
             tmpFolder2go = [subinfo.projFolder, filesep, subinfo.subID, filesep, 'Localizer',...
-                filesep, 'ROIs', filesep, 'Session_02', filesep, 'ROI_' tmp.folder(end), filesep];
+                filesep, 'ROIs', filesep, 'Session_0' num2str(subinfo.session), filesep, 'ROI_' tmp.folder(end), filesep];
             % tmp.folder(end) to get the ROI nr might not be the best/safest practsise -->
             % reconsider
 
     %         movefile([spm_select('FPList',  tmpFolder2get, ['^sess2_' '.*\.' rawFormat '$'])], tmpFolder2go);
             movefile([spm_select('FPList',  tmpFolder2get, ['^sess2_' coreg.ROInfo.Session(1).ROI(ii).name])], tmpFolder2go);
+            
+            
         end
-
+        user_fb_update({['-Coregistered ROIs moved to: Session_0' num2str(subinfo.session)]},0,1)
         % delete remaining files that were created in the process to keep a
         % clean folder
         delete([current_sess_templ_folder, filesep, 'EPI_template_sess_01.nii']);
@@ -135,6 +154,7 @@ function coreg_ROIs(subinfo, coreg)
         for ii = 1:size(coreg.ROIs,1)
             delete([current_sess_templ_folder, filesep, coreg.ROInfo.Session(1).ROI(ii).name])
         end
+        user_fb_update({'-Temporary templates and ROIs deleted..'},0,1)
 
         if coreg.sflag == 1
 
@@ -148,14 +168,16 @@ function coreg_ROIs(subinfo, coreg)
             matlabbatch{1}.spm.spatial.coreg.estimate.eoptions.sep = [4 2];
             matlabbatch{1}.spm.spatial.coreg.estimate.eoptions.tol = [0.02 0.02 0.02 0.001 0.001 0.001 0.01 0.01 0.01 0.001 0.001 0.001];
             matlabbatch{1}.spm.spatial.coreg.estimate.eoptions.fwhm = [7 7];
-
+            
+            user_fb_update({'-Coregistering struct to current head position'},0,1)
+            
             spm_jobman('run', matlabbatch);
             clear matlabbatch 
 
         end
     end
     % report back to user
-    fprintf('\nCoregistration of ROIs/Structural to current head position: DONE\n')
+    user_fb_update({'>>Coregistration of ROIs/Structural: DONE'},0,4)
 
 end
 

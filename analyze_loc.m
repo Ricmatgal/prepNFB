@@ -254,6 +254,15 @@ set(handles.uitable_cons,'Data', handles.data.contrasts);
 set(handles.eb_conName,'String', '');
 set(handles.eb_contrast,'String', '');
 
+user_fb_update({'Contrast added!';['Name: ' input{1}];['Conrast: ' input{2}]},0,2)
+
+% message = '';
+for ii = 1:size(handles.data.contrasts,1)
+    message{ii,1} = [handles.data.contrasts{ii,1} ': ' handles.data.contrasts{ii,2}];
+end
+
+user_fb_update({'All contrasts: '; message'},0, 1)
+
 guidata(hObject, handles);
 
 
@@ -326,7 +335,11 @@ function pb_run_Callback(hObject, eventdata, handles)
     end
 
     handles.data.contrasts = get(handles.uitable_cons,'Data');
-
+    
+  
+    message{1,1} = 'Initiating Analyses..';
+    
+    user_fb_update(message, 0, 1)
     analyze_loc_func(handles.subinfo, handles.data)
 
 
@@ -352,7 +365,7 @@ function pb_saveSettings_Callback(hObject, eventdata, handles)
     settings.contrasts = handles.data.contrasts;
     
     save([pwd, filesep, 'Settings', filesep, 'Settings_Analyse_Loc'], 'settings')
-    fprintf('\nSettings saved in Settings folder\n')
+    user_fb_update({'Localiser Settings saved:';[pwd, filesep, 'Settings']},0,1)
 
 
 

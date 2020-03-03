@@ -11,7 +11,13 @@ rawFormat   = 'nii';
 smoothK = [6 6 6];
 
 % import funcitonal images, call funcion:
-dicom_imp('RestingState', subID, watchFolder, projFolder, imSer, 1, 0, Sess , 15);
+user_fb_update({['0) Importing dicom...']}, 0, 1)
+import_flag = dicom_imp('RestingState', subID, watchFolder, projFolder, imSer, 1, 0, Sess , 15);
+
+if import_flag == 0
+    user_fb_update({'Dir not empty: Analyses aborted..'}, 0, 3)
+    return
+end
 
 nr_slices = 35;
 TR = 2;
@@ -24,6 +30,13 @@ if subinfo.old_struct == 1
 elseif subinfo.new_struct == 1
     steps = {'slice_timing', 'realign', 'coreg'}; %, 'coreg'
 end
+message{1,1} = 'SETTINGS';
+message{2,1} = ['Slices: ' num2str(nr_slices)];
+message{3,1} = ['TR: ' num2str(TR)];
+message{5,1} = 'Preprocessing steps: ';
+message{6,1} = steps;
+user_fb_update(message, 0, 1);
+clear message
 
 subjStructDir = [projFolder, filesep ,subID filesep, Sess, filesep, 'T1', filesep];
 
@@ -53,7 +66,7 @@ for ii = 1:length(steps)
             matlabbatch{1}.spm.temporal.st.scans = {f2}; 
 
             if isempty(f2{1})
-                fprintf('\nNo functional images loaded in: %s\n', steps{ii})
+                user_fb_update({'No functional images loaded in: '; steps{ii}},0,3)
                 return
             end
 
@@ -68,7 +81,11 @@ for ii = 1:length(steps)
             % save the batch, run it and clear it
             save([projFolder, filesep, subID, filesep, Sess, filesep,...
                 'RestingState', filesep, 'slice_timing'], 'matlabbatch');
+            
+            user_fb_update({[num2str(ii) ') Slicetime corretion...']}, 0, 1)
             spm_jobman('run', matlabbatch);
+            user_fb_update({'Completed'}, 0, 4)
+            
             clear matlabbatch
 
         case 'realign'
@@ -94,7 +111,11 @@ for ii = 1:length(steps)
             % save the batch, run it and clear it
             save([projFolder filesep subID filesep Sess, filesep,...
                 'RestingState', filesep 'realign'], 'matlabbatch')
+            
+            user_fb_update({[num2str(ii) ') Realignment...']}, 0, 1)
             spm_jobman('run', matlabbatch);
+            user_fb_update({'Completed'}, 0, 4)
+            
             clear matlabbatch
         
         % check if coregistration is added to the preprocessing steps
@@ -131,7 +152,11 @@ for ii = 1:length(steps)
             % save the batch, run it and clear it
             save([projFolder filesep subID filesep Sess, filesep,...
                 'RestingState', filesep 'coregistration'], 'matlabbatch')
+            
+            user_fb_update({[num2str(ii) ') Coregistration...']}, 0, 1)
             spm_jobman('run', matlabbatch);
+            user_fb_update({'Completed'}, 0, 4)
+
             clear matlabbatch
 
         case 'smooth'
@@ -150,7 +175,11 @@ for ii = 1:length(steps)
 
              save([projFolder filesep subID filesep Sess, filesep,...
                 'RestingState', filesep 'smoothing'], 'matlabbatch')
+            
+            user_fb_update({[num2str(ii) ') Smoothing...']}, 0, 1)
             spm_jobman('run', matlabbatch);
+            user_fb_update({'Completed'}, 0, 4)
+            
             clear matlabbatch
 
     end

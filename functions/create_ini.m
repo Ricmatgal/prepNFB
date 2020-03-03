@@ -41,7 +41,9 @@ function create_ini(subID, watchFolder, projFolder, Sess)
     fclose(tmp_fid_w);
     
     % report back to user
-    fprintf(['\nini file created for subject ' subID ' in Settings folder. Please review before NFB!\n'])
-
+    settings_dir = [projFolder, filesep, subID, filesep, Sess, filesep, 'Settings', filesep,...
+        'Subject_' subID '_' Sess];
+    user_fb_update({['.ini file created for subject ' subID]},1,1)
+    user_fb_update({'See: '; settings_dir},0,1)
 end
 

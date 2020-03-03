@@ -470,6 +470,14 @@ function cb_old_struct_Callback(hObject, eventdata, handles)
         set(handles.eb_imp_t1_2_sn, 'Enable', 'off')
     end
     
+    sessNR          = get(handles.eb_session, 'String');
+    subID           = get(handles.eb_subjID, 'String');
+    projFolder      = get(handles.eb_projectFolder, 'String');
+    getDir          = [projFolder, filesep, subID, filesep, 'Session_01', filesep, 'T1'];
+    oldStruct       = spm_select('FPList', getDir, ['^s' '.*192-01.nii']);;
+    
+    message = {['Session ' sessNR ': T1 = OLD']; oldStruct};
+    user_fb_update(message, 0, 2);
 
 function cb_new_struct_Callback(hObject, eventdata, handles)
 
@@ -479,7 +487,11 @@ function cb_new_struct_Callback(hObject, eventdata, handles)
     if get(hObject,'Value') == 1
         set(handles.eb_imp_t1_2_sn, 'Enable', 'on');
     end
-
+    
+    sessNR          = get(handles.eb_session, 'String');
+    message = {['Session ' sessNR ': T1 = NEW']; ['dcm: ' get(handles.eb_imp_t1_2_sn, 'String')]};
+    user_fb_update(message, 0, 2);
+    
 % --- Executes on button press in pb_import_t1_2.
 function pb_import_t1_2_Callback(hObject, eventdata, handles)
     

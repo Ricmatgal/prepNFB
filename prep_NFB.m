@@ -92,6 +92,7 @@ function prep_NFB_OpeningFcn(hObject, eventdata, handles, varargin)
     end
     
     set(handles.lb_feedback_window,'tag','fb_window')
+    
     % Update handles structure
     guidata(hObject, handles);
 
@@ -669,6 +670,8 @@ function pb_run_famTask_2_Callback(hObject, eventdata, handles)
 
 % --- Executes on button press in pb_quit.
 function pb_quit_Callback(hObject, eventdata, handles)
+   
+   pb_save_log_Callback(handles.pb_save_log, [], handles)
    quit_dlg()
    
 

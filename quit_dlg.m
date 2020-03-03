@@ -144,7 +144,8 @@ function pb_yes_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 clc
-fprintf('closing prepNFB tool...\n')
+user_fb_update({'Ending Session...'},1,1)
+
 close all
 
 handles.output = get(hObject,'String');
@@ -178,7 +179,7 @@ function pb_restart_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 close all
 clc
-fprintf('restarting prepNFB tool...\n')
+user_fb_update({'Restarting prepNFB tool...'},1,1)
 prep_NFB()
 
 handles.output = get(hObject,'String');

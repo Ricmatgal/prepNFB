@@ -22,7 +22,7 @@ function varargout = prep_NFB(varargin)
 
 % Edit the above text to modify the response to help prep_NFB
 
-% Last Modified by GUIDE v2.5 21-Feb-2020 21:38:41
+% Last Modified by GUIDE v2.5 03-Mar-2020 12:36:57
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -46,16 +46,14 @@ end
 
 % --- Executes just before prep_NFB is made visible.
 function prep_NFB_OpeningFcn(hObject, eventdata, handles, varargin)
-% This function has no output args, see OutputFcn.
-% hObject    handle to figure
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-% varargin   command line arguments to prep_NFB (see VARARGIN)
+    
+    % enter debug mode
+    dbstop if error
 
-handles.output = hObject;
-handles.watchFolder = '';
-handles.projFolder = '';
-addpath([pwd filesep 'functions'])
+    handles.output = hObject;
+    handles.watchFolder = '';
+    handles.projFolder = '';
+    addpath([pwd filesep 'functions'])
 
     try
         load([pwd, filesep, 'Settings', filesep, 'Settings_Main.mat']);
@@ -64,6 +62,11 @@ addpath([pwd filesep 'functions'])
             % set directories
             set(handles.eb_projectFolder, 'String', settings.projFolder);
             set(handles.eb_watchFolder, 'String', settings.watchFolder); 
+            
+            % set session, runs, and roi NRs
+            set(handles.eb_nr_sessions, 'String', settings.NRsessions);
+            set(handles.eb_nr_run, 'String', settings.NRruns);
+            set(handles.eb_nr_ROIs, 'String', settings.NRrois);
             
             % set first session settings
             set(handles.eb_imp_t1_1_sn, 'String', settings.dcm.t1_1)
@@ -98,14 +101,9 @@ addpath([pwd filesep 'functions'])
 
 % --- Outputs from this function are returned to the command line.
 function varargout = prep_NFB_OutputFcn(hObject, eventdata, handles) 
-% varargout  cell array for returning output args (see VARARGOUT);
-% hObject    handle to figure
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 
-% Get default command line output from handles structure
-varargout{1} = handles.output;
-assignin('base', 'outp', handles);
+    varargout{1} = handles.output;
+    assignin('base', 'outp', handles);
 % assignin('base', 'user_fb', handles.user_fb);
 
 % ================================================================
@@ -114,120 +112,161 @@ assignin('base', 'outp', handles);
 
 % --- Executes during object creation, after setting all properties.
 function eb_subjID_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to eb_subjID (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
 
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
 
 
 function eb_subjID_Callback(hObject, eventdata, handles)
-% hObject    handle to eb_subjID (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of eb_subjID as text
-%        str2double(get(hObject,'String')) returns contents of eb_subjID as a double
-handles.subID = get(hObject,'String');
-message = {['Subject: ' handles.subID]};
-user_fb_update(message,1, 1);
-guidata(hObject, handles);
+    handles.subID = get(hObject,'String');
+    message = {['Subject: ' handles.subID]};
+    user_fb_update(message,1, 1);
+    guidata(hObject, handles);
 
+% edit button session nr    
+function eb_nr_sessions_Callback(hObject, eventdata, handles)
+
+% edit button session nr - creation func
+function eb_nr_sessions_CreateFcn(hObject, eventdata, handles)
+
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+
+% edit button run nr
+function eb_nr_run_Callback(hObject, eventdata, handles)
+
+% edit button run nr - creation func
+function eb_nr_run_CreateFcn(hObject, eventdata, handles)
+
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+
+% edit button ROI nr
+function eb_nr_ROIs_Callback(hObject, eventdata, handles)
+
+
+% edit button run nr - creation function
+function eb_nr_ROIs_CreateFcn(hObject, eventdata, handles)
+
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end    
+    
 
 % --- Executes on button press in pb_initialize.
 function pb_initialize_Callback(hObject, eventdata, handles)
-% hObject    handle to pb_initialize (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-subID       = get(handles.eb_subjID, 'String');
-subFolder   = get(handles.eb_projectFolder,'String');
-mkSubDir(subID, subFolder)
 
-guidata(hObject, handles);
+    info.subID      = get(handles.eb_subjID, 'String');
+    info.projFolder = get(handles.eb_projectFolder,'String');
+    info.session    = get(handles.eb_nr_sessions,'String');
+    info.runs       = get(handles.eb_nr_run,'String');
+    info.rois       = get(handles.eb_nr_ROIs,'String');
+    
+    mkSubDir(info)
+
+    guidata(hObject, handles);
+    
+
+% --- Executes on button press in pb_open_subFolder.
+function pb_open_subFolder_Callback(hObject, eventdata, handles)
+    subID      = get(handles.eb_subjID, 'String');
+    projFolder = get(handles.eb_projectFolder,'String');
+
+    dir2open = [projFolder, filesep, subID];
+    
+    if isdir(dir2open)
+        winopen(dir2open);
+        user_fb_update({'Subject folder open in Windows'},1,1)
+    else
+        user_fb_update({dir2open; 'is not a directory!'},0,2)       
+    end
+
 
 function eb_projectFolder_Callback(hObject, eventdata, handles)
-% hObject    handle to eb_projectFolder (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of eb_projectFolder as text
-%        str2double(get(hObject,'String')) returns contents of eb_projectFolder as a double
-handles.projFolder = get(hObject,'String');
+    handles.projFolder = get(hObject,'String');
 
-message = {['Project Folder updated: '  get(hObject,'String')]};
-user_fb_update(message, 0, 2);
+    message = {['Project Folder updated: '  get(hObject,'String')]};
+    user_fb_update(message, 0, 2);
 
-guidata(hObject, handles);
+    guidata(hObject, handles);
 
 % --- Executes during object creation, after setting all properties.
 function eb_projectFolder_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to eb_projectFolder (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
 
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
 
 
 % --- Executes on button press in pb_browse_proj.
 function pb_browse_proj_Callback(hObject, eventdata, handles)
-% hObject    handle to pb_browse_proj (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-projFolder = uigetdir();
-handles.projFolder = projFolder;
-set(handles.eb_projectFolder, 'String', handles.projFolder);
-    
 
-message = {['Project Folder updated: '  handles.projFolder]};
-user_fb_update(message, 0, 2);
+    projFolder = uigetdir();
+    handles.projFolder = projFolder;
+    set(handles.eb_projectFolder, 'String', handles.projFolder);
 
-guidata(hObject, handles);
+
+    message = {['Project Folder updated: '  handles.projFolder]};
+    user_fb_update(message, 0, 2);
+
+    guidata(hObject, handles);
 
 
 function eb_watchFolder_Callback(hObject, eventdata, handles)
-% hObject    handle to eb_watchFolder (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 
-message = {['Watch Folder updated: '  get(hObject,'String')]};
-user_fb_update(message, 0, 2);
+    message = {['Watch Folder updated: '  get(hObject,'String')]};
+    user_fb_update(message, 0, 2);
 
-handles.watchFolder = get(hObject,'String');
-guidata(hObject, handles);
+    handles.watchFolder = get(hObject,'String');
+    guidata(hObject, handles);
 
 % --- Executes during object creation, after setting all properties.
 function eb_watchFolder_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to eb_watchFolder (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
 
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
 
 % --- Executes on button press in pb_browse_watch.
 function pb_browse_watch_Callback(hObject, eventdata, handles)
-% hObject    handle to pb_browse_watch (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-watchFolder         = uigetdir('D:\TBV_input');
-handles.watchFolder = watchFolder;
-set(handles.eb_watchFolder, 'String', handles.watchFolder);
 
-message = {['Watch Folder updated: '  handles.watchFolder]};
-user_fb_update(message, 0, 2);
+    watchFolder         = uigetdir('D:\TBV_input');
+    handles.watchFolder = watchFolder;
+    set(handles.eb_watchFolder, 'String', handles.watchFolder);
 
-guidata(hObject, handles);
+    message = {['Watch Folder updated: '  handles.watchFolder]};
+    user_fb_update(message, 0, 2);
+
+    guidata(hObject, handles);
+    
+% --- Executes on button press in pb_open_projFolder.
+function pb_open_projFolder_Callback(hObject, eventdata, handles)
+
+    dir2open = get(handles.eb_projectFolder, 'String');
+
+    if isdir(dir2open)
+        winopen(dir2open);
+        user_fb_update({'Project folder open in Windows'},1,1)
+    else
+        user_fb_update({dir2open; 'is not a directory!'},0,2)       
+    end
+
+% --- Executes on button press in pb_open_watchFolder.
+function pb_open_watchFolder_Callback(hObject, eventdata, handles)
+    
+    dir2open = get(handles.eb_watchFolder, 'String');
+    
+    if isdir(dir2open)
+        winopen(dir2open);
+        user_fb_update({'Watch folder open in Windows'},1,1)
+    else
+        user_fb_update({dir2open; 'is not a directory!'},0,2)       
+    end
 
 % ================================================================
 %% ========================== Session 1 ==========================
@@ -268,12 +307,7 @@ function eb_imp_t1_1_sn_Callback(hObject, eventdata, handles)
 
 % --- Executes during object creation, after setting all properties.
 function eb_imp_t1_1_sn_CreateFcn(hObject, eventdata, handles)
-    % hObject    handle to eb_imp_t1_1_sn (see GCBO)
-    % eventdata  reserved - to be defined in a future version of MATLAB
-    % handles    empty - handles not created until after all CreateFcns called
 
-    % Hint: edit controls usually have a white background on Windows.
-    %       See ISPC and COMPUTER.
     if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
         set(hObject,'BackgroundColor','white');
     end
@@ -315,8 +349,6 @@ function eb_analyze_loc_sn_Callback(hObject, eventdata, handles)
 % --- Executes during object creation, after setting all properties.
 function eb_analyze_loc_sn_CreateFcn(hObject, eventdata, handles)
 
-    % Hint: edit controls usually have a white background on Windows.
-    %       See ISPC and COMPUTER.
     if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
         set(hObject,'BackgroundColor','white');
     end
@@ -339,29 +371,20 @@ function pb_ROI_Callback(hObject, eventdata, handles)
 
 % --- Executes on button press in pb_analyze_rs_1.
 function pb_analyze_rs_1_Callback(hObject, eventdata, handles)
+
     % %     fprintf('\nAnalyzing first images of resting state to get EPI template...')
     % %     analyze_rs(handles.subID, handles.watchFolder, handles.projFolder, handles.analyze_rs_1_sn,...
     % %         'Session_01');
      user_fb_update({'Button deactivated!'},1,2)
 
 function eb_analyze_rs_1_sn_Callback(hObject, eventdata, handles)
-    % hObject    handle to eb_analyze_rs_1_sn (see GCBO)
-    % eventdata  reserved - to be defined in a future version of MATLAB
-    % handles    structure with handles and user data (see GUIDATA)
 
-    % Hints: get(hObject,'String') returns contents of eb_analyze_rs_1_sn as text
-    %        str2double(get(hObject,'String')) returns contents of eb_analyze_rs_1_sn as a double
     handles.analyze_rs_1_sn = get(hObject,'String');
     guidata(hObject, handles);
 
 % --- Executes during object creation, after setting all properties.
 function eb_analyze_rs_1_sn_CreateFcn(hObject, eventdata, handles)
-    % hObject    handle to eb_analyze_rs_1_sn (see GCBO)
-    % eventdata  reserved - to be defined in a future version of MATLAB
-    % handles    empty - handles not created until after all CreateFcns called
 
-    % Hint: edit controls usually have a white background on Windows.
-    %       See ISPC and COMPUTER.
     if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
         set(hObject,'BackgroundColor','white');
     end
@@ -380,9 +403,6 @@ function pb_create_ini_1_Callback(hObject, eventdata, handles)
     
 % --- Executes on button press in cb_stimSet1_1.
 function cb_stimSet1_1_Callback(hObject, eventdata, handles)
-    % hObject    handle to cb_stimSet1_1 (see GCBO)
-    % eventdata  reserved - to be defined in a future version of MATLAB
-    % handles    structure with handles and user data (see GUIDATA)
     
     if get(handles.cb_stimSet2_1,'Value') == 1
         set(handles.cb_stimSet2_1,'Value', 0);
@@ -393,9 +413,6 @@ function cb_stimSet1_1_Callback(hObject, eventdata, handles)
 
 % --- Executes on button press in cb_stimSet2_1.
 function cb_stimSet2_1_Callback(hObject, eventdata, handles)
-    % hObject    handle to cb_stimSet2_1 (see GCBO)
-    % eventdata  reserved - to be defined in a future version of MATLAB
-    % handles    structure with handles and user data (see GUIDATA)
 
 	if get(handles.cb_stimSet1_1,'Value') == 1
         set(handles.cb_stimSet1_1,'Value', 0);
@@ -431,32 +448,19 @@ function pb_run_famTask_1_Callback(hObject, eventdata, handles)
 % ================================================================
 
 function eb_session_Callback(hObject, eventdata, handles)
-% hObject    handle to eb_session (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of eb_session as text
-%        str2double(get(hObject,'String')) returns contents of eb_session as a double
     handles.sessionNR = get(hObject,'String');
     guidata(hObject, handles);
 
 % --- Executes during object creation, after setting all properties.
 function eb_session_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to eb_session (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
 
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
 
 % --- Executes on button press in cb_old_struct.
 function cb_old_struct_Callback(hObject, eventdata, handles)
-% hObject    handle to cb_old_struct (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 
     if get(handles.cb_new_struct,'Value') == 1
         set(handles.cb_new_struct,'Value', 0);
@@ -468,9 +472,7 @@ function cb_old_struct_Callback(hObject, eventdata, handles)
     
 
 function cb_new_struct_Callback(hObject, eventdata, handles)
-% hObject    handle to cb_new_struct (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+
     if get(handles.cb_old_struct,'Value') == 1
         set(handles.cb_old_struct,'Value', 0);
     end
@@ -593,9 +595,6 @@ function pb_coreg_rois_Callback(hObject, eventdata, handles)
         Coreg_ROIs_gui(subinfo);
     end
     
-  
-
-
 % --- Executes on button press in pb_coreg_results.
 function pb_coreg_results_Callback(hObject, eventdata, handles)
     subinfo.subID       = get(handles.eb_subjID,'String');
@@ -662,12 +661,13 @@ function pb_quit_Callback(hObject, eventdata, handles)
 
 % --- Executes on button press in pb_save_settings.
 function pb_save_settings_Callback(hObject, eventdata, handles)
-% hObject    handle to pb_save_settings (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+
     settings.projFolder       = get(handles.eb_projectFolder, 'String');
     settings.watchFolder      = get(handles.eb_watchFolder, 'String');
-    
+    settings.NRsessions       = get(handles.eb_nr_sessions,'String'); 
+    settings.NRruns           = get(handles.eb_nr_run,'String');
+    settings.NRrois           = get(handles.eb_nr_ROIs,'String');
+
     settings.dcm.t1_1         = get(handles.eb_imp_t1_1_sn, 'String');
     settings.dcm.loc          = get(handles.eb_analyze_loc_sn, 'String');
     settings.dcm.rs_1         = get(handles.eb_analyze_rs_1_sn, 'String');
@@ -680,124 +680,49 @@ function pb_save_settings_Callback(hObject, eventdata, handles)
     settings.dcm.t1_2_flag    = get(handles.eb_imp_t1_2_sn, 'Enable');
     
     save([pwd, filesep, 'Settings', filesep, 'Settings_Main'], 'settings')
-    user_fb_update({'Settings main window saved in:'; [pwd, filesep, 'Settings', filesep, 'Settings_Main']},1,1)
-
-function eb_nr_sessions_Callback(hObject, eventdata, handles)
-% hObject    handle to eb_nr_sessions (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of eb_nr_sessions as text
-%        str2double(get(hObject,'String')) returns contents of eb_nr_sessions as a double
-
-
-% --- Executes during object creation, after setting all properties.
-function eb_nr_sessions_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to eb_nr_sessions (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
-function edit19_Callback(hObject, eventdata, handles)
-% hObject    handle to edit19 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of edit19 as text
-%        str2double(get(hObject,'String')) returns contents of edit19 as a double
-
-
-% --- Executes during object creation, after setting all properties.
-function edit19_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit19 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
-
-function edit20_Callback(hObject, eventdata, handles)
-% hObject    handle to edit20 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of edit20 as text
-%        str2double(get(hObject,'String')) returns contents of edit20 as a double
-
-
-% --- Executes during object creation, after setting all properties.
-function edit20_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit20 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
+    user_fb_update({'Settings main window saved'},1,1)
 
 
 % --- Executes on selection change in lb_feedback_window.
 function lb_feedback_window_Callback(hObject, eventdata, handles)
-% hObject    handle to lb_feedback_window (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 
-% Hints: contents = cellstr(get(hObject,'String')) returns lb_feedback_window contents as cell array
-%        contents{get(hObject,'Value')} returns selected item from lb_feedback_window
 
 % --- Executes during object creation, after setting all properties.
 function lb_feedback_window_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to lb_feedback_window (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-% Hint: listbox controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','black');
-end
 
-pfolder = 'None';
-wfolder = 'None';
-try 
-    load([pwd, filesep, 'Settings', filesep, 'Settings_Main.mat']);
-    pfolder = settings.projFolder;
-    wfolder = settings.watchFolder; 
-catch
-    
-end
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','black');
+    end
 
-% opening message log file
-handles.user_fb{1,1} = 'prepNFB log';
-handles.user_fb{2,1} = datestr(datetime);
-handles.user_fb{3,1} = '---------------------------------';
-handles.user_fb{4,1} = '';
-handles.user_fb{5,1} = '- Enter Subject ID';
-handles.user_fb{6,1} = '- Double check watch folder!';
-handles.user_fb{7,1} = '';
-handles.user_fb{9,1} = '=================================';
-handles.user_fb{10,1} = '';
-handles.user_fb{11,1} = ['Project Folder: ' pfolder];
-handles.user_fb{12,1} = ['Watch Folder: ' wfolder];
-handles.user_fb{13,1} = '';
-% handles.user_fb = {'prepNFB log';datestr(datetime);'---------------------------------';...
-%     ''; '- Enter Subject ID';'- Double check watch folder!';'';'=================================';''};
+    pfolder = 'None';
+    wfolder = 'None';
+    try 
+        load([pwd, filesep, 'Settings', filesep, 'Settings_Main.mat']);
+        pfolder = settings.projFolder;
+        wfolder = settings.watchFolder; 
+    catch
 
-set(hObject, 'String', handles.user_fb);
+    end
 
-assignin('base', 'user_fb', handles.user_fb);
+    % opening message log file
+    handles.user_fb{1,1} = 'prepNFB log';
+    handles.user_fb{2,1} = datestr(datetime);
+    handles.user_fb{3,1} = '---------------------------------';
+    handles.user_fb{4,1} = '';
+    handles.user_fb{5,1} = '- Enter Subject ID';
+    handles.user_fb{6,1} = '- Double check watch folder!';
+    handles.user_fb{7,1} = '';
+    handles.user_fb{9,1} = '=================================';
+    handles.user_fb{10,1} = '';
+    handles.user_fb{11,1} = ['Project Folder: ' pfolder];
+    handles.user_fb{12,1} = ['Watch Folder: ' wfolder];
+    handles.user_fb{13,1} = '';
+    % handles.user_fb = {'prepNFB log';datestr(datetime);'---------------------------------';...
+    %     ''; '- Enter Subject ID';'- Double check watch folder!';'';'=================================';''};
+
+    set(hObject, 'String', handles.user_fb);
+
+    assignin('base', 'user_fb', handles.user_fb);
 
 
 % --- Executes on button press in pb_save_log.
@@ -827,7 +752,3 @@ function pb_save_log_Callback(hObject, eventdata, handles)
         user_fb_update({'cant save logfile, directory invalid'},1, 3);
     end
         
-    
-    
-%     writecell(user_fb,[save_dir, filesep, 'logfile_' datestr(now,'dd-mm-yyyy HH-MM') '.txt'])
-    

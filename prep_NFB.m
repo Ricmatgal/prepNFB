@@ -470,6 +470,7 @@ function cb_old_struct_Callback(hObject, eventdata, handles)
         set(handles.eb_imp_t1_2_sn, 'Enable', 'off')
     end
     
+    % log changes and report to user
     sessNR          = get(handles.eb_session, 'String');
     subID           = get(handles.eb_subjID, 'String');
     projFolder      = get(handles.eb_projectFolder, 'String');
@@ -488,6 +489,7 @@ function cb_new_struct_Callback(hObject, eventdata, handles)
         set(handles.eb_imp_t1_2_sn, 'Enable', 'on');
     end
     
+    % log changes and report to user
     sessNR          = get(handles.eb_session, 'String');
     message = {['Session ' sessNR ': T1 = NEW']; ['dcm: ' get(handles.eb_imp_t1_2_sn, 'String')]};
     user_fb_update(message, 0, 2);

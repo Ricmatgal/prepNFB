@@ -118,7 +118,7 @@ if f_flag
 
         
         spm_jobman('run', matlabbatch);
-        user_fb_update({'Dicom import completed'}, 0, 1)
+        user_fb_update({'Dicom import completed'}, 0, 4)
         clear matlabbatch
         
      elseif isempty(f1)

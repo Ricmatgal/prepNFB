@@ -33,4 +33,4 @@ function write_ROIs(subinfo, hROI)
         user_fb_update({['ROI: ' tmpName{1} ' written']},0,2)
     end
     
-    user_fb_update({'DONE! All ROIs written to final OpenNFT directories'},0,1)
+    user_fb_update({'DONE! All ROIs written to final OpenNFT directories'},0,4)

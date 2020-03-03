@@ -53,7 +53,7 @@ function coreg_ROIs(subinfo, coreg)
         
         user_fb_update({'>>Coregistration<<'}, 0, 1)      
         spm_jobman('run', matlabbatch);       
-        user_fb_update({'Completed...'}, 0, 1)
+        user_fb_update({'Completed...'}, 0, 4)
         
         clear matlabbatch
 
@@ -122,7 +122,7 @@ function coreg_ROIs(subinfo, coreg)
         
         user_fb_update({'>>Coregistration<<'},0,1)   
         spm_jobman('run', matlabbatch);
-        user_fb_update({'Completed...'}, 0, 1)
+        user_fb_update({'Completed...'}, 0, 4)
         
         clear matlabbatch
 
@@ -177,7 +177,7 @@ function coreg_ROIs(subinfo, coreg)
         end
     end
     % report back to user
-    user_fb_update({'>>Coregistration of ROIs/Structural: DONE'},0,1)
+    user_fb_update({'>>Coregistration of ROIs/Structural: DONE'},0,4)
 
 end
 

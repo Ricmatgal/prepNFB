@@ -7,6 +7,8 @@ function user_fb_update(message, main_module_flag,color_flag)
         color = [255 140 0];    % orange: changes made by user
     elseif color_flag == 3
         color = [255 0 0];      % red: error messages
+    elseif color_flag == 4
+        color = [34 139 34];      % green: completion messages
     end
     
     pre = '<HTML><FONT color="';
@@ -55,16 +57,15 @@ function user_fb_update(message, main_module_flag,color_flag)
         user_fb = [user_fb; message_b; dashes;  '  '];
     end
     
-%     user_fb = [user_fb; '>>'];
-    
     handles.lb_feedback_window=findall(0,'tag','fb_window');
     set(handles.lb_feedback_window, 'String', user_fb);
     
     set(handles.lb_feedback_window,'ListboxTop',size(get(handles.lb_feedback_window,'String'),1))
     set(handles.lb_feedback_window,'Value', size(get(handles.lb_feedback_window,'String'),1))
-%     set(handles.lb_feedback_window,'Value', [])
     
+    % prevent queing
     drawnow()
+    
     assignin('base', 'user_fb', user_fb);
 end
 

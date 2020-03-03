@@ -78,7 +78,7 @@ if preprocFlag == 1
                 import_flag = dicom_imp('Localizer', subID, watchFolder, projFolder, dcmSeries, 1, 0, Sess, expNrIms);
                 
                 if import_flag == 0
-                    user_fb_update({'Dir not empty, analysis aborted...'},0,3)
+                    user_fb_update({'Analysis aborted...'},0,3)
                     return
                 end
                 
@@ -119,7 +119,7 @@ if preprocFlag == 1
                 save([projFolder filesep subID filesep 'Localizer' filesep 'slice_timing'], 'matlabbatch');
                 user_fb_update({[num2str(ii) ') Slicetime corretion...']}, 0, 1)
                 spm_jobman('run', matlabbatch);
-                user_fb_update({'Completed'}, 0, 1)
+                user_fb_update({'Completed'}, 0, 4)
                 clear matlabbatch
 
             case 'Realign'
@@ -147,7 +147,7 @@ if preprocFlag == 1
                 
                 user_fb_update({[num2str(ii) ') Realignment...']}, 0, 1)
                 spm_jobman('run', matlabbatch);
-                user_fb_update({'Completed'}, 0, 1)
+                user_fb_update({'Completed'}, 0, 4)
                 
                 clear matlabbatch
 
@@ -182,7 +182,7 @@ if preprocFlag == 1
                 
                 user_fb_update({[num2str(ii) ') Coregistration...']}, 0, 1)
                 spm_jobman('run', matlabbatch);
-                user_fb_update({'Completed'}, 0, 1)
+                user_fb_update({'Completed'}, 0, 4)
                 
                 clear matlabbatch
                 
@@ -211,7 +211,7 @@ if preprocFlag == 1
                 
                 user_fb_update({[num2str(ii) ') Smoothing...']}, 0, 1)
                 spm_jobman('run', matlabbatch);
-                user_fb_update({'Completed'}, 0, 1)
+                user_fb_update({'Completed'}, 0, 4)
                 
                 clear matlabbatch
                
@@ -275,7 +275,7 @@ if stats == 1
     
     user_fb_update({[num2str(6) ') Parameter estimation & Contrasts...']}, 0, 1)
     spm_jobman('run',matlabbatch); 
-    user_fb_update({'Completed'}, 0, 1)
+    user_fb_update({'Completed'}, 0, 4)
     
     clear matlabbatch 
 

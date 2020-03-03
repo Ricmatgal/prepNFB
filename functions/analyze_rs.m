@@ -84,7 +84,7 @@ for ii = 1:length(steps)
             
             user_fb_update({[num2str(ii) ') Slicetime corretion...']}, 0, 1)
             spm_jobman('run', matlabbatch);
-            user_fb_update({'Completed'}, 0, 1)
+            user_fb_update({'Completed'}, 0, 4)
             
             clear matlabbatch
 
@@ -114,7 +114,7 @@ for ii = 1:length(steps)
             
             user_fb_update({[num2str(ii) ') Realignment...']}, 0, 1)
             spm_jobman('run', matlabbatch);
-            user_fb_update({'Completed'}, 0, 1)
+            user_fb_update({'Completed'}, 0, 4)
             
             clear matlabbatch
         
@@ -155,7 +155,7 @@ for ii = 1:length(steps)
             
             user_fb_update({[num2str(ii) ') Coregistration...']}, 0, 1)
             spm_jobman('run', matlabbatch);
-            user_fb_update({'Completed'}, 0, 1)
+            user_fb_update({'Completed'}, 0, 4)
 
             clear matlabbatch
 
@@ -178,7 +178,7 @@ for ii = 1:length(steps)
             
             user_fb_update({[num2str(ii) ') Smoothing...']}, 0, 1)
             spm_jobman('run', matlabbatch);
-            user_fb_update({'Completed'}, 0, 1)
+            user_fb_update({'Completed'}, 0, 4)
             
             clear matlabbatch
 

@@ -37,7 +37,7 @@ if s_flag
         user_fb_update({'Importing Filenames:'; ffn(1,:);ffn(2,:);ffn(3,:);'.';'.';ffn(end-1,:);ffn(end,:)},0,1)        
 
         spm_jobman('run', matlabbatch);
-        user_fb_update({'Dicom import completed'}, 0, 1)
+        user_fb_update({'Dicom import completed'}, 0, 4)
         clear matlabbatch
         
         % copy past structural to session 2 as well

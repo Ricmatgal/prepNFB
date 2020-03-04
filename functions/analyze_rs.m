@@ -54,7 +54,9 @@ Finter = spm('CreateIntWin','off');
 Fgraph = spm_figure('Create','Graphics','Graphics','off');
 set([Finter,Fgraph],'Visible','on');
 for ii = 1:length(steps)
-
+    
+    start = GetSecs;
+    
     switch steps{ii}
 
         case 'slice_timing'
@@ -83,9 +85,14 @@ for ii = 1:length(steps)
                 'RestingState', filesep, 'slice_timing'], 'matlabbatch');
             
             user_fb_update({[num2str(ii) ') Slicetime corretion...']}, 0, 1)
-            spm_jobman('run', matlabbatch);
-            user_fb_update({'Completed'}, 0, 4)
-            
+            tic
+                
+            spm_jobman('run', matlabbatch); 
+
+            tEnd = toc;
+            time_taken = sprintf('%d min %0.f sec', floor(tEnd/60), round(rem(tEnd,60)));
+            user_fb_update({['Completed in: ' time_taken]}, 0, 4)
+
             clear matlabbatch
 
         case 'realign'
@@ -113,8 +120,13 @@ for ii = 1:length(steps)
                 'RestingState', filesep 'realign'], 'matlabbatch')
             
             user_fb_update({[num2str(ii) ') Realignment...']}, 0, 1)
-            spm_jobman('run', matlabbatch);
-            user_fb_update({'Completed'}, 0, 4)
+            tic
+                
+            spm_jobman('run', matlabbatch); 
+
+            tEnd = toc;
+            time_taken = sprintf('%d min %0.f sec', floor(tEnd/60), round(rem(tEnd,60)));
+            user_fb_update({['Completed in: ' time_taken]}, 0, 4)
             
             clear matlabbatch
         
@@ -154,9 +166,13 @@ for ii = 1:length(steps)
                 'RestingState', filesep 'coregistration'], 'matlabbatch')
             
             user_fb_update({[num2str(ii) ') Coregistration...']}, 0, 1)
-            spm_jobman('run', matlabbatch);
-            user_fb_update({'Completed'}, 0, 4)
+            tic
+                
+            spm_jobman('run', matlabbatch); 
 
+            tEnd = toc;
+            time_taken = sprintf('%d min %0.f sec', floor(tEnd/60), round(rem(tEnd,60)));
+            user_fb_update({['Completed in: ' time_taken]}, 0, 4)
             clear matlabbatch
 
         case 'smooth'
@@ -177,8 +193,13 @@ for ii = 1:length(steps)
                 'RestingState', filesep 'smoothing'], 'matlabbatch')
             
             user_fb_update({[num2str(ii) ') Smoothing...']}, 0, 1)
-            spm_jobman('run', matlabbatch);
-            user_fb_update({'Completed'}, 0, 4)
+            tic
+                
+            spm_jobman('run', matlabbatch); 
+
+            tEnd = toc;
+            time_taken = sprintf('%d min %0.f sec', floor(tEnd/60), round(rem(tEnd,60)));
+            user_fb_update({['Completed in: ' time_taken]}, 0, 4)
             
             clear matlabbatch
 
@@ -187,5 +208,10 @@ end
 
 mean_image      = spm_select('List', funcDir, ['^mean' '.*\.' rawFormat '$']);
 copyfile([funcDir, filesep, mean_image], [templDir, filesep, mean_image])
+
+einde = GetSecs;
+
+time_taken = sprintf('%d min %0.f sec', floor((einde-start)/60), round(rem((einde-start),60)));
+user_fb_update({['Analyses completed in: ' time_taken]}, 0, 1)
 
 end

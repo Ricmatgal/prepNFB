@@ -92,7 +92,7 @@ function [roiFinal] = show_ROIs(subinfo, hROI)
             rois_new{ii}(topVox{ii}) = 1;
             
             % report final roi size back to user command window           
-            user_fb_update({'Final ROI size: '; [hROI.ROI{ii}.mskName ': ', num2str(numel(topVox{ii}))]},0,2)
+            user_fb_update({['Final ROI size: ' hROI.ROI{ii}.mskName ': ', num2str(numel(topVox{ii}))]},0,2)
         end
     end
     

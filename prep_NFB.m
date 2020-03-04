@@ -91,7 +91,14 @@ function prep_NFB_OpeningFcn(hObject, eventdata, handles, varargin)
          user_fb_update({'No Settings file found. Fill out the parameters and save'},0, 3)
     end
     
-    set(handles.lb_feedback_window,'tag','fb_window')
+    set(handles.lb_feedback_window,'tag','fb_window') 
+    
+    % adding an image to axes (first: add axes object to the main gui)
+%     axes(handles.axes1)
+%     matlabImage = imread([pwd, filesep, 'Others', filesep, 'Brain_edited-removebg-preview.png']);
+%     image(matlabImage)
+%     axis off
+%     axis image
     
     % Update handles structure
     guidata(hObject, handles);
@@ -650,14 +657,16 @@ function cb_stimSet2_2_Callback(hObject, eventdata, handles)
 % --- Executes on button press in pb_task_param_2.
 function pb_task_param_2_Callback(hObject, eventdata, handles)
     % create familiarization task parameters
-    subID       = get(handles.eb_subjID,'String');
-    projFolder  = get(handles.eb_projectFolder, 'String');
+    subID           = get(handles.eb_subjID,'String');
+    projFolder      = get(handles.eb_projectFolder, 'String');
+    sessNR          = get(handles.eb_session,'String');
     
-    creat_fam_param(subID, projFolder, 'Session_02')
+    user_fb_update({'Creating Task Parameters'},1,1)
+    
+    creat_fam_param(subID, projFolder, ['Session_0' sessNR])
     
     % create task parameters 
-    user_fb_update({'Creating Task Parameters'},1,1)
-    create_task_param(subID, projFolder, 'Session_02')
+    create_task_param(subID, projFolder, ['Session_0' sessNR])
 
 % --- Executes on button press in pb_run_famTask_2.
 function pb_run_famTask_2_Callback(hObject, eventdata, handles)

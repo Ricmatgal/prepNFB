@@ -122,5 +122,5 @@ function create_task_param(subID, projFolder, Sess)
         filesep, 'stimParams', filesep, 'NFB_task_param_' subID '_' Sess]);
     
     % report back to user
-    user_fb_update({'NFB task stimuli and parameters: SAVED'},0,4)
+    user_fb_update({'NFB task stimuli and parameters: SAVED'},0,1)
 end

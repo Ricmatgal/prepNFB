@@ -24,7 +24,6 @@ smoothK     = repmat(data.smoothK,1,3);
 % voxelRes    = [2 2 2];
 
 % set the preprocessing steps
-% {'slice_timing', 'realign', 'coreg', 'smooth'};
 steps = data.steps; 
 stepNames = fieldnames(steps);
 stepFlags = cell2mat(struct2cell(steps));
@@ -65,7 +64,9 @@ Finter = spm('CreateIntWin','off');
 Fgraph = spm_figure('Create','Graphics','Graphics','off');
 set([Finter,Fgraph],'Visible','on');%Fmenu,
 if preprocFlag == 1
-
+    
+    start = GetSecs;
+    
     for ii = 1:numel(stepNames)
 
         switch stepNames{ii}
@@ -118,8 +119,14 @@ if preprocFlag == 1
                 % save the batch, run it and clear it
                 save([projFolder filesep subID filesep 'Localizer' filesep 'slice_timing'], 'matlabbatch');
                 user_fb_update({[num2str(ii) ') Slicetime corretion...']}, 0, 1)
-                spm_jobman('run', matlabbatch);
-                user_fb_update({'Completed'}, 0, 4)
+                tic
+                
+                spm_jobman('run', matlabbatch); 
+                
+                tEnd = toc;
+                time_taken = sprintf('%d min %0.f sec', floor(tEnd/60), round(rem(tEnd,60)));
+                user_fb_update({['Completed in: ' time_taken]}, 0, 4)
+                
                 clear matlabbatch
 
             case 'Realign'
@@ -146,8 +153,13 @@ if preprocFlag == 1
                 save([projFolder, filesep, subID, filesep, 'Localizer', filesep, 'realign'], 'matlabbatch')
                 
                 user_fb_update({[num2str(ii) ') Realignment...']}, 0, 1)
-                spm_jobman('run', matlabbatch);
-                user_fb_update({'Completed'}, 0, 4)
+                tic
+                
+                spm_jobman('run', matlabbatch); 
+                
+                tEnd = toc;
+                time_taken = sprintf('%d min %0.f sec', floor(tEnd/60), round(rem(tEnd,60)));
+                user_fb_update({['Completed in: ' time_taken]}, 0, 4)
                 
                 clear matlabbatch
 
@@ -181,8 +193,13 @@ if preprocFlag == 1
                 save([projFolder filesep subID filesep 'Localizer' filesep 'coregistration'], 'matlabbatch')
                 
                 user_fb_update({[num2str(ii) ') Coregistration...']}, 0, 1)
-                spm_jobman('run', matlabbatch);
-                user_fb_update({'Completed'}, 0, 4)
+                tic
+                
+                spm_jobman('run', matlabbatch); 
+                
+                tEnd = toc;
+                time_taken = sprintf('%d min %0.f sec', floor(tEnd/60), round(rem(tEnd,60)));
+                user_fb_update({['Completed in: ' time_taken]}, 0, 4)
                 
                 clear matlabbatch
                 
@@ -210,8 +227,13 @@ if preprocFlag == 1
                 save([projFolder filesep subID filesep 'Localizer' filesep 'smooth_test'], 'matlabbatch')
                 
                 user_fb_update({[num2str(ii) ') Smoothing...']}, 0, 1)
-                spm_jobman('run', matlabbatch);
-                user_fb_update({'Completed'}, 0, 4)
+                tic
+                
+                spm_jobman('run', matlabbatch); 
+                
+                tEnd = toc;
+                time_taken = sprintf('%d min %0.f sec', floor(tEnd/60), round(rem(tEnd,60)));
+                user_fb_update({['Completed in: ' time_taken]}, 0, 4)
                 
                 clear matlabbatch
                
@@ -274,11 +296,21 @@ if stats == 1
     end
     
     user_fb_update({[num2str(6) ') Parameter estimation & Contrasts...']}, 0, 1)
-    spm_jobman('run',matlabbatch); 
-    user_fb_update({'Completed'}, 0, 4)
-    
+    tic
+
+    spm_jobman('run', matlabbatch); 
+
+    tEnd = toc;
+    time_taken = sprintf('%d min %0.f sec', floor(tEnd/60), round(rem(tEnd,60)));
+    user_fb_update({['Completed in: ' time_taken]}, 0, 4)
+                
     clear matlabbatch 
 
 end
+
+einde = GetSecs;
+
+time_taken = sprintf('%d min %0.f sec', floor((einde-start)/60), round(rem((einde-start),60)));
+user_fb_update({['Analyses completed in: ' time_taken]}, 0, 1)
 
 end

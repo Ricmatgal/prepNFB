@@ -26,7 +26,7 @@ function [roiFinal] = show_ROIs(subinfo, hROI)
         tValMasks{ii}   = tmaps{ii}(voxIDs{ii});            % t values of clust voxels
         voxCount(ii)    = numel(voxIDs{ii});                % number of voxels in clust
         
-        user_fb_update({['ROI ', num2str(ii), ' cluster has: ', num2str(voxCount(ii)), ' voxels']},0,2);
+        user_fb_update({['ROI ', num2str(ii), ' cluster has: ', num2str(voxCount(ii)), ' voxels']},0,1);
     end   
 
      % set final roi size.
@@ -34,13 +34,14 @@ function [roiFinal] = show_ROIs(subinfo, hROI)
         % first see if both rois have a voxel count higher than minimum. If
         % so set roisize to user input roiSize
         user_fb_update({['All voxel counts are at or supersede threshhold of: ' num2str(roiSize)];...
-           'We will trim them to max, selecting the ones with highest T values'},0,2);
+           'We will trim them to max, selecting the ones with highest T values'},0,1);
         C = roiSize;
      else
          % In any other case, set the final roisize to size of the smallers
          % mask
          [minCount, minROI] = min(voxCount);
-         user_fb_update({[hROI.ROI{minROI}.mskName ' is smallest, we will trim the others to the same size']},0,2)
+         [maxCount, maxROI] = max(voxCount);
+         user_fb_update({[hROI.ROI{minROI}.mskName ' is smaller than ' hROI.ROI{maxROI}.mskName]; 'Setting ROI sizes to smallest'},0,2)
          C = voxCount(minROI);
      end
      
@@ -83,7 +84,7 @@ function [roiFinal] = show_ROIs(subinfo, hROI)
             rois_new{ii}(topVox{ii}) = 1;   
             
             % report final roi size back to user command window
-            user_fb_update({['ROI_' num2str(ii) ': ', num2str(numel(topVox{ii}))]},0,2)
+            user_fb_update({['ROI_' num2str(ii) ': ', num2str(numel(topVox{ii}))]},0,1)
         end   
     else
         % if no overlap is found simply use the equalized ROI IDs to set
@@ -92,7 +93,7 @@ function [roiFinal] = show_ROIs(subinfo, hROI)
             rois_new{ii}(topVox{ii}) = 1;
             
             % report final roi size back to user command window           
-            user_fb_update({['Final ROI size: ' hROI.ROI{ii}.mskName ': ', num2str(numel(topVox{ii}))]},0,2)
+            user_fb_update({['Final size ' hROI.ROI{ii}.mskName ': ', num2str(numel(topVox{ii})) ' voxels']},0,1)
         end
     end
     

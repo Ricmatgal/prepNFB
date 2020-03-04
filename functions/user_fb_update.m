@@ -39,9 +39,16 @@ function user_fb_update(message, main_module_flag,color_flag)
     % depending on the type of message we change the layout of the print
     t = datestr(datetime);
     t = [t(end-7:end-3) ' '];
-    % if just a normal message / or warning 
-    if main_module_flag == 0 && color_flag ~= 3
+    % if just a normal message 
+    if main_module_flag == 0 && color_flag == 1
         user_fb = [user_fb; message_a; '  ']; 
+    % if error message
+    elseif main_module_flag == 0 && color_flag == 2
+        t = [pre rgb2Hex(color) '">' [t '!!!'] post];
+        dashes = [pre rgb2Hex(color) '">' '----------------------------------------' post];
+        
+        user_fb = [user_fb; t; dashes ;message_a; dashes;'  '];
+        
     % if error message
     elseif main_module_flag == 0 && color_flag == 3 
         t = [pre rgb2Hex(color) '">' [t 'ERROR'] post];

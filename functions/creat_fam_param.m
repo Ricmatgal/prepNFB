@@ -87,5 +87,5 @@ function creat_fam_param(subID, projFolder, Sess)
         'stimParams', filesep, 'FAM_task_param_' subID '_' Sess])
     
     % report back to user
-    user_fb_update({'Encode stimuli and famTask parameters: SAVED'}, 0, 4)
+    user_fb_update({'Encode stims / famTask parameters: SAVED'}, 0, 1)
 end

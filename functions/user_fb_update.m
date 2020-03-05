@@ -40,7 +40,7 @@ function user_fb_update(message, main_module_flag,color_flag)
     t = datestr(datetime);
     t = [t(end-7:end-3) ' '];
     % if just a normal message 
-    if main_module_flag == 0 && color_flag == 1
+    if main_module_flag == 0 && (color_flag == 1 || color_flag == 4)
         user_fb = [user_fb; message_a; '  ']; 
     % if error message
     elseif main_module_flag == 0 && color_flag == 2

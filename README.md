@@ -6,9 +6,9 @@ It is a combination of my own code as well as a few adapted SPM functions.<br/>
 <br/>
 Several modules are available:
 1) Region of interest tool<br/>
-  A) Automated analyses of functional localizer data<br/> 
+  A) Automated and flexible analyses of functional localizer data<br/> 
   B) ROI delineation tool based on SPM contrasts with visualizations<br/>
-2) Automated Motion Correction template creation<br/> 
+2) Automated Motion Correction template creation based on for instance resting state acquisition<br/> 
 3) Autmoated .ini file creation<br/>
 4) Running PTB experiments and creating experiments parameters<br/>
 5) Session to session coregistration with visualization<br/>

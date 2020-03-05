@@ -22,7 +22,7 @@ function varargout = analyze_loc(varargin)
 
 % Edit the above text to modify the response to help analyze_loc
 
-% Last Modified by GUIDE v2.5 07-Feb-2020 15:27:14
+% Last Modified by GUIDE v2.5 05-Mar-2020 16:19:50
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -78,17 +78,18 @@ function analyze_loc_OpeningFcn(hObject, eventdata, handles, varargin)
             set(handles.cb_sliceTiming,'Value', settings.steps.sliceTiming);
             set(handles.cb_Coregistration,'Value', settings.steps.Coregistration);
             set(handles.cb_Realign,'Value', settings.steps.Realign);
-            set(handles.cb_Smooth,'Value', settings.steps.Smooth);
-
+            set(handles.cb_Smooth,'Value', settings.steps.Smooth);         
+            set(handles.cb_run_stats, 'Value', settings.steps.Stats);
 
             set(handles.uitable_cons,'Data', settings.contrasts);
             handles.data.contrasts = settings.contrasts;
+
         catch
-            fprintf('\nOne or more Values were not correctly set, please check the interface!\n')
+            user_fb_update({'One or more values not correctly set!'},0,2)
         end
 
      catch 
-         fprintf('\nNo Settings file found. Fill out the parameters!')
+         user_fb_update({'No Settings file found! Fill out the parameters and SAVE'},0,2)
          handles.data.contrasts = {};
      end
 
@@ -313,6 +314,7 @@ function pb_run_Callback(hObject, eventdata, handles)
     handles.data.steps.Realign          = get(handles.cb_Realign,'Value');
     handles.data.steps.Coregistration   = get(handles.cb_Coregistration,'Value');
     handles.data.steps.Smooth           = get(handles.cb_Smooth,'Value');
+    handles.data.steps.Stats            = get(handles.cb_run_stats, 'Value');
 
     
     if get(handles.cb_Ascending, 'Value')== 1
@@ -361,8 +363,10 @@ function pb_saveSettings_Callback(hObject, eventdata, handles)
     settings.steps.Realign          = get(handles.cb_Realign,'Value');
     settings.steps.Coregistration   = get(handles.cb_Coregistration,'Value');
     settings.steps.Smooth           = get(handles.cb_Smooth,'Value');
+    settings.steps.Stats            = get(handles.cb_run_stats, 'Value');
     
-    settings.contrasts = handles.data.contrasts;
+%     settings.contrasts = handles.data.contrasts;
+    settings.contrasts = get(handles.uitable_cons,'Data');
     
     save([pwd, filesep, 'Settings', filesep, 'Settings_Analyse_Loc'], 'settings')
     user_fb_update({'Localiser Settings saved:';[pwd, filesep, 'Settings']},0,1)
@@ -465,3 +469,10 @@ function cb_Smooth_Callback(hObject, eventdata, handles)
 % Hint: get(hObject,'Value') returns toggle state of cb_Smooth
 
 
+% --- Executes on button press in cb_run_stats.
+function cb_run_stats_Callback(hObject, eventdata, handles)
+% hObject    handle to cb_run_stats (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of cb_run_stats

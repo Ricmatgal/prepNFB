@@ -15,7 +15,7 @@ Several modules are available:
    A) based on structural scans<br/>
    B) based on epi scans<br/>
 
-Dependencies: SPM12, Psychtoolbox
+Dependencies: SPM12
 
 The GUI is build with guide from matlab. While guide generated code can apear messy, changing and adding elements and routines to the interface is more efficient and accesible. For all SPM based computations the generic spm_jobman(matlabbatch, 'run') structure is maintained. 
 

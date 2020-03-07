@@ -1,7 +1,7 @@
 # prepNFB
 This is a Matlab based tool to prepare for and coregister between OpenNFT Neurofeedback session(s).<br/> 
 
-The tool aims to simplify and automatize the pre NFB steps needed to setup an OpenNFT based neurofeedback session. The architecture is such that the different modules are launched from one main user interface which is fully adaptable to accomodate any NFB experiment individually. When properly setup, one can run and analyze a functional localizer task within the same scanning session as the first neurofeedback training. As such, regions of interest can be delineated and prepared while the participant is waiting in the scanner for the first NFB run. Furthermore, it allows the user to coregister the ROIs between NFB sessions and to project the coregistration results onto the relevant EPI or structural images.
+The tool aims to simplify and automatize the pre NFB steps needed to setup an OpenNFT based neurofeedback session. The architecture is such that the different modules are launched from one main user interface which is fully adaptable to accomodate any NFB experiment individually. When properly setup, one can run and analyze a functional localizer task within the same scanning session as the first neurofeedback training. As such, regions of interest can be delineated and prepared while the participant is waiting in the scanner for the first NFB run. Furthermore, it allows the user to coregister the ROIs between NFB sessions and to project the coregistration results onto the relevant EPI or structural images for quality control.
 It is a combination of my own code as well as a few adapted SPM functions.<br/>
 <br/>
 Several modules are available:

@@ -22,7 +22,7 @@ function varargout = create_protocol(varargin)
 
 % Edit the above text to modify the response to help create_protocol
 
-% Last Modified by GUIDE v2.5 12-Mar-2020 10:34:44
+% Last Modified by GUIDE v2.5 09-Mar-2020 21:56:17
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -618,7 +618,7 @@ end
 function pb_load_prt_Callback(hObject, eventdata, handles)
     [fn path] = uigetfile('*.json');
     
-    if path ~= 0
+    if isdir(path)
     
         json_prt = loadjson([path, filesep, fn]);
 
@@ -721,17 +721,12 @@ function pb_load_prt_Callback(hObject, eventdata, handles)
         set(handles.text_run_duration, 'String', [num2str(minutes) ' min ' num2str(seconds) ' sec'])
 
         % message
-        user_fb_update({[fn ' loaded'];['Nr of Volumes: ' num2str(nrVol)];['TR: ' num2str(TR)];['Run Duration: '...
-            num2str(minutes) ' min ' num2str(seconds) ' sec']},0,1)
+        user_fb_update({[fn ' loaded'];'Nr of Volumes: ' num2str(nrVol);'TR: ' num2str(TR);'Run Duration: '},0,1)
     else
         user_fb_update({'No file selected'}, 0, 2)
     end
     
     % Update handles structure
     guidata(hObject, handles);
+
     
-% --- Executes on button press in pb_resolve.
-function pb_resolve_Callback(hObject, eventdata, handles)
-% hObject    handle to pb_resolve (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)

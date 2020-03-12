@@ -14,9 +14,9 @@ Several modules are available:
 5) Session to session coregistration with visualization<br/>
    A) based on structural scans<br/>
    B) based on epi scans<br/>
-6) OpenNFT protocol tool that allows for:
-   A) Flexible creation and visualization of a NFB protocol that is saved as a .json file
-   B) loading and subsequent eddititing of pre-exisiting .json protocol file
+6) OpenNFT protocol tool that allows for:<br/>
+   A) Flexible creation and visualization of a NFB protocol that is saved as a .json file<br/>
+   B) loading and subsequent eddititing of pre-exisiting .json protocol file<br/>
    
 
 Dependencies: SPM12

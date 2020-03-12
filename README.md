@@ -14,6 +14,7 @@ Several modules are available:
 5) Session to session coregistration with visualization<br/>
    A) based on structural scans<br/>
    B) based on epi scans<br/>
+6) OpenNFT protocol tool
 
 Dependencies: SPM12
 

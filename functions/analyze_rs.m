@@ -55,7 +55,7 @@ Fgraph = spm_figure('Create','Graphics','Graphics','off');
 set([Finter,Fgraph],'Visible','on');
 for ii = 1:length(steps)
     
-    start = GetSecs;
+    start = tic;
     
     switch steps{ii}
 
@@ -209,9 +209,9 @@ end
 mean_image      = spm_select('List', funcDir, ['^mean' '.*\.' rawFormat '$']);
 copyfile([funcDir, filesep, mean_image], [templDir, filesep, mean_image])
 
-einde = GetSecs;
+einde = toc(start);
 
-time_taken = sprintf('%d min %0.f sec', floor((einde-start)/60), round(rem((einde-start),60)));
+time_taken = sprintf('%d min %0.f sec', floor((einde)/60), round(rem((einde),60)));
 user_fb_update({['Analyses completed in: ' time_taken]}, 0, 1)
 
 end

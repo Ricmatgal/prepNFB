@@ -22,7 +22,7 @@ function varargout = prep_NFB(varargin)
 
 % Edit the above text to modify the response to help prep_NFB
 
-% Last Modified by GUIDE v2.5 03-Mar-2020 12:36:57
+% Last Modified by GUIDE v2.5 12-Mar-2020 10:35:05
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -778,3 +778,12 @@ function pb_save_log_Callback(hObject, eventdata, handles)
         user_fb_update({'cant save logfile, directory invalid'},1, 3);
     end
         
+% --- Executes on button press in pb_prt_manager.
+function pb_prt_manager_Callback(hObject, eventdata, handles)
+
+    user_fb_update({'NFB Protocol Manager'}, 1, 1);
+    
+    projFolder  = get(handles.eb_projectFolder, 'String');
+    
+    create_protocol({projFolder})
+    

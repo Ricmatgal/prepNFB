@@ -66,7 +66,7 @@ Fgraph = spm_figure('Create','Graphics','Graphics','off');
 set([Finter,Fgraph],'Visible','on');%Fmenu,
 
 
-start = GetSecs;
+start = tic;
 
 for ii = 1:numel(stepNames)
 
@@ -275,13 +275,13 @@ for ii = 1:numel(stepNames)
             matlabbatch{2}.spm.stats.fmri_est.method.Classical = 1;
 
             % cons of interest
-            for ii = 1:size(data.contrasts,1)
+            for con = 1:size(data.contrasts,1)
 
                 matlabbatch{3}.spm.stats.con.spmmat = {[statsdir filesep 'SPM.mat']};
 
-                matlabbatch{3}.spm.stats.con.consess{ii}.tcon.name = data.contrasts{ii,1};
-                matlabbatch{3}.spm.stats.con.consess{ii}.tcon.weights = repmat([str2num(data.contrasts{ii,2}) zeros(1,6)],1,1);
-                matlabbatch{3}.spm.stats.con.consess{ii}.tcon.sessrep = 'none';
+                matlabbatch{3}.spm.stats.con.consess{con}.tcon.name = data.contrasts{con,1};
+                matlabbatch{3}.spm.stats.con.consess{con}.tcon.weights = repmat([str2num(data.contrasts{con,2}) zeros(1,6)],1,1);
+                matlabbatch{3}.spm.stats.con.consess{con}.tcon.sessrep = 'none';
 
                 matlabbatch{3}.spm.stats.con.delete = 0;
 
@@ -301,9 +301,9 @@ for ii = 1:numel(stepNames)
     end
 end
 
-einde = GetSecs;
+einde = toc(start);
 
-time_taken = sprintf('%d min %0.f sec', floor((einde-start)/60), round(rem((einde-start),60)));
+time_taken = sprintf('%d min %0.f sec', floor((einde)/60), round(rem((einde),60)));
 user_fb_update({['Analyses completed in: ' time_taken]}, 0, 1)
 
 end

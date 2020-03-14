@@ -58,6 +58,7 @@ handles.output = hObject;
 handles.conditions = [];
 handles.data4table = [];
 handles.col4table  = [];
+handles.conflict_flag = 0;
 
 handles.projFolder = varargin{:};
 
@@ -89,7 +90,6 @@ function pb_clear_row_Callback(hObject, eventdata, handles)
 %     handles.uitable.colSelection], handles)
 
 % row2remove = handles.uitable.rowSelection;
-
 
 
 % --- Executes on button press in pb_clear_all.
@@ -225,7 +225,13 @@ TR      = str2double(get(handles.eb_TR, 'String'));
 
 name    = get(handles.eb_name, 'String');
 dur     = str2double(get(handles.eb_duration, 'String'));
-col     = handles.color;
+
+try 
+    col     = handles.color;
+catch
+   user_fb_update({'Select color!'}, 0, 2)
+   return
+end
 
 condNR = size(handles.conditions,2)+1;
 
@@ -245,6 +251,11 @@ handles.conditions(condNR).name          = name;
 handles.conditions(condNR).durations     = [frst_vol last_vol];
 handles.conditions(condNR).color         = col;
 handles.conditions(condNR).dur           = dur;
+
+% record intial inputs (these will not be adapted during repetitions)
+handles.uniqueCond(condNR).name       = name;
+handles.uniqueCond(condNR).durations  = [frst_vol last_vol];
+handles.uniqueCond(condNR).color      = col;
 
 % (re-)plot what we have so far
 axes(handles.axes_preview);
@@ -567,6 +578,94 @@ function uitable_protocol_CellEditCallback(hObject, eventdata, handles)
 %	Error: error string when failed to convert EditData to appropriate value for Data
 % handles    structure with handles and user data (see GUIDATA)
 
+for ii = 1:size(eventdata.Source.Data,1)
+    handles.conditions(ii).durations = str2num(eventdata.Source.Data{ii,2});
+    handles.conditions(ii).dur = diff(handles.conditions(ii).durations)+1;
+    eventdata.Source.Data{ii,3} = num2str(handles.conditions(ii).dur);
+    
+    handles.onsets(ii,:) = handles.conditions(ii).durations(1,:);
+end
+
+axes(handles.axes_preview);
+cla();
+hold on
+for cond = 1:size(handles.conditions,2)
+    a = handles.conditions(cond).durations(1); % first vol
+    b = handles.conditions(cond).durations(2); % last vol
+
+    curr_color = handles.conditions(cond).color; 
+
+    h=stem(b,1);
+    set(h,'Marker','None');
+
+    % add patch
+    patch([a b b a], [0 0 1 1], curr_color)
+    alpha(0.3)  
+    
+end
+hold off
+
+% reset the graph settings in GUI
+set(handles.axes_preview ,'ytick', [])
+
+% set the NRvol according to current protocol if it exceeds nrVol
+xl      = handles.conditions(end).durations(2);
+nrVol   = str2double(get(handles.eb_nr_volumes, 'String'));
+if xl > nrVol
+    set(handles.eb_nr_volumes, 'String', xl);
+    
+    % redefine nrVol
+    nrVol = str2double(get(handles.eb_nr_volumes, 'String'));
+    
+    % correct run timer
+    TR              = str2double(get(handles.eb_TR, 'String'));    
+    total_seconds   = nrVol * TR; 
+    minutes         = floor(total_seconds/60);
+    seconds         = round(rem(total_seconds,60));
+    set(handles.text_run_duration, 'String', [num2str(minutes) ' min ' num2str(seconds) ' sec'])
+    
+end
+
+set(handles.axes_preview ,'XLim', [0 nrVol]);
+set(handles.axes_preview ,'XTick', [ceil(nrVol/2) nrVol]);
+set(handles.axes_preview ,'XTickLabel', {num2str(ceil(nrVol/2)); num2str(nrVol)});
+
+% check for conflict
+handles.conflict_flag = 0;
+for r = 1:size(handles.onsets,1)
+    % check if current offset is the same or greater then all the other 
+    % onsets: returns a 1 if the case.
+    k = handles.onsets(r,2) >= handles.onsets(r+1:end,1);
+    % if the case
+    if any(k)
+        % mark conflict
+        handles.conflict_flag = 1;
+        % redifine the row color to white
+        handles.col4table(r,:) = [1 1 1];
+    % if it is NOT the case AND the row color is white (previously marked
+    % as conflict)
+    elseif ~any(k) && isequal(handles.col4table(r,:),[1 1 1])
+        % find the condition integer by comparing agains the unique
+        % conditions
+        currCond = find(strcmp(handles.conditions(r).name, handles.uniqueCond.name) == 1);
+        % set the row color back to the original color
+        handles.col4table(r,:) = handles.uniqueCond.colors(currCond,:);
+    end
+end
+
+% set the colors to table
+set(handles.uitable_protocol, 'BackgroundColor', handles.col4table);
+
+% update conflict message above the protcol preview accordingly
+if handles.conflict_flag == 1
+    set(handles.text_conflict, 'String', 'Conflicts!')
+    set(handles.text_conflict, 'ForegroundColor', 'red')
+elseif handles.conflict_flag == 0
+    set(handles.text_conflict, 'String', 'No conflicts')
+    set(handles.text_conflict, 'ForegroundColor', 'green')
+end
+
+guidata(hObject, handles)
 
 % --- Executes when selected cell(s) is changed in uitable_protocol.
 function uitable_protocol_CellSelectionCallback(hObject, eventdata, handles)
@@ -574,11 +673,13 @@ function uitable_protocol_CellSelectionCallback(hObject, eventdata, handles)
 % eventdata  structure with the following fields (see MATLAB.UI.CONTROL.TABLE)
 %	Indices: row and column indices of the cell(s) currently selecteds
 % handles    structure with handles and user data (see GUIDATA)
+
 % r = eventdata.Indices(1);
 % c = eventdata.Indices(2);
 % 
 % handles.uitable.rowSelection = r;
 % handles.uitable.colSelection = c;
+
 
 guidata(hObject, handles)
 
@@ -629,7 +730,8 @@ function pb_load_prt_Callback(hObject, eventdata, handles)
         handles.conditions = struct('name', '', 'durations', [], 'color', [], 'dur', []);
         handles.data4table = [];
         handles.col4table = [];
-
+        
+        % in case not specified in json file
         default_colors = [0 0.4510 0.7412;...
                           0.4706 0.6706 0.1882;...
                           0.8510 0.3294 0.1020;...
@@ -644,13 +746,13 @@ function pb_load_prt_Callback(hObject, eventdata, handles)
                     handles.conditions(row_c).color     = json_prt.Cond{condNR}.ConditionColor(1:3)/255;
                     handles.col4table                   = [handles.col4table; handles.conditions(row_c).color];
                catch 
-    %                user_fb_update({'No color defined in prt.json file!'},0,2)
-    %                 fprintf('No color defined in prt.json file!\n')             
+                    user_fb_update({'No color defined in prt.json file!'; 'Default color selected'},0,2)          
                     handles.conditions(row_c).color     = default_colors(condNR,:);
                     handles.col4table                   = [handles.col4table; handles.conditions(row_c).color];
                end
 
                handles.conditions(row_c).dur          = diff(json_prt.Cond{condNR}.OnOffsets(rep,:)')'+1;
+               
                onsets(row_c,1) = handles.conditions(row_c).durations(1,1);
 
 
@@ -663,7 +765,13 @@ function pb_load_prt_Callback(hObject, eventdata, handles)
             end
 
         end
+        
+        all_names               = {handles.conditions.name};
+        handles.uniqueCond.name = unique(all_names);
 
+        all_colors                  = cell2mat({handles.conditions.color}');
+        handles.uniqueCond.colors   = unique(all_colors,'stable','rows');
+        
         [val idx] = sort(onsets,'ascend');
 
         % sort structure according to onsets
@@ -719,7 +827,7 @@ function pb_load_prt_Callback(hObject, eventdata, handles)
         minutes         = floor(total_seconds/60);
         seconds         = round(rem(total_seconds,60));
         set(handles.text_run_duration, 'String', [num2str(minutes) ' min ' num2str(seconds) ' sec'])
-
+        
         % message
         user_fb_update({[fn ' loaded'];['Nr of Volumes: ' num2str(nrVol)];['TR: ' num2str(TR)];['Run Duration: '...
             num2str(minutes) ' min ' num2str(seconds) ' sec']},0,1)
@@ -735,3 +843,96 @@ function pb_resolve_Callback(hObject, eventdata, handles)
 % hObject    handle to pb_resolve (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+if handles.conflict_flag == 1
+    tableDat = handles.uitable_protocol.Data;
+    
+    for r = 1:size(handles.onsets,1)
+        % check if current offset is the same or greater then all the other 
+        % onsets: returns a 1 if the case.
+        k = handles.onsets(r,2) >= handles.onsets(r+1:end,1);
+        % if the case
+        if any(k)
+            diff = handles.onsets(r,2)-handles.onsets(r+1,1);        
+            handles.onsets(r+1:end,:)=handles.onsets(r+1:end,:)+(diff+1);    
+        end
+        
+    end
+    
+    axes(handles.axes_preview);
+    cla();
+    hold on
+    handles.data4table  = [];
+    handles.col4table   = [];
+    for cond = 1:size(handles.conditions,2)
+        
+        %overwrite the values with updated ones
+        handles.conditions(cond).durations(1) = handles.onsets(cond,1);
+        handles.conditions(cond).durations(2) = handles.onsets(cond,2);
+        
+        name    = handles.conditions(cond).name;
+        dur     = handles.conditions(cond).dur;
+        col     = handles.conditions(cond).color;
+ 
+        a = handles.conditions(cond).durations(1); % first vol
+        b = handles.conditions(cond).durations(2); % last vol
+
+        curr_color = handles.conditions(cond).color; 
+
+        h=stem(b,1);
+        set(h,'Marker','None');
+
+        % add patch
+        patch([a b b a], [0 0 1 1], curr_color)
+        alpha(0.3)  
+        
+        input4table = [{name} {num2str([a b])} num2str(dur)];
+        handles.data4table = [handles.data4table; input4table];
+        handles.col4table = [handles.col4table; col];
+    end
+    hold off
+
+    set(handles.uitable_protocol, 'Data', handles.data4table);
+    % add color to color cell
+    set(handles.uitable_protocol, 'BackgroundColor', handles.col4table);
+    
+    % reset the graph settings in GUI
+    set(handles.axes_preview ,'ytick', [])
+
+    % set the NRvol according to current protocol if it exceeds nrVol
+    xl      = handles.conditions(end).durations(2);
+    nrVol   = str2double(get(handles.eb_nr_volumes, 'String'));
+    if xl > nrVol
+        set(handles.eb_nr_volumes, 'String', xl);
+
+        % redefine nrVol
+        nrVol = str2double(get(handles.eb_nr_volumes, 'String'));
+
+        % correct run timer
+        TR              = str2double(get(handles.eb_TR, 'String'));    
+        total_seconds   = nrVol * TR; 
+        minutes         = floor(total_seconds/60);
+        seconds         = round(rem(total_seconds,60));
+        set(handles.text_run_duration, 'String', [num2str(minutes) ' min ' num2str(seconds) ' sec'])
+
+    end
+
+    set(handles.axes_preview ,'XLim', [0 nrVol]);
+    set(handles.axes_preview ,'XTick', [ceil(nrVol/2) nrVol]);
+    set(handles.axes_preview ,'XTickLabel', {num2str(ceil(nrVol/2)); num2str(nrVol)});
+    
+    set(handles.text_conflict, 'String', 'Conflicts resolved')
+    set(handles.text_conflict, 'ForegroundColor', 'green')
+    
+elseif handles.conflict_flag == 0
+    user_fb_update({'No conflicts to resolve!'},0,1)
+end
+
+
+
+
+
+
+
+
+

@@ -22,7 +22,7 @@ function varargout = create_protocol(varargin)
 
 % Edit the above text to modify the response to help create_protocol
 
-% Last Modified by GUIDE v2.5 12-Mar-2020 10:34:44
+% Last Modified by GUIDE v2.5 16-Mar-2020 09:26:11
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -58,6 +58,7 @@ handles.output = hObject;
 handles.conditions = [];
 handles.data4table = [];
 handles.col4table  = [];
+handles.onsets   = [];
 handles.conflict_flag = 0;
 
 handles.projFolder = varargin{:};
@@ -102,6 +103,8 @@ nrVol   = str2double(get(handles.eb_nr_volumes, 'String'));
 handles.conditions = [];
 handles.data4table = [];
 handles.col4table  = [];
+handles.uniqueCond = [];
+handles.onsets     = [];
 
 axes(handles.axes_preview);
 cla()
@@ -457,50 +460,72 @@ function eb_repeat_Callback(hObject, eventdata, handles)
 repetitions = str2double(get(hObject,'String'));
 nrVol       = str2double(get(handles.eb_nr_volumes, 'String'));
 
+% some checks for validity of entry
+try 
+   rows2repeat = eval(get(handles.eb_row_selection, 'String'));
+catch 
+   user_fb_update({'Incorrect selection entry!'},0,3) 
+   return
+end
+
+if max(rows2repeat) > size(handles.conditions,2)
+   user_fb_update({'Row to repeat does not exist!'},0,3) 
+   return
+end
+
 absNRconds = size(handles.conditions,2); % absolute nr of conditions before repetition
 
 % extend the conditions by repetition amount of times
-for rep = 1:repetitions-1
-    % condition name
-
+for rep = 1:repetitions
+    % define number of rows currently in table
     nrConds = size(handles.conditions,2);
-    s       = nrConds+1;
-    f       = s + absNRconds-1;
     
+    % based on this, define start index and finish index
+    s       = nrConds+1;
+%     f       = s + absNRconds-1;
+    f       = s + numel(rows2repeat)-1;
+    
+    % condition counter to get the right condition info from table
     cond_c = 1;
+    % add the conditions to the table new rows s to f
     for this_cond = s:f
         % condition name
-        name    = handles.conditions(cond_c).name;
-        dur     = handles.conditions(cond_c).dur;
+        name    = handles.conditions(rows2repeat(cond_c)).name;
+        dur     = handles.conditions(rows2repeat(cond_c)).dur;
         
-        
-         % first and last volume
+         % define new first and last volume
         frst_vol = handles.conditions(this_cond-1).durations(2) + 1;
         last_vol = frst_vol + dur-1;
         
-        % color
-        col = handles.conditions(cond_c).color;
+        % get the right color
+        col = handles.conditions(rows2repeat(cond_c)).color;
         
+        % add the new entrie in the handles.condition struct
         handles.conditions(this_cond).name          = name;
         handles.conditions(this_cond).durations     = [frst_vol last_vol];
         handles.conditions(this_cond).color         = col;
         handles.conditions(this_cond).dur           = dur;
-        
 
         % add the condition to the protocol table
-        input4table = [{name} {num2str([frst_vol last_vol])} num2str(dur)];
-        handles.data4table = [handles.data4table; input4table];
-        handles.col4table = [handles.col4table; col];
-        set(handles.uitable_protocol, 'Data', handles.data4table);
+        input4table         = [{name} {num2str([frst_vol last_vol])} num2str(dur)];
+        handles.data4table  = [handles.data4table; input4table];
+        handles.col4table   = [handles.col4table; col];
+        handles.onsets      = [handles.onsets; handles.conditions(this_cond).durations];
+        
         
         cond_c = cond_c+1;
     end
     
 end
 
+set(handles.uitable_protocol, 'Data', handles.data4table);
+set(handles.uitable_protocol, 'BackgroundColor', handles.col4table);
+
 % (re-)plot what we have so far
-axes(handles.axes_preview);
-cla();
+axes(handles.axes_preview); % activate figure in gui
+cla();                      % clear the graph before replotting
+
+% replot
 hold on
 for cond = 1:size(handles.conditions,2)
     a = handles.conditions(cond).durations(1); % first vol
@@ -578,12 +603,26 @@ function uitable_protocol_CellEditCallback(hObject, eventdata, handles)
 %	Error: error string when failed to convert EditData to appropriate value for Data
 % handles    structure with handles and user data (see GUIDATA)
 
+r = eventdata.Indices(1);
+c = eventdata.Indices(2);
+
+% if changes were made in the duration column, update the volumes cell
+% which will then be passed to the routine below and treated accordingly.
+if c == 3
+    tmp     = str2num(eventdata.Source.Data{r,2});
+    tmp_dur = str2num(eventdata.Source.Data{r,c});
+    vol1 = tmp(1);
+    
+    eventdata.Source.Data{r,2} = num2str([vol1 vol1+(tmp_dur-1)]);
+    
+end
+
 for ii = 1:size(eventdata.Source.Data,1)
     handles.conditions(ii).durations = str2num(eventdata.Source.Data{ii,2});
-    handles.conditions(ii).dur = diff(handles.conditions(ii).durations)+1;
-    eventdata.Source.Data{ii,3} = num2str(handles.conditions(ii).dur);
-    
-    handles.onsets(ii,:) = handles.conditions(ii).durations(1,:);
+    handles.conditions(ii).dur       = diff(handles.conditions(ii).durations)+1;
+    eventdata.Source.Data{ii,3}      = num2str(handles.conditions(ii).dur);
+
+    handles.onsets(ii,:)            = handles.conditions(ii).durations(1,:);
 end
 
 axes(handles.axes_preview);
@@ -601,7 +640,7 @@ for cond = 1:size(handles.conditions,2)
     % add patch
     patch([a b b a], [0 0 1 1], curr_color)
     alpha(0.3)  
-    
+
 end
 hold off
 
@@ -613,17 +652,17 @@ xl      = handles.conditions(end).durations(2);
 nrVol   = str2double(get(handles.eb_nr_volumes, 'String'));
 if xl > nrVol
     set(handles.eb_nr_volumes, 'String', xl);
-    
+
     % redefine nrVol
     nrVol = str2double(get(handles.eb_nr_volumes, 'String'));
-    
+
     % correct run timer
     TR              = str2double(get(handles.eb_TR, 'String'));    
     total_seconds   = nrVol * TR; 
     minutes         = floor(total_seconds/60);
     seconds         = round(rem(total_seconds,60));
     set(handles.text_run_duration, 'String', [num2str(minutes) ' min ' num2str(seconds) ' sec'])
-    
+
 end
 
 set(handles.axes_preview ,'XLim', [0 nrVol]);
@@ -664,6 +703,8 @@ elseif handles.conflict_flag == 0
     set(handles.text_conflict, 'String', 'No conflicts')
     set(handles.text_conflict, 'ForegroundColor', 'green')
 end
+     
+
 
 guidata(hObject, handles)
 
@@ -921,7 +962,7 @@ if handles.conflict_flag == 1
     set(handles.axes_preview ,'XTick', [ceil(nrVol/2) nrVol]);
     set(handles.axes_preview ,'XTickLabel', {num2str(ceil(nrVol/2)); num2str(nrVol)});
     
-    set(handles.text_conflict, 'String', 'Conflicts resolved')
+    set(handles.text_conflict, 'String', 'Resolved!')
     set(handles.text_conflict, 'ForegroundColor', 'green')
     
 elseif handles.conflict_flag == 0
@@ -930,9 +971,46 @@ end
 
 
 
+function eb_clear_row_Callback(hObject, eventdata, handles)
+% hObject    handle to eb_clear_row (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of eb_clear_row as text
+%        str2double(get(hObject,'String')) returns contents of eb_clear_row as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function eb_clear_row_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to eb_clear_row (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
 
 
 
+function eb_row_selection_Callback(hObject, eventdata, handles)
+% hObject    handle to eb_row_selection (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of eb_row_selection as text
+%        str2double(get(hObject,'String')) returns contents of eb_row_selection as a double
 
 
+% --- Executes during object creation, after setting all properties.
+function eb_row_selection_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to eb_row_selection (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
 
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end

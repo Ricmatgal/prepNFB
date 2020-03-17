@@ -19,7 +19,7 @@ Several modules are available:
    B) loading and subsequent eddititing of pre-exisiting .json protocol file<br/>
    
 
-Dependencies: SPM12
+Dependencies: SPM12, JSONLab
 
 The GUI is build with guide from matlab. While guide generated code can apear messy, changing and adding elements and routines to the interface is more efficient and accesible. For all SPM based computations the generic spm_jobman(matlabbatch, 'run') structure is maintained. 
 

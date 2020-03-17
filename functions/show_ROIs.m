@@ -70,7 +70,7 @@ function [roiFinal] = show_ROIs(subinfo, hROI)
         
         % for eah roi find the non overlapping voxels and set those voxels
         % to one in empty brain mat
-        for ii = 1:length(roiWhichPath)  
+        for ii = 1:length(roiWhichNR)  
             % back up initial clusters for later checking
             roiBackUPs{ii} = topVox{ii};
             

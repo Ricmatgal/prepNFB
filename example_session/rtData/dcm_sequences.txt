@@ -1,0 +1,11 @@
+Session 1
+dcm 02 = T1/struct (long)
+dcm 05 = face localizer
+dcm 06 = NFB_r1 (sess1)
+dcm 07 = NFB_r2 (sess1)
+
+Session 2
+dcm 10 = quick T1 (sess2)
+dcm 12 = restingstate (for MC template)
+dcm 13 = NFB_r1 (sess2)
+dcm 14 = NFB r2 (sess2)	

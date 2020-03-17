@@ -22,7 +22,7 @@ function varargout = create_protocol(varargin)
 
 % Edit the above text to modify the response to help create_protocol
 
-% Last Modified by GUIDE v2.5 16-Mar-2020 09:26:11
+% Last Modified by GUIDE v2.5 17-Mar-2020 09:13:20
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -1002,7 +1002,6 @@ function eb_row_selection_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'String') returns contents of eb_row_selection as text
 %        str2double(get(hObject,'String')) returns contents of eb_row_selection as a double
 
-
 % --- Executes during object creation, after setting all properties.
 function eb_row_selection_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to eb_row_selection (see GCBO)
@@ -1014,3 +1013,14 @@ function eb_row_selection_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+% --------------------------------------------------------------------
+function tb_save_ClickedCallback(hObject, eventdata, handles)
+
+    pb_save_prt_Callback(handles.pb_save_prt, [], handles)
+
+% --------------------------------------------------------------------
+function tb_load_prt_ClickedCallback(hObject, eventdata, handles)
+
+    pb_load_prt_Callback(handles.pb_load_prt, [], handles)

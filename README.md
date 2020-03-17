@@ -15,8 +15,8 @@ Several modules are available:
    A) based on structural scans<br/>
    B) based on epi scans<br/>
 6) OpenNFT protocol tool that allows for:<br/>
-   A) Flexible creation and visualization of a NFB protocol that is saved as a .json file<br/>
-   B) loading and subsequent eddititing of pre-exisiting .json protocol file<br/>
+   A) Flexible creation and visualization of a NFB protocol that is the user can then save as a .json file<br/>
+   B) Loading and subsequent eddititing of pre-exisiting .json protocol file<br/>
    
 
 Dependencies: SPM12, JSONLab

@@ -23,6 +23,13 @@ Dependencies: SPM12, JSONLab
 
 The GUI is build with guide from matlab. While guide generated code can apear messy, changing and adding elements and routines to the interface is more efficient and accesible. For all SPM based computations the generic spm_jobman(matlabbatch, 'run') structure is maintained. 
 
+To run the toolbox:
+1) Call the main interface from the Matlab command window by typing prep_NFB<br/> 
+2) In the main GUI:<br/>
+    a) Specify the project folder: directory to the NFB project where OpenNFT will expect the subject specific folder strutcure<br/>
+    b) The watch folder: directory where the MRI images will arrive (e.g. dummy data folder)<br/>
+3) Initialize a subject which will create a subject folder structure in the project folder<br/>
+
 ![Overview of prepNFB tool ](https://github.com/lucp88/prepNFB/raw/master/Others/all_features_prepNFB_2.PNG)
 
 ![Protocol Manager](https://github.com/lucp88/prepNFB/raw/master/Others/PRT_manager.PNG)

@@ -61,9 +61,9 @@ ROIs_available = struct;
 folderNames = {'Session_01', ['Session_' sprintf('%02d', handles.subinfo.session)]}; % make second folder dependent on prepNFB session nr input
 
     for ii = 1:numel(folderNames)
-
+ 
         %for session
-        tmpSessROIs = dir([handles.subinfo.roiPath, filesep, ['Session_01'], filesep, 'ROI_*.*']);
+        tmpSessROIs = dir([handles.subinfo.roiPath, filesep, ['Session_01'], filesep, 'ROI_*.*']); %'ROI_*' if mac os
         tmpNames = {tmpSessROIs.name};
         tmpDirs = {tmpSessROIs.folder};
 

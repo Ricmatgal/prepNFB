@@ -25,8 +25,8 @@ Works best on Windows (some small adjustments have to be implemented to make in 
 
 The GUI is build with guide from matlab. While guide generated code can apear messy, changing and adding elements and routines to the interface is more efficient and accesible. For all SPM based computations the generic spm_jobman(matlabbatch, 'run') structure is maintained. 
 
-To run the toolbox with example_session data:<br/>
-0) Unzip the example data in: example_data/rtData<br/>
+To run the toolbox with example_session data: <br/>
+0) Unzip the example data in: example_data/rtData <br/>
 1) Open Matlab and set current working directory to: prepNFB-master<br/>
 2) Call the main interface from the Matlab command window by typing prep_NFB<br/> 
 2) In the main GUI:<br/>

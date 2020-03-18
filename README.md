@@ -26,19 +26,19 @@ Works best on Windows (some small adjustments have to be implemented to make in 
 The GUI is build with guide from matlab. While guide generated code can apear messy, changing and adding elements and routines to the interface is more efficient and accesible. For all SPM based computations the generic spm_jobman(matlabbatch, 'run') structure is maintained. 
 
 To run the toolbox with example_session data: <br/>
-0) Unzip the example data in: example_data/rtData <br/>
-1) Open Matlab and set current working directory to: prepNFB-master<br/>
-2) Call the main interface from the Matlab command window by typing prep_NFB<br/> 
-2) In the main GUI:<br/>
+1) Unzip the example data in: example_data/rtData <br/>
+2) Open Matlab and set current working directory to: prepNFB-master<br/>
+3) Call the main interface from the Matlab command window by typing prep_NFB<br/> 
+4) In the main GUI:<br/>
     a) Specify the project folder: '...\prepNFB-master\example_session\NFB_Project'<br/>
        This is the directory of the NFB project where OpenNFT will expect the subject specific folder strutcure<br/>
     b) The watch folder: '...\prepNFB-master\example_session\rtData\rtMRdata_sess1'<br/>
        This is directory where the MRI images will or have arrive(d) (e.g. rtData folder)<br/>
     c) Save settings<br/>
-3) Initialize a subject (e.g. 01) which will create a subject folder structure in the project folder<br/>
+5) Initialize a subject (e.g. 01) which will create a subject folder structure in the project folder<br/>
     a) Put the SPM_onset file (prepNFB/example_session/NFB_project) inside the subject folder:<br/>
         (prepNFB/example_session/NFB_project/01/Localizer/beh)<br/>
-4) Use the dcm series numbers specified in the txt file 'dcm_sequences.txt' in the rtData folder<br/>
+6) Use the dcm series numbers specified in the txt file 'dcm_sequences.txt' in the rtData folder<br/>
    to direct the toolbox to the right images for each step
 
 ![Overview of prepNFB tool ](https://github.com/lucp88/prepNFB/raw/master/Others/all_features_prepNFB_2.PNG)

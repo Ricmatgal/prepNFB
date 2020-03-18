@@ -46,5 +46,5 @@ Overview prepNFB tool
 Screenshot of the main interface and the different modules available
 
 Protocol Manager
-![Protocol Manager](https://github.com/lucp88/prepNFB/raw/master/Others/PRT_manager.PNG)
+![Protocol Manager](https://github.com/lucp88/prepNFB/raw/master/Others/PRT_manager.PNG)<br/>
 The protocol manager where the user can load or create specify an openNFT neurfeedback protocol and save as a .json file

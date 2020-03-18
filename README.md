@@ -28,7 +28,7 @@ The GUI is build with guide from matlab. While guide generated code can apear me
 To run the toolbox with example_session data: <br/>
 1) Unzip the example data in: <b>'...\prepNFB-master\example_session\rtData'</b> <br/>
 2) Open Matlab and set current working directory to: prepNFB-master<br/>
-3) Call the main interface from the Matlab command window by typing prep_NFB<br/> 
+3) Call the main interface from the Matlab command window by typing <i>'prep_NFB'</i><br/> 
 4) In the main GUI:<br/>
     a) Specify the project folder: <b>'...\prepNFB-master\example_session\NFB_Project'</b><br/>
        <i>This is the directory of the NFB project where OpenNFT will expect the subject specific folder strutcure</i><br/>

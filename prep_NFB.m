@@ -214,13 +214,15 @@ function eb_projectFolder_CreateFcn(hObject, eventdata, handles)
 % --- Executes on button press in pb_browse_proj.
 function pb_browse_proj_Callback(hObject, eventdata, handles)
 
-    projFolder = uigetdir();
-    handles.projFolder = projFolder;
-    set(handles.eb_projectFolder, 'String', handles.projFolder);
+    projFolder = uigetdir(get(handles.eb_projectFolder, 'String'));
+    if projFolder 
+        handles.projFolder = projFolder;
+        set(handles.eb_projectFolder, 'String', handles.projFolder);
 
 
-    message = {['Project Folder updated: '  handles.projFolder]};
-    user_fb_update(message, 0, 2);
+        message = {['Project Folder updated: '  handles.projFolder]};
+        user_fb_update(message, 0, 2);
+    end
 
     guidata(hObject, handles);
 
@@ -243,12 +245,14 @@ function eb_watchFolder_CreateFcn(hObject, eventdata, handles)
 % --- Executes on button press in pb_browse_watch.
 function pb_browse_watch_Callback(hObject, eventdata, handles)
 
-    watchFolder         = uigetdir('D:\TBV_input');
-    handles.watchFolder = watchFolder;
-    set(handles.eb_watchFolder, 'String', handles.watchFolder);
+    watchFolder = uigetdir(get(handles.eb_watchFolder, 'String') ); %'D:\TBV_input'
+    if watchFolder
+        handles.watchFolder = watchFolder;
+        set(handles.eb_watchFolder, 'String', handles.watchFolder);
 
-    message = {['Watch Folder updated: '  handles.watchFolder]};
-    user_fb_update(message, 0, 2);
+        message = {['Watch Folder updated: '  handles.watchFolder]};
+        user_fb_update(message, 0, 2);
+    end
 
     guidata(hObject, handles);
     

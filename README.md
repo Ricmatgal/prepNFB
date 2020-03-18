@@ -41,10 +41,10 @@ To run the toolbox with example_session data: <br/>
 6) Use the dcm series numbers specified in the txt file 'dcm_sequences.txt' in the rtData folder<br/>
    to direct the toolbox to the right images for each step
 
+Overview prepNFB tool
 ![Overview of prepNFB tool ](https://github.com/lucp88/prepNFB/raw/master/Others/all_features_prepNFB_2.PNG)
-
 Screenshot of the main interface and the different modules available
 
+Protocol Manager
 ![Protocol Manager](https://github.com/lucp88/prepNFB/raw/master/Others/PRT_manager.PNG)
-
 The protocol manager where the user can load or create specify an openNFT neurfeedback protocol and save as a .json file

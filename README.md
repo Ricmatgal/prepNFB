@@ -30,7 +30,9 @@ To run the toolbox:
 2) In the main GUI:<br/>
     a) Specify the project folder: directory to the NFB project where OpenNFT will expect the subject specific folder strutcure<br/>
     b) The watch folder: directory where the MRI images will arrive (e.g. dummy data folder)<br/>
-3) Initialize a subject which will create a subject folder structure in the project folder<br/>
+3) Initialize a subject (e.g. 01) which will create a subject folder structure in the project folder<br/>
+    a) Put the SPM_onset file (prepNFB/example_session/NFB_project) inside the subject folder<br/>
+        (e.g. prepNFB/example_session/NFB_project/01/Localizer/beh)
 
 ![Overview of prepNFB tool ](https://github.com/lucp88/prepNFB/raw/master/Others/all_features_prepNFB_2.PNG)
 

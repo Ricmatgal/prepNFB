@@ -31,7 +31,7 @@ To run the toolbox with example_session data: <br/>
 3) Call the main interface from the Matlab command window by typing prep_NFB<br/> 
 4) In the main GUI:<br/>
     a) Specify the project folder: '...\prepNFB-master\example_session\NFB_Project'<br/>
-       This is the directory of the NFB project where OpenNFT will expect the subject specific folder strutcure<br/>
+       <i>This is the directory of the NFB project where OpenNFT will expect the subject specific folder strutcure<\i><br/>
     b) The watch folder: '...\prepNFB-master\example_session\rtData\rtMRdata_sess1'<br/>
        This is directory where the MRI images will or have arrive(d) (e.g. rtData folder)<br/>
     c) Save settings<br/>

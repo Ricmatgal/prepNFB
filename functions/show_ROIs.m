@@ -110,7 +110,7 @@ function [roiFinal] = show_ROIs(subinfo, hROI)
         % here we add the whole ROInfo struct of this ROI to the sub struct
         % roiFinal. We do this to append all info together.. but most of
         % this is redundant. 
-        tmp = load([pathToROI, filesep, 'ROInfo_ROI_' num2str(roiWhichNR(ii))]);
+        tmp = load([pathToROI, filesep, 'maskInfo_ROI_' num2str(roiWhichNR(ii))]);
         roiFinal.ROInfo{ii} = tmp.ROInfo;
         
         hdrs{ii}.fname = [pathToROI, filesep, 'tmpROI.nii'];

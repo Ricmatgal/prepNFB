@@ -37,6 +37,10 @@ handles.output  = hObject;
 handles.subinfo = varargin{:};
 
 subPath         = [handles.subinfo.projFolder, filesep, handles.subinfo.subID];
+if ~isfolder(subPath)
+    user_fb_update({'User ID not (correctly) specified!'},0,3)
+    return
+end
 handles.subinfo.subjStructDir   = [subPath, filesep, 'Session_01', filesep, 'T1', filesep];
 handles.subinfo.epiPath         = [subPath, filesep, 'Session_01', filesep, 'EPI_Template_D1'];
 handles.subinfo.statsdir        = [subPath, filesep, 'Localizer', filesep 'stats' filesep];
@@ -63,7 +67,11 @@ guidata(hObject, handles);
 function varargout = create_ROIs_gui_OutputFcn(hObject, eventdata, handles) 
 
 % Get default command line output from handles structure
-varargout{1} = handles.output;
+try
+    varargout{1} = handles.output;
+catch
+    close
+end
 
 
 % --- Executes on selection change in lb_contrasts.
@@ -200,7 +208,7 @@ function pb_show_results_Callback(hObject, eventdata, handles)
         ROInfo = handles.ROInfo;
         save([handles.subinfo.roiPath, filesep, 'roiPrep', filesep,...
             'ROI_' num2str(handles.ROInfo.conInfo.conNr), filesep...
-            'ROInfo_ROI_' num2str(handles.ROInfo.conInfo.conNr)], 'ROInfo');
+            'conInfo_ROI_' num2str(handles.ROInfo.conInfo.conNr)], 'ROInfo');
     catch
         return
     end
@@ -224,7 +232,7 @@ function pb_save_msk_Callback(hObject, eventdata, handles)
     % save updated handles.ROI (overwrite)
     save([handles.subinfo.roiPath, filesep, 'roiPrep', filesep,...
         'ROI_' num2str(handles.ROInfo.conInfo.conNr), filesep...
-        'ROInfo_ROI_' num2str(handles.ROInfo.conInfo.conNr)], 'ROInfo');
+        'maskInfo_ROI_' num2str(handles.ROInfo.conInfo.conNr)], 'ROInfo');
 
 
 % --- Executes on selection change in lb_ROIs.
@@ -367,7 +375,15 @@ handles.ROInfo = {};
 rois = get(handles.lb_ROIs,'Value');
 for ii = 1:length(rois)
     tmpPath = [handles.subinfo.roiPath, filesep, 'roiPrep', filesep,...
-        'ROI_' num2str(rois(ii)), filesep, 'ROInfo_ROI_' num2str(rois(ii))];
+        'ROI_' num2str(rois(ii)), filesep, 'maskInfo_ROI_' num2str(rois(ii))];
+    
+    % check for mask information 
+    if ~isfile([tmpPath '.mat'])
+        user_fb_update({['No mask ' num2str(rois(ii)) ' information available!'];...
+            'Did you save all clusters?'},0,3)
+        return
+    end
+    
     a = load(tmpPath);
     handles.ROInfo.ROI{ii} = a.ROInfo;
     handles.ROInfo.ROI{ii}.mskName = handles.tmpData.mskName{rois(ii)};

@@ -787,7 +787,7 @@ function pb_load_prt_Callback(hObject, eventdata, handles)
                     handles.conditions(row_c).color     = json_prt.Cond{condNR}.ConditionColor(1:3)/255;
                     handles.col4table                   = [handles.col4table; handles.conditions(row_c).color];
                catch 
-                    user_fb_update({'No color defined in prt.json file!'; 'Default color selected'},0,2)          
+%                     user_fb_update({'No color defined in prt.json file!'; 'Default color selected'},0,2)          
                     handles.conditions(row_c).color     = default_colors(condNR,:);
                     handles.col4table                   = [handles.col4table; handles.conditions(row_c).color];
                end

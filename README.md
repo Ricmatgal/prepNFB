@@ -5,16 +5,16 @@ The tool aims to simplify and automatize the pre NFB steps needed to setup an Op
 It is a combination of my own code as well as a few adapted SPM functions.<br/>
 <br/>
 Several modules are available:
-<b>1) Region of interest tool<br/>
+<b>1) Region of interest tool</b br/>
   A) Automated and flexible analyses of functional localizer data<br/> 
   B) ROI delineation tool based on SPM contrasts with visualizations<br/>
-<b>2) Automated Motion Correction template creation based on for instance resting state acquisition</b><br/> 
-<b>3) Autmoated .ini file creation</b><br/>
-<b>4) Running PTB experiments and creating experiments parameters</b><br/>
-<b>5) Session to session coregistration with visualization</b><br/>
+2) Automated Motion Correction template creation based on for instance resting state acquisition<br/> 
+3) Autmoated .ini file creation</b><br/>
+4) Running PTB experiments and creating experiments parameters<br/>
+5) Session to session coregistration with visualization</b><br/>
    A) based on structural scans<br/>
    B) based on epi scans<br/>
-<b>6) OpenNFT protocol tool that allows for:</b><br/>
+6) OpenNFT protocol tool that allows for:<br/>
    A) Flexible creation and visualization of a NFB protocol that is the user can then save as a .json file<br/>
    B) Loading and subsequent eddititing of pre-exisiting .json protocol file<br/>
    

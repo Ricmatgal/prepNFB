@@ -5,7 +5,7 @@ The tool aims to simplify and automatize the pre NFB steps needed to setup an Op
 It is a combination of my own code as well as a few adapted SPM functions.<br/>
 <br/>
 Several modules are available:
-<b>1) Region of interest tool</b><br/>
+<b>1) Region of interest tool<br/>
   A) Automated and flexible analyses of functional localizer data<br/> 
   B) ROI delineation tool based on SPM contrasts with visualizations<br/>
 <b>2) Automated Motion Correction template creation based on for instance resting state acquisition</b><br/> 

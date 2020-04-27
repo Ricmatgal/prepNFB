@@ -3,6 +3,7 @@ This is a Matlab based toolbox to prepare for and coregister between OpenNFT Neu
 
 The tool aims to simplify and automatize the pre NFB steps needed to setup an OpenNFT based neurofeedback session. The architecture is such that the different modules are launched from one main user interface which is fully adaptable to accomodate any NFB experiment individually. When properly setup, one can run and analyze a functional localizer task within the same scanning session as the first neurofeedback training. As such, regions of interest can be delineated and prepared while the participant is waiting in the scanner for the first NFB run. Furthermore, it allows the user to coregister the ROIs between NFB sessions and to project the coregistration results onto the relevant EPI or structural images for visual quality assessment.
 It is a combination of my own code as well as a few adapted SPM functions.<br/>
+It's a work in progress and more functionalities are planned for the future. If you would have ideas, would like to contribute or have any questions about the toolbox or how to set it up, please contact me at: lucaspeek@live.nl<br/> 
 <br/>
 Several modules are available:
 1) Region of interest tool<br/>
@@ -40,8 +41,6 @@ To run the toolbox with example_session data: <br/>
         <b>(prepNFB/example_session/NFB_project/01/Localizer/beh)</b><br/>
 6) Use the dcm series numbers specified in the txt file 'dcm_sequences.txt' in the rtData folder<br/>
    to direct the toolbox to the right images for each step
-
-For any questions please contact me at: lucaspeek@live.nl<br/> 
 
 <b>Overview prepNFB tool</b>
 ![Overview of prepNFB tool ](https://github.com/lucp88/prepNFB/raw/master/Others/all_features_prepNFB_2.PNG)

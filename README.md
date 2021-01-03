@@ -50,7 +50,7 @@ To run the toolbox with example_session data: <br/>
    to direct the toolbox to the right images for each step
 
 <b>Overview prepNFB tool:</b>
-<br/>short demo: https://youtu.be/bswgG1_mOtE
+* [Short Demo (YouTube)](https://youtu.be/bswgG1_mOtE "Named link title")
 </b></b>![Overview of prepNFB tool ](https://github.com/lucp88/prepNFB/raw/master/Others/all_features_prepNFB_2.PNG)
 <i>Screenshot of the main interface and the different modules available</i>
 

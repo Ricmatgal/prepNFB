@@ -12,7 +12,7 @@ As it's a work in progress more functionalities are planned for the future. If y
 ## prepNFB
 
 <br/>
-Several modules are available:
+Several modules are available:<br/>
 1) Region of interest tool<br/>
   A) Automated and flexible analyses of functional localizer data<br/> 
   B) ROI delineation tool based on SPM contrasts with visualizations<br/>

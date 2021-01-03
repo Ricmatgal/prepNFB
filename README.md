@@ -37,13 +37,13 @@ To run the toolbox with example_session data: <br/>
 2) Open Matlab and set current working directory to: prepNFB-master<br/>
 3) Call the main interface from the Matlab command window by typing <i>'prep_NFB'</i><br/> 
 4) In the main GUI:<br/>
-    a) Specify the project folder: <b>'...\prepNFB-master\example_session\NFB_Project'</b><br/>
+    * Specify the project folder: <b>'...\prepNFB-master\example_session\NFB_Project'</b><br/>
        <i>This is the directory of the NFB project where OpenNFT will expect the subject specific folder strutcure</i><br/>
-    b) The watch folder: <b>'...\prepNFB-master\example_session\rtData\rtMRdata_sess1'</b><br/>
+    * The watch folder: <b>'...\prepNFB-master\example_session\rtData\rtMRdata_sess1'</b><br/>
        <i>This is directory where the MRI images will or have arrive(d) (e.g. rtData folder)</i><br/>
-    c) Save settings<br/>
+    * Save settings<br/>
 5) Initialize a subject (e.g. 01) which will create a subject folder structure in the project folder<br/>
-    a) Put the SPM_onset file <b>(prepNFB/example_session/NFB_project)</b> inside the subject folder:<br/>
+    * Put the SPM_onset file <b>(prepNFB/example_session/NFB_project)</b> inside the subject folder:<br/>
         <b>(prepNFB/example_session/NFB_project/01/Localizer/beh)</b><br/>
         <i>When the toolbox is properly set up the onset file will be automatically created in this directory</i><br/>
 6) Use the dcm series numbers specified in the txt file 'dcm_sequences.txt' in the rtData folder<br/>

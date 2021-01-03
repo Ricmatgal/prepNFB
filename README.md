@@ -13,8 +13,8 @@ For more information on [OpenNFT](https://github.com/OpenNFT/OpenNFT "Named link
 
 Several modules are are currently implemented:<br/>
 1) Region of interest tool<br/>
-  * Automated and flexible analyses of functional localizer data<br/> 
-  *  ROI delineation tool based on SPM contrasts with visualizations<br/>
+    * Automated and flexible analyses of functional localizer data<br/> 
+    * ROI delineation tool based on SPM contrasts with visualizations<br/>
 2) Automated Motion Correction template creation based on for instance resting state acquisition<br/> 
 3) Autmoated .ini file creation</b><br/>
 4) Running PTB experiments and creating experiments parameters<br/>

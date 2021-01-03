@@ -46,8 +46,9 @@ To run the toolbox with example_session data: <br/>
 6) Use the dcm series numbers specified in the txt file 'dcm_sequences.txt' in the rtData folder<br/>
    to direct the toolbox to the right images for each step
 
-<b>Overview prepNFB tool: https://youtu.be/bswgG1_mOtE</b>
-![Overview of prepNFB tool ](https://github.com/lucp88/prepNFB/raw/master/Others/all_features_prepNFB_2.PNG)
+<b>Overview prepNFB tool:</b>
+short demo: https://youtu.be/bswgG1_mOtE</b>
+</b>![Overview of prepNFB tool ](https://github.com/lucp88/prepNFB/raw/master/Others/all_features_prepNFB_2.PNG)
 <i>Screenshot of the main interface and the different modules available</i>
 
 <b>Protocol Manager</b>

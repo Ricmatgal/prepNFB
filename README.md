@@ -16,7 +16,7 @@ Several modules are are currently implemented:<br/>
    * Automated and flexible analyses of functional localizer data<br/> 
    * ROI delineation tool based on SPM contrasts with visualizations<br/>
 2) Automated Motion Correction template creation based on for instance resting state acquisition<br/> 
-3) Automated .ini file creation</b><br/>
+3) Automated openNFT settings file (.ini) creation</b><br/>
 4) Running PTB experiments and creating experiments parameters<br/>
 5) Session to session coregistration with visualization</b><br/>
    * based on structural scans<br/>

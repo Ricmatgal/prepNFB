@@ -13,8 +13,8 @@ For more information on [OpenNFT](https://github.com/OpenNFT/OpenNFT "Named link
 
 Several modules are are currently implemented:<br/>
 1) Region of interest tool<br/>
-    * Automated and flexible analyses of functional localizer data<br/> 
-    * ROI delineation tool based on SPM contrasts with visualizations<br/>
+   * Automated and flexible analyses of functional localizer data<br/> 
+   * ROI delineation tool based on SPM contrasts with visualizations<br/>
 2) Automated Motion Correction template creation based on for instance resting state acquisition<br/> 
 3) Autmoated .ini file creation</b><br/>
 4) Running PTB experiments and creating experiments parameters<br/>
@@ -22,8 +22,8 @@ Several modules are are currently implemented:<br/>
    * based on structural scans<br/>
    * based on epi scans<br/>
 6) OpenNFT protocol tool that allows for:<br/>
-   A) Flexible creation and visualization of a NFB protocol that is the user can then save as a .json file<br/>
-   B) Loading and subsequent eddititing of pre-exisiting .json protocol file<br/>
+   * Flexible creation and visualization of a NFB protocol that is the user can then save as a .json file<br/>
+   * Loading and subsequent eddititing of pre-exisiting .json protocol file<br/>
    
 
 Dependencies: SPM12, JSONLab

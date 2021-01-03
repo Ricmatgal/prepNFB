@@ -11,7 +11,7 @@ For more information on [OpenNFT](https://github.com/OpenNFT/OpenNFT "Named link
 
 ### prepNFB toolbox
 
-Several modules are available:<br/>
+Several modules are are currently implemented:<br/>
 1) Region of interest tool<br/>
   A) Automated and flexible analyses of functional localizer data<br/> 
   B) ROI delineation tool based on SPM contrasts with visualizations<br/>

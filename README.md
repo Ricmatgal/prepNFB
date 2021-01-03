@@ -6,6 +6,7 @@ It is a combination of my own code as well as a few adapted SPM functions.<br/>
 As it's a work in progress more functionalities are planned for the future. If you have ideas, would like to contribute or have any questions about the toolbox or how to set it up, please contact me at: <br/><br/> lucaspeek@live.nl<br/> 
 
 #### OpenNFT ####
+For more information on OpenNFT please visit:
 * [OpenNFT website](http://www.OpenNFT.org "Named link title") 
 * [OpenNFT GitHub](https://github.com/OpenNFT/OpenNFT "Named link title") 
 

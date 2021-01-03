@@ -54,7 +54,7 @@ To run the toolbox with example_session data: <br/>
 * <i>Screenshot of the main interface and the different modules available</i>
 </b>![Overview of prepNFB tool ](https://github.com/lucp88/prepNFB/raw/master/Others/all_features_prepNFB_2.PNG)
 
-* <b>Protocol Manager</b>
+* <b>Protocol Manager</b><br/>
 <i>The protocol manager where users can load and adjust or create a new OpenNFT neurfeedback protocol and save it as a .json file</i><br/>
 ![Protocol Manager](https://github.com/lucp88/prepNFB/raw/master/Others/PRT_manager.PNG)<br/>
 

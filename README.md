@@ -1,12 +1,11 @@
 # prepNFB
-This is a Matlab based toolbox to prepare for and coregister between [OpenNFT](https://github.com/OpenNFT/OpenNFT "Named link title")  Neurofeedback session(s).<br/> 
+This is a Matlab based toolbox to prepare for and coregister between [OpenNFT](https://github.com/OpenNFT/OpenNFT "Named link title") Neurofeedback session(s).<br/> 
 
 The prepNFB toolbox aims to simplify and automatize (some of) the pre NFB steps needed to setup an OpenNFT based neurofeedback session. The architecture is such that the different modules are launched from one main user interface which is fully adaptable to accomodate any NFB experiment individually. When properly setup, one can run and analyze a functional localizer task within the same scanning session as the first neurofeedback training. As such, regions of interest can be delineated and prepared while the participant is waiting in the scanner for the first NFB run. Furthermore, it allows the user to coregister the ROIs between NFB sessions and to project the coregistration results onto the relevant EPI or structural images for visual quality assessment.
 It is a combination of my own code as well as a few adapted SPM functions.<br/>
 As it's a work in progress more functionalities are planned for the future. If you have ideas, would like to contribute or have any questions about the toolbox or how to set it up, please contact me at: <br/><br/> lucaspeek@live.nl<br/> 
 
-#### OpenNFT ####
-For more information on OpenNFT please visit:
+For more information on [OpenNFT](https://github.com/OpenNFT/OpenNFT "Named link title") please visit:
 * [OpenNFT website](http://www.OpenNFT.org "Named link title") 
 * [OpenNFT GitHub](https://github.com/OpenNFT/OpenNFT "Named link title") 
 

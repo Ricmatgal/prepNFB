@@ -48,8 +48,7 @@ To run the toolbox with example_session data: <br/>
 
 <b>Overview prepNFB tool:</b>
 <br/>short demo: https://youtu.be/bswgG1_mOtE
-<br/>
-</b>![Overview of prepNFB tool ](https://github.com/lucp88/prepNFB/raw/master/Others/all_features_prepNFB_2.PNG)
+</b></b>![Overview of prepNFB tool ](https://github.com/lucp88/prepNFB/raw/master/Others/all_features_prepNFB_2.PNG)
 <i>Screenshot of the main interface and the different modules available</i>
 
 <b>Protocol Manager</b>

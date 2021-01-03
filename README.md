@@ -9,10 +9,8 @@ As it's a work in progress more functionalities are planned for the future. If y
 * [OpenNFT website](http://www.OpenNFT.org "Named link title") 
 * [OpenNFT GitHub](https://github.com/OpenNFT/OpenNFT "Named link title") 
 
-## prepNFB
-
 <br/>
-Several modules are available:<br/>
+Several modules are available:
 1) Region of interest tool<br/>
   A) Automated and flexible analyses of functional localizer data<br/> 
   B) ROI delineation tool based on SPM contrasts with visualizations<br/>

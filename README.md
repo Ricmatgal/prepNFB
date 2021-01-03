@@ -2,8 +2,8 @@
 This is a Matlab based toolbox to prepare for and coregister between OpenNFT Neurofeedback session(s).<br/> 
 
 ### OpenNFT ###
-*[OpenNFT website](www.OpenNFT.org "Named link title") 
-*[OpenNFT GitHub](https://github.com/OpenNFT/OpenNFT "Named link title") 
+* [OpenNFT website](www.OpenNFT.org "Named link title") 
+* [OpenNFT GitHub](https://github.com/OpenNFT/OpenNFT "Named link title") 
 
 OpenNFT website:  www.OpenNFT.org <br/> 
 OpenNFT GitHub:   https://github.com/OpenNFT/OpenNFT

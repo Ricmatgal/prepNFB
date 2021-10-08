@@ -1,3 +1,6 @@
+# Note!
+The protocol manager needs to be updated to match the latest developments of OpenNFT
+
 # prepNFB
 This is a Matlab based toolbox to prepare for and coregister between [OpenNFT](https://github.com/OpenNFT/OpenNFT "Named link title") Neurofeedback session(s).<br/> 
 

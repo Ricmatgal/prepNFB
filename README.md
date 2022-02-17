@@ -12,7 +12,7 @@ For more information on [OpenNFT](https://github.com/OpenNFT/OpenNFT "Named link
 * [OpenNFT website](http://www.OpenNFT.org "Named link title") 
 * [OpenNFT GitHub](https://github.com/OpenNFT/OpenNFT "Named link title") 
 
-If you publish the results of a NFB project for which you used this toolbox please refer to this gitHub page. Thanks!
+<b>If you publish the results of a NFB project for which you used this toolbox please refer to this gitHub page. Thanks!</b>
 
 ### prepNFB toolbox
 

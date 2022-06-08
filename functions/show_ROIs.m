@@ -121,7 +121,8 @@ function [roiFinal] = show_ROIs(subinfo, hROI)
 
     % quality check roi superimposed on native T1
     % retrieve t1 name for current sub
-    templ1 = spm_select('FPList', subjStructDir, ['^s' '.*192-01.nii$']);
+%     templ1 = spm_select('FPList', subjStructDir, ['^s' '.*192-01.nii$']);
+    templ1 = spm_select('FPList', subjStructDir, ['^MF' '.*.nii$']);
     
     % visualize
     my_spm_check_registration([{templ1}],{[ROIs]},{}, 1);

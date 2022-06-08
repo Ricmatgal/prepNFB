@@ -133,7 +133,8 @@ for ii = 1:numel(stepNames)
         case 'Realign'
             clear matlabbatch
 
-            f1   = spm_select('List', funcDir, ['^af' '.*\.' rawFormat '$']);
+%             f1   = spm_select('List', funcDir, ['^f' '.*\.' rawFormat '$']);
+            f1   = spm_select('List', funcDir, ['^MF' '.*\.' rawFormat '$']);
             f2  = cellstr([repmat(funcDir,size(f1,1),1) f1]);
             matlabbatch{1}.spm.spatial.realign.estwrite.data = {f2};
 
@@ -167,14 +168,16 @@ for ii = 1:numel(stepNames)
         case 'Coregistration'
 
             % retrieve the structural
-            f1struct        = spm_select('List', subjStructDir, ['^s' '.*192-01.' rawFormat '$']);
+%             f1struct        = spm_select('List', subjStructDir, ['^s' '.*192-01.' rawFormat '$']);
+            f1struct        = spm_select('List', subjStructDir, ['^MF' '.*.' rawFormat '$']);
             f2struct        = cellstr([repmat(subjStructDir,size(f1struct,1),1) f1struct]);
 
             % retrieve the mean EPI image
             mean_image      = spm_select('List', funcDir, ['^mean' '.*\.' rawFormat '$']);
 
             % and the resliced images
-            rsim1   = spm_select('List', funcDir, ['^raf' '.*\.' rawFormat '$']);
+%             rsim1   = spm_select('List', funcDir, ['^rf' '.*\.' rawFormat '$']);
+            rsim1   = spm_select('List', funcDir, ['^rMF' '.*\.' rawFormat '$']);
             rsim2  = cellstr([repmat(funcDir,size(rsim1,1),1) rsim1]);
 
             % define reference (mean EPI) and source (struct)
@@ -216,7 +219,8 @@ for ii = 1:numel(stepNames)
             matlabbatch{1}.spm.spatial.smooth.data = [];
 
             funcDir     = [funcDir filesep];
-            f1   = spm_select('List', funcDir, ['^raf' '.*\.' rawFormat '$']); 
+%             f1   = spm_select('List', funcDir, ['^rf' '.*\.' rawFormat '$']); 
+            f1   = spm_select('List', funcDir, ['^rMF' '.*\.' rawFormat '$']); 
             f2  = cellstr([repmat(funcDir,size(f1,1),1) f1]);
             matlabbatch{1}.spm.spatial.smooth.data = [matlabbatch{1}.spm.spatial.smooth.data; f2];% [matlabbatch{1}.spm.spatial.smooth.data f2];
 
@@ -251,7 +255,8 @@ for ii = 1:numel(stepNames)
                         filesep 'beh' filesep onset_prefix '.mat']; 
 
             multiple_regressors = spm_select('List', funcDir, ['rp_' '.*\.' 'txt' '$']);
-            f3 = spm_select('List', funcDir, ['^sraf' '.*\.' rawFormat '$']);
+%             f3 = spm_select('List', funcDir, ['^srf' '.*\.' rawFormat '$']);
+            f3 = spm_select('List', funcDir, ['^srMF' '.*\.' rawFormat '$']);
             f4  = cellstr([repmat(funcDir,size(f3,1),1) f3]);
 
             matlabbatch{1}.spm.stats.fmri_spec.sess.scans = f4; %{k}                   

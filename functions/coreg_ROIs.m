@@ -183,7 +183,10 @@ function coreg_ROIs(subinfo, coreg)
 
             if coreg.sflag == 1
 
-                subjStruct = coreg.structs{subinfo.session};
+%                 subjStruct = coreg.structs{subinfo.session};
+                subjStruct = coreg.structs{2}; % will always be the second 
+                % entry in this structure by definition of ROIs_available
+                % in opening function of Coreg_ROIs_gui.m
 
                 % define reference (new EPI template) and source (to be coregistered struct) 
                 matlabbatch{1}.spm.spatial.coreg.estimate.ref       = {coreg.refPath};

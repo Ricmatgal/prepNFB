@@ -2,7 +2,7 @@ function varargout = create_ROIs_gui(varargin)
 
 
 
-% Last Modified by GUIDE v2.5 05-Feb-2020 10:11:42
+% Last Modified by GUIDE v2.5 28-Sep-2020 10:11:50
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -23,7 +23,7 @@ else
 end
 % End initialization code - DO NOT EDIT
 
-
+    
 % --- Executes just before create_ROIs_gui is made visible.
 function create_ROIs_gui_OpeningFcn(hObject, eventdata, handles, varargin)
 % This function has no output args, see OutputFcn.
@@ -52,6 +52,8 @@ load([handles.subinfo.statsdir, filesep, 'SPM']);
 % set the contrast names for list box (available contrasts)
 set(handles.lb_contrasts, 'String', {SPM.xCon.name});
 
+clear outcentre outp
+
 % % set first default in lb
 % contents            = cellstr(get(handles.lb_contrasts,'String'));
 % handles.ROInfo.conName = contents{get(handles.lb_contrasts,'Value')};
@@ -71,6 +73,19 @@ try
     varargout{1} = handles.output;
 catch
     close
+end
+
+
+% --- Executes during object creation, after setting all properties.
+function ed_ROInr_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to ed_ROInr (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
 end
 
 
@@ -160,6 +175,29 @@ end
 % handles.ROI.ext_tresh = str2double(get(hObject,'String'));
 guidata(hObject, handles);
 
+function eb_clustSize_Callback(hObject, eventdata, handles)
+% hObject    handle to eb_clustSize (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of eb_clustSize as text
+%        str2double(get(hObject,'String')) returns contents of eb_clustSize as a double
+
+guidata(hObject, handles);
+
+% --- Executes during object creation, after setting all properties.
+function eb_clustSize_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to eb_clustSize (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
 % --- Executes on button press in cb_str.
 function cb_str_Callback(hObject, eventdata, handles)
 
@@ -199,6 +237,15 @@ function pb_show_results_Callback(hObject, eventdata, handles)
     handles.ROInfo.struct      = get(handles.cb_str,'Value');
     handles.ROInfo.epi         = get(handles.cb_epi,'Value');
     
+    % Inquire current cross hair position before showing_contrast_results().
+    % In this function the spm_orthviews is reset so we want to be able to snap
+    % back to the current position. If its the first time it's called and
+    % now window spm_orthviews('Pos') returns 0 0 0.. if a window was open
+    % and now clossed it will return the last recorded position.
+    handles.ROInfo.crosshair    = spm_orthviews('Pos')';
+    handles.ROInfo.ROInr        = str2double(get(handles.ed_ROInr,'String'));
+    
+    % call the show_contrast_results function
     show_contrast_results(handles.subinfo, handles.ROInfo);
     
     % update the ROIinfo structure to contain the contrast info
@@ -210,6 +257,10 @@ function pb_show_results_Callback(hObject, eventdata, handles)
             'ROI_' num2str(handles.ROInfo.conInfo.conNr), filesep...
             'conInfo_ROI_' num2str(handles.ROInfo.conInfo.conNr)], 'ROInfo');
     catch
+        warning('Something went wrong during ROInfo updating')
+        user_fb_update({'Something went wrong during ROInfo updating.';...
+            'This will cause errors in subsequent steps.'},0,2)
+
         return
     end
     
@@ -224,15 +275,26 @@ function pb_save_msk_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles  and user data (see GUIDATA)
 
+    handles.ROInfo.clustSize = str2double(get(handles.eb_clustSize,'String'));
+
     write_clust(handles.subinfo, handles.ROInfo)
     
-    handles.ROInfo.ccoords = outp.centre;
-    handles.ROInfo.path = outp.path;
-    ROInfo = handles.ROInfo;
-    % save updated handles.ROI (overwrite)
-    save([handles.subinfo.roiPath, filesep, 'roiPrep', filesep,...
-        'ROI_' num2str(handles.ROInfo.conInfo.conNr), filesep...
-        'maskInfo_ROI_' num2str(handles.ROInfo.conInfo.conNr)], 'ROInfo');
+    try
+        handles.ROInfo.ccoords  = outp.centre;
+        handles.ROInfo.path     = outp.path;
+        ROInfo                  = handles.ROInfo;
+        
+        set(handles.eb_clustSize,'String', num2str(outp.clustSize))
+        
+        % save updated handles.ROI (overwrite)
+        save([handles.subinfo.roiPath, filesep, 'roiPrep', filesep,...
+            'ROI_' num2str(handles.ROInfo.conInfo.conNr), filesep...
+            'maskInfo_ROI_' num2str(handles.ROInfo.conInfo.conNr)], 'ROInfo');
+    catch
+        return
+    end
+    
+    guidata(hObject, handles);
 
 
 % --- Executes on selection change in lb_ROIs.
@@ -406,3 +468,17 @@ guidata(hObject, handles);
 % --- Executes on button press in pb_create_roi.
 function pb_create_roi_Callback(hObject, eventdata, handles)
     write_ROIs(handles.subinfo, handles.ROInfo)
+
+
+
+
+
+
+function ed_ROInr_Callback(hObject, eventdata, handles)
+% hObject    handle to ed_ROInr (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of ed_ROInr as text
+%        str2double(get(hObject,'String')) returns contents of ed_ROInr as a double
+

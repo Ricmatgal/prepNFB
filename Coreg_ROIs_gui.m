@@ -86,7 +86,8 @@ folderNames = {'Session_01', ['Session_' sprintf('%02d', handles.subinfo.session
         PE = [subPath, filesep, folderNames{ii}, filesep, 'EPI_Template_D1'];   % epi path
 
         % get full path to .nii
-        ROIs_available.Session(ii).struct   = spm_select('FPList', PS, ['^s' '.*192-01.nii$']);
+%         ROIs_available.Session(ii).struct   = spm_select('FPList', PS, ['^s' '.*192-01.nii$']);
+        ROIs_available.Session(ii).struct   = spm_select('FPList', PS, ['^MF' '.*.nii$']);
         ROIs_available.Session(ii).epi      = spm_select('FPList', PE, ['^mean' '.*.nii$']);
     end
 

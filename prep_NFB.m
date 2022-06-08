@@ -22,7 +22,7 @@ function varargout = prep_NFB(varargin)
 
 % Edit the above text to modify the response to help prep_NFB
 
-% Last Modified by GUIDE v2.5 12-Mar-2020 10:35:05
+% Last Modified by GUIDE v2.5 28-Aug-2020 12:52:25
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -49,6 +49,10 @@ function prep_NFB_OpeningFcn(hObject, eventdata, handles, varargin)
     
     % enter debug mode
     dbstop if error
+    
+    % randomize seed for randomazation
+%     rng('shuffle');
+    rand('state',sum(100*clock));
 
     handles.output = hObject;
     handles.watchFolder = '';
@@ -61,7 +65,7 @@ function prep_NFB_OpeningFcn(hObject, eventdata, handles, varargin)
         try
             % set directories
             set(handles.eb_projectFolder, 'String', settings.projFolder);
-            set(handles.eb_watchFolder, 'String', settings.watchFolder); 
+%             set(handles.eb_watchFolder, 'String', settings.watchFolder); 
             
             % set session, runs, and roi NRs
             set(handles.eb_nr_sessions, 'String', settings.NRsessions);
@@ -178,6 +182,26 @@ function pb_initialize_Callback(hObject, eventdata, handles)
 
     guidata(hObject, handles);
     
+% --- Executes on button press in pb_render_stims.
+function pb_render_stims_Callback(hObject, eventdata, handles)
+    info.subID      = get(handles.eb_subjID, 'String');
+    info.projFolder = get(handles.eb_projectFolder,'String');
+    info.session    = get(handles.eb_nr_sessions,'String');
+    info.runs       = get(handles.eb_nr_run,'String');
+    
+    % check if directories are created for the Task Stim
+    dir2write = [info.projFolder, filesep, info.subID, filesep, 'Session_01',...
+                 filesep, 'TaskFolder' ,filesep, 'StimSets'];
+    
+    if isfolder(dir2write)
+        % if the directory exist commence the rendering routine
+        render_images(info)
+    elseif ~isfolder(dir2write)
+        % if the directory doesn't exist do nothing and notify the user
+        user_fb_update({'Sub specific TaskStim directories do not';'exist yet!'},0,2)       
+    end
+    
+    guidata(hObject, handles);
 
 % --- Executes on button press in pb_open_subFolder.
 function pb_open_subFolder_Callback(hObject, eventdata, handles)
@@ -245,7 +269,8 @@ function eb_watchFolder_CreateFcn(hObject, eventdata, handles)
 % --- Executes on button press in pb_browse_watch.
 function pb_browse_watch_Callback(hObject, eventdata, handles)
 
-    watchFolder = uigetdir(get(handles.eb_watchFolder, 'String') ); %'D:\TBV_input'
+%     watchFolder = uigetdir(get(handles.eb_watchFolder, 'String') ); %
+    watchFolder = uigetdir('E:\TBV-input');
     if watchFolder
         handles.watchFolder = watchFolder;
         set(handles.eb_watchFolder, 'String', handles.watchFolder);
@@ -297,7 +322,8 @@ function pb_runLocTask_Callback(hObject, eventdata, handles)
         user_fb_update({'Project Folder does not exist!';'Check path and re-launch'},0, 3)
         return
      else
-        run_offa_loc(subID, projFolder)
+        flicker_RightLeft_ce(subID, projFolder)
+%         run_V1_loc_flicker_fmri(subID, projFolder)
     end
     
 function pb_import_t1_1_Callback(hObject, eventdata, handles)
@@ -309,7 +335,7 @@ function pb_import_t1_1_Callback(hObject, eventdata, handles)
     impT1_1_sn      = get(handles.eb_imp_t1_1_sn, 'String');
 %     
     dicom_imp('struct', subID, watchFolder, projFolder,...
-        impT1_1_sn, 0, 1, 'Session_01', 192);
+        impT1_1_sn, 0, 1, 'Session_01', 1);
 
 function eb_imp_t1_1_sn_Callback(hObject, eventdata, handles)
 
@@ -439,21 +465,21 @@ function pb_task_param_1_Callback(hObject, eventdata, handles)
     subID       = get(handles.eb_subjID, 'String');
     projFolder  = get(handles.eb_projectFolder,'String');
     
-    user_fb_update({'Creating task parameters...'},1,1)
+    user_fb_update({'Not Active...'},1,1)
     
-    creat_fam_param(subID, projFolder, 'Session_01')
-    
-    create_task_param(subID, projFolder, 'Session_01')
+%     creat_fam_param(subID, projFolder, 'Session_01')
+%     
+%     create_task_param(subID, projFolder, 'Session_01')
     
 % --- Executes on button press in pb_run_famTask_1.
 function pb_run_famTask_1_Callback(hObject, eventdata, handles)
     
-    user_fb_update({'Running familiarization task...'},1,1)
+    user_fb_update({'Not Active...'},1,1)
     
     subID       = get(handles.eb_subjID, 'String');
-    projFolder  = get(handles.eb_projectFolder,'String');4
+    projFolder  = get(handles.eb_projectFolder,'String');
     
-    run_fam_task(subID, projFolder, 'Session_01')
+%     run_fam_task(subID, projFolder, 'Session_01')
 
 % ================================================================
 %% ========================== Session > 1 ==========================
@@ -520,7 +546,8 @@ function pb_import_t1_2_Callback(hObject, eventdata, handles)
         getDir    = [projFolder, filesep, subID, filesep, 'Session_01', filesep, 'T1'];
         goDir     = [projFolder, filesep, subID, filesep, ['Session_' currentSession], filesep, 'T1'];
 
-        struct2copy   = spm_select('List', getDir, ['^s' '.*192-01.nii']);
+%         struct2copy   = spm_select('List', getDir, ['^s' '.*192-01.nii']);
+        struct2copy   = spm_select('List', getDir, ['^MF' '.*.nii']);
         
         % check if dir is empty
         if numel(dir(goDir))>2 % skip 2 to take into account two dots..
@@ -636,8 +663,9 @@ function pb_create_ini_2_Callback(hObject, eventdata, handles)
     subID       = get(handles.eb_subjID,'String');
     projFolder  = get(handles.eb_projectFolder, 'String');
     watchFolder = get(handles.eb_watchFolder, 'String'); 
+    sessNR          = get(handles.eb_session,'String');
     
-    create_ini(subID, watchFolder, projFolder, 'Session_02')
+    create_ini(subID, watchFolder, projFolder, ['Session_0' sessNR])
 
 % --- Executes on button press in cb_stimSet1_2.
 function cb_stimSet1_2_Callback(hObject, eventdata, handles)
@@ -665,21 +693,23 @@ function pb_task_param_2_Callback(hObject, eventdata, handles)
     projFolder      = get(handles.eb_projectFolder, 'String');
     sessNR          = get(handles.eb_session,'String');
     
-    user_fb_update({'Creating Task Parameters'},1,1)
+    user_fb_update({'Not Active'},1,1)
     
-    creat_fam_param(subID, projFolder, ['Session_0' sessNR])
+%     creat_fam_param(subID, projFolder, ['Session_0' sessNR])
     
     % create task parameters 
-    create_task_param(subID, projFolder, ['Session_0' sessNR])
+%     create_task_param(subID, projFolder, ['Session_0' sessNR])
 
 % --- Executes on button press in pb_run_famTask_2.
 function pb_run_famTask_2_Callback(hObject, eventdata, handles)
     subID       = get(handles.eb_subjID,'String');
     projFolder  = get(handles.eb_projectFolder, 'String');
+    sessNR      = get(handles.eb_session,'String');
     
-    user_fb_update({'Running Familiarization Task'},1,1)
-    run_fam_task(subID, projFolder, 'Session_02')
-
+    user_fb_update({'Not Active'},1,1)
+    
+%     run_fam_task(subID, projFolder, 'Session_02')
+%     run_fam_task(subID, projFolder, ['Session_0' sessNR])
 
 % --- Executes on button press in pb_quit.
 function pb_quit_Callback(hObject, eventdata, handles)
@@ -745,7 +775,7 @@ function lb_feedback_window_CreateFcn(hObject, eventdata, handles)
     handles.user_fb{9,1} = '=================================';
     handles.user_fb{10,1} = '';
     handles.user_fb{11,1} = ['Project Folder: ' pfolder];
-    handles.user_fb{12,1} = ['Watch Folder: ' wfolder];
+%     handles.user_fb{12,1} = ['Watch Folder: ' wfolder];
     handles.user_fb{13,1} = '';
     % handles.user_fb = {'prepNFB log';datestr(datetime);'---------------------------------';...
     %     ''; '- Enter Subject ID';'- Double check watch folder!';'';'=================================';''};

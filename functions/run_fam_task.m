@@ -2,7 +2,7 @@ function run_fam_task(subID, projFolder, Sess)
 % 
     usingMRI = 0;
     if usingMRI
-        parportAddr = hex2dec('E030');     
+        parportAddr = hex2dec('2FD8');     
         config_io;
         % Set condition code to zero:
         outp(57392, 0);
@@ -27,14 +27,17 @@ function run_fam_task(subID, projFolder, Sess)
     AssertOpenGL();
 
     myscreens = Screen('Screens');
-    screenid = max(myscreens);
+    screenid = 1; %max(myscreens);
 
     if ~fFullScreen
         ptb.Screen.wPtr = Screen('OpenWindow', screenid, [125 125 125], ...
             [40 40 720 720]);
     else
         % full screen
-        ptb.Screen.wPtr = Screen('OpenWindow', screenid, [125 125 125]);
+        % grey background
+%         ptb.Screen.wPtr = Screen('OpenWindow', screenid, [125 125 125]); 
+        % black background 
+          ptb.Screen.wPtr = Screen('OpenWindow', screenid, [0 0 0]);
     end
 
     [w, h] = Screen('WindowSize', ptb.Screen.wPtr);
@@ -79,41 +82,57 @@ function run_fam_task(subID, projFolder, Sess)
     ptb.Screen.option_ry = 300;     % right option    y
 
     % accepted response keys
-    ptb.Screen.leftKey = KbName('1');
-    ptb.Screen.rightKey = KbName('2');
+    ptb.Screen.leftKey  = KbName('1!');
+    ptb.Screen.rightKey = KbName('2@');
 
     % show initial fixation dot
-    ptb.Screen.fix = [w/2-w/150, h/2-w/150, w/2+w/150, h/2+w/150];
+    ptb.Screen.fix      = [w/2-w/150, h/2-w/150, w/2+w/150, h/2+w/150];
+    
     Screen('FillOval', ptb.Screen.wPtr, [255 255 255], ptb.Screen.fix);
-    ptb.Screen.vbl=Screen('Flip', ptb.Screen.wPtr,ptb.Screen.vbl+ptb.Screen.ifi/2);
+    
+    ptb.Screen.vbl = Screen('Flip', ptb.Screen.wPtr,ptb.Screen.vbl+ptb.Screen.ifi/2);
 
     % load task parameters
     load([projFolder, filesep subID, filesep, Sess, filesep, 'TaskFolder', filesep,...
         'stimParams', filesep, 'FAM_task_param_' subID '_' Sess]);
     
+    % rootDir stims
+    rootDirStimSet = [projFolder, filesep, subID, filesep, Sess, filesep,...
+                      'TaskFolder', filesep, 'StimSets', filesep 'BaseSets', filesep, 'Stimuli'];
+         
+    imType = '.png';
+    
     %% Prepare PTB Sprites
-    stimSet = 'Stims_1';            % needs to be made dynamic --> perhaps set in prepNFb gui?
     sz = size(stim_list_final,2); 	% nr of unique images
     Tex = zeros(1,sz);              % initialize pointer matrix
-    face_c = 1;
-    obje_c = 1;
+    face_male_c     = 1;
+    face_female_c   = 1;
+    distr_c         = 1;
     for i = 1:sz
         %select stimulus based on general order and according to class order
         if stim_list_final(1,i) == 1
-    %         target_path = [pwd filesep 'Faces' filesep num2str(face_stims(face_c))];
-            target_path = [projFolder, filesep, 'TaskFolder', filesep, stimSet, filesep, 'Faces',...
-                filesep num2str(stim_list_final(2,i))];
-            face_c = face_c+1;
-            results.condition_order{i} = 'faces';
+
+            target_path                 = [rootDirStimSet, filesep, 'FACES', filesep, 'male'];          
+            face_male_c                 = face_male_c+1;
+            results.condition_order{i}  = 'faces';
+            
         elseif stim_list_final(1,i) == 2
-            target_path = [projFolder, filesep, 'TaskFolder', filesep, stimSet, filesep, 'Animals',...
-                filesep, num2str(stim_list_final(2,i))];
-            obje_c = obje_c +1;
-            results.condition_order{i} = 'animals';
+            
+            target_path                 = [rootDirStimSet, filesep, 'FACES', filesep, 'female'];
+            face_female_c               = face_female_c+1;
+            results.condition_order{i}  = 'faces';
+            
+        elseif stim_list_final(1,i) == 3
+            
+            target_path                 = [rootDirStimSet, filesep, 'OTHER'];
+            distr_c                     = distr_c +1;
+            results.condition_order{i}  = 'other';
+            
         end
 
-        currimg = char(fullfile([target_path filesep '0.bmp']));    % 0 is original image
+        currimg = char(fullfile([target_path, filesep, num2str(stim_list_final(2,i)), imType]));
         imgArr = imread(currimg);
+        imgArr = imresize(imgArr,2); % resize image 
         
         Tex(1,i) = Screen('MakeTexture', ptb.Screen.wPtr, imgArr);
         clear imgArr % to be sure
@@ -121,17 +140,17 @@ function run_fam_task(subID, projFolder, Sess)
 
     % text font, size and style
     Screen('TextFont',ptb.Screen.wPtr, 'Courier New');
-    Screen('TextSize', ptb.Screen.wPtr, 18);
+    Screen('TextSize', ptb.Screen.wPtr, 32);
     Screen('TextStyle',ptb.Screen.wPtr, 3);
     
     % fixation cross
     Screen('DrawLines', ptb.Screen.wPtr, ptb.Screen.allCoords,...
-    4, 1, [ptb.Screen.xCenter ptb.Screen.yCenter], 2);
+    4, [], [ptb.Screen.xCenter ptb.Screen.yCenter], 2);
     Screen('Flip', ptb.Screen.wPtr);
 
     % initialize some matrixes
-    trialOns = zeros(size(stim_list_final,2));
-    respVec  = zeros(size(stim_list_final,2));
+    trialOns = zeros(size(stim_list_final,2),1);
+    respVec  = zeros(size(stim_list_final,2),1);
     
     % wait for MRI trigger
     wait4me = 0;
@@ -139,9 +158,9 @@ function run_fam_task(subID, projFolder, Sess)
        [keyIsDown, secs, keyCode]=KbCheck;
         rsp=KbName(keyCode);
         if ~(isempty(rsp))
-            if rsp=='5%'
+            if strcmp(rsp,'5%')==1 %'rsp=='5%'
                 wait4me=1;
-                Xstart=GetSecs;
+                Xstart=GetSecs
             end
         end
     end
@@ -151,16 +170,16 @@ function run_fam_task(subID, projFolder, Sess)
     %==========================================================================
 
     % show intro screen: ('press space to start')
-    DrawFormattedText(ptb.Screen.wPtr, 'Press the button the same image repeats twice!', 'center', 'center', 0);
+    DrawFormattedText(ptb.Screen.wPtr, 'Press the button when the same image repeats twice!', 'center', 'center', [255 255 255]);
     Screen('Flip',ptb.Screen.wPtr);
     WaitSecs(5);
     
     expOns = GetSecs;                                       % mark experiment onset
     for trial = 1:size(stim_list_final,2) 
-        trialOns(trial) = GetSecs - expOns;
+        trialOns(trial,1) = GetSecs - expOns;       
         
        	% start listening to key input
-        KbQueueCreate();
+        KbQueueCreate();    
         KbQueueStart();
         
         waitframes = 1;
@@ -205,7 +224,7 @@ function run_fam_task(subID, projFolder, Sess)
     save([projFolder, filesep subID, filesep, Sess, filesep, 'TaskFolder', filesep,...
         'taskResults', filesep, 'FAM_task_results_' subID '_' Sess])
     
-    DrawFormattedText(ptb.Screen.wPtr, 'Thank you!', 'center', 'center', 0);
+    DrawFormattedText(ptb.Screen.wPtr, 'Thank you!', 'center', 'center', [255 255 255]);
     Screen('Flip',ptb.Screen.wPtr);
     WaitSecs(5);
     sca;

@@ -7,12 +7,12 @@ function show_contrast_results(subinfo, ROI)
     
     % load SPM.mat 
     load([statsdir, filesep, 'SPM.mat']);
-    
+
     %  open or get spm's graphic window
     Fgraph = spm_figure('GetWin','Graphics'); % opens or activates new spm graphics window
     spm_figure('Clear','Graphics');  % if already open it clears the window
     spm_orthviews('Reset');          % resetting the orthogonal view  
-
+    
     % get con info from SPM.mat file
     xX   = SPM.xX;                      %-Design definition structure
     XYZ  = SPM.xVol.XYZ;                %-XYZ coordinates
@@ -154,7 +154,8 @@ function show_contrast_results(subinfo, ROI)
 %     hMIPax = spm_mip_ui(Z,XYZmm,M,DIM,hMIPax,units); 
   
     if ROI.struct == 1
-        img = spm_select('FPList', subinfo.subjStructDir, ['^s' '.*192-01.nii$']);
+%         img = spm_select('FPList', subinfo.subjStructDir, ['^s' '.*192-01.nii$']);
+        img = spm_select('FPList', subinfo.subjStructDir, ['^MF' '.*.nii$']);
         if isempty(img)
             fprintf('\n');                                                  %-#
             user_fb_update({'No T1 template found. Check: '; subinfo.subjStructDir},0,3)
@@ -199,7 +200,10 @@ function show_contrast_results(subinfo, ROI)
     conInfo.u = u;
     conInfo.k = k;
     conInfo.conName = SPM.xCon(Ic).name;
-    conInfo.conNr = Ic;
+    % use this when you want to follow the contrast
+    % number - only works if you have a contrast for each ROI
+% %     conInfo.conNr = Ic; 
+    conInfo.conNr = ROI.ROInr; % otherwise use user input..
     
     % assign conInfo struct to caller ws (create_ROIs_gui.m)
     assignin('caller', 'conInfo', conInfo);
@@ -207,6 +211,10 @@ function show_contrast_results(subinfo, ROI)
 %     save([roiPath, filesep, 'roiPrep', filesep,'conInfo_ROI_' num2str(Ic)], 'conInfo');
     
     my_spm_orthviews('Redraw');
+    
+    % snap back cross hair to last position before orthsviews reset on top
+    spm_orthviews('Reposition',ROI.crosshair);    
+
     
    
 

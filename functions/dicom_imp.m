@@ -21,7 +21,7 @@ if s_flag
         end
     end
     
-    s1   = spm_select('FPList',watchFolder,['001_0000' imSer '_^*.']);
+    s1   = spm_select('FPList',watchFolder,['004_0000' imSer '_000^*.']);
    
     if ~isempty(s1) && size(s1,1) == expNrIms    
         spm_jobman('initcfg')
@@ -33,8 +33,9 @@ if s_flag
         matlabbatch{1}.spm.util.import.dicom.convopts.format = 'nii';
         matlabbatch{1}.spm.util.import.dicom.convopts.icedims = 0;
         
-        ffn = spm_select('List',watchFolder,['001_0000' imSer '_^*.']);
-        user_fb_update({'Importing Filenames:'; ffn(1,:);ffn(2,:);ffn(3,:);'.';'.';ffn(end-1,:);ffn(end,:)},0,1)        
+        ffn = spm_select('List',watchFolder,['004_0000' imSer '_000^*.']);
+%         user_fb_update({'Importing Filenames:'; ffn(1,:);ffn(2,:);ffn(3,:);'.';'.';ffn(end-1,:);ffn(end,:)},0,1)     
+        user_fb_update({'Importing Filename:'; ffn(1,:);'.';'.'},0,1)  
 
         spm_jobman('run', matlabbatch);
         user_fb_update({'Dicom import completed'}, 0, 4)
@@ -45,7 +46,8 @@ if s_flag
 %             [expDir2, filesep, spm_select('List', expDir, ['^s' '.*192-01.nii$'])]);
         
         % set origin
-        spm_image('Display', spm_select('FPList', [expDir, filesep], ['^s' '.*192-01.nii$']));
+%         spm_image('Display', spm_select('FPList', [expDir, filesep], ['^s' '.*192-01.nii$']));
+        spm_image('Display', spm_select('FPList', [expDir, filesep], ['^MF' '.*.nii$']));
     elseif isempty(s1)
         user_fb_update({'Import: No structural images found'; 'check watchfolder/dicom nr!'},0, 3)
         imported_flag = 0;
@@ -76,7 +78,7 @@ if f_flag
             
             return
         end
-        f1   = spm_select('FPList',watchFolder,['001_0000' imSer '_^*.']);
+        f1   = spm_select('FPList',watchFolder,['004_0000' imSer '_^*.']);
         
     elseif strcmp(sequence, 'RestingState') == 1
         expDir    = [projFolder, filesep, subID, filesep, Sess, filesep, 'RestingState'];
@@ -94,7 +96,7 @@ if f_flag
             
             return
         end
-        f1   = spm_select('FPList',watchFolder,['001_0000' imSer '_^*.']);
+        f1   = spm_select('FPList',watchFolder,['004_0000' imSer '_^*.']);
         
         if size(f1,1) >= (expNrIms + volumes2skip + 1)
             % skip first couple of volumes to take into account t1
@@ -112,7 +114,7 @@ if f_flag
         matlabbatch{1}.spm.util.import.dicom.convopts.format = 'nii';
         matlabbatch{1}.spm.util.import.dicom.convopts.icedims = 0;
         
-        ffn = spm_select('List',watchFolder,['001_0000' imSer '_^*.']);
+        ffn = spm_select('List',watchFolder,['004_0000' imSer '_^*.']);
         
         user_fb_update({'Importing Filenames:'; ffn(1,:);ffn(2,:);ffn(3,:);'.';'.';ffn(end-1,:);ffn(end,:)},0,1)        
 

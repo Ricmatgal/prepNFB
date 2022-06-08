@@ -1,1 +1,1 @@
-matlab -nosplash -r "cd('D:\LABNIC\PEEKACHU\prepNFB\'); prep_NFB"
+matlab -nosplash -r "cd('D:\LABNIC\EDEA\prepNFB'); prep_NFB"

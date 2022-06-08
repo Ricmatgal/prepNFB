@@ -19,16 +19,17 @@ if import_flag == 0
     return
 end
 
-nr_slices = 35;
-TR = 2;
+% Hard coded. Make sure these correspond to the sequence specs
+nr_slices = 44;
+TR = 0.8;
 TA = TR - (TR/nr_slices);
 SO = [nr_slices:-1:1];  
 RS = floor(nr_slices/2);
 
 if subinfo.old_struct == 1
-    steps = {'slice_timing', 'realign'}; %, 'coreg'
+    steps = {'realign'}; %, 'coreg'
 elseif subinfo.new_struct == 1
-    steps = {'slice_timing', 'realign', 'coreg'}; %, 'coreg'
+    steps = {'realign', 'coreg'}; %, 'coreg'
 end
 message{1,1} = 'SETTINGS';
 message{2,1} = ['Slices: ' num2str(nr_slices)];
@@ -62,7 +63,8 @@ for ii = 1:length(steps)
         case 'slice_timing'
             clear matlabbatch
 
-            f1   = spm_select('List', funcDir, ['^f' '.*\.' rawFormat '$']);
+%             f1   = spm_select('List', funcDir, ['^f' '.*\.' rawFormat '$']);
+            f1   = spm_select('List', funcDir, ['^MF' '.*\.' rawFormat '$']);
             f2  = cellstr([repmat(funcDir,size(f1,1),1) f1]);
 
             matlabbatch{1}.spm.temporal.st.scans = {f2}; 
@@ -98,7 +100,8 @@ for ii = 1:length(steps)
         case 'realign'
             clear matlabbatch
 
-            f1   = spm_select('List', funcDir, ['^af' '.*\.' rawFormat '$']);
+%             f1   = spm_select('List', funcDir, ['^f' '.*\.' rawFormat '$']);
+            f1   = spm_select('List', funcDir, ['^MF' '.*\.' rawFormat '$']);
             f2  = cellstr([repmat(funcDir,size(f1,1),1) f1]);
             matlabbatch{1}.spm.spatial.realign.estwrite.data = {f2};
 
@@ -135,7 +138,8 @@ for ii = 1:length(steps)
         case 'coreg'
 
             % retrieve the structural
-            f1struct        = spm_select('List', subjStructDir, ['^s' '.*192-01.' rawFormat '$']);
+%             f1struct        = spm_select('List', subjStructDir, ['^s' '.*192-01.' rawFormat '$']);
+            f1struct        = spm_select('List', subjStructDir, ['^MF' '.*.' rawFormat '$']);
             f2struct        = cellstr([repmat(subjStructDir,size(f1struct,1),1) f1struct]);
 
             % retrieve the mean EPI image
@@ -145,7 +149,7 @@ for ii = 1:length(steps)
             mean_image_loc      = spm_select('List', funcDir_loc, ['^mean' '.*\.' rawFormat '$']); 
             
             % and the resliced images
-            rsim1   = spm_select('List', funcDir, ['^raf' '.*\.' rawFormat '$']);
+            rsim1   = spm_select('List', funcDir, ['^rf' '.*\.' rawFormat '$']);
             rsim2  = cellstr([repmat(funcDir,size(rsim1,1),1) rsim1]);
 
             % define reference (mean EPI) and source (struct)
@@ -180,7 +184,8 @@ for ii = 1:length(steps)
             matlabbatch{1}.spm.spatial.smooth.data = [];
 
             funcDir     = [funcDir filesep];
-            f1   = spm_select('List', funcDir, ['^raf' '.*\.' rawFormat '$']); 
+%             f1   = spm_select('List', funcDir, ['^rf' '.*\.' rawFormat '$']); 
+            f1   = spm_select('List', funcDir, ['^rMF' '.*\.' rawFormat '$']); 
             f2  = cellstr([repmat(funcDir,size(f1,1),1) f1]);
             matlabbatch{1}.spm.spatial.smooth.data = [matlabbatch{1}.spm.spatial.smooth.data; f2];% [matlabbatch{1}.spm.spatial.smooth.data f2];
 

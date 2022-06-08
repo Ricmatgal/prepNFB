@@ -7,7 +7,7 @@ function mkSubDir(info)
     runs        = info.runs;       
     rois        = info.rois;       
     
-if ~exist([projFolder, filesep, subID])
+if ~exist([projFolder, filesep, subID], 'dir')
     
     mkdir([projFolder, filesep, subID])
     
@@ -15,11 +15,14 @@ if ~exist([projFolder, filesep, subID])
     subRootPath = [projFolder, filesep, subID];
     
     % make localizer directories
-    mkdir([projFolder, filesep, subID, filesep, 'Localizer']);
-    mkdir([projFolder, filesep, subID, filesep, 'Localizer', filesep, 'func']);
-    mkdir([projFolder, filesep, subID, filesep, 'Localizer', filesep, 'stats']);
-    mkdir([projFolder, filesep, subID, filesep, 'Localizer', filesep, 'ROIs']);
-    mkdir([projFolder, filesep, subID, filesep, 'Localizer', filesep, 'beh']);
+    mkdir([subRootPath, filesep, 'Localizer']);
+    mkdir([subRootPath, filesep, 'Localizer', filesep, 'func']);
+    mkdir([subRootPath, filesep, 'Localizer', filesep, 'stats']);
+    mkdir([subRootPath, filesep, 'Localizer', filesep, 'ROIs']);
+    mkdir([subRootPath, filesep, 'Localizer', filesep, 'beh']);
+    
+    % EyeTracker file Directory
+    mkdir([subRootPath, filesep, 'EyeTracker']); 
     
     % for speficfied nr of sessions
     for this_session = 1:str2double(sessions)
@@ -50,9 +53,14 @@ if ~exist([projFolder, filesep, subID])
         mkdir([subRootPath, filesep, 'Session_' sess_str, filesep, 'T1']);
         mkdir([subRootPath, filesep, 'Session_' sess_str, filesep, 'RestingState']);
 
-        % task folders
+        % task related folders
         mkdir([subRootPath, filesep, 'Session_' sess_str, filesep, 'TaskFolder', filesep 'stimParams']);
         mkdir([subRootPath, filesep, 'Session_' sess_str, filesep, 'TaskFolder', filesep 'taskResults']);
+        mkdir([subRootPath, filesep, 'Session_' sess_str, filesep, 'TaskFolder', filesep, 'StimSets']);
+        mkdir([subRootPath, filesep, 'Session_' sess_str, filesep, 'TaskFolder', filesep, 'StimSets', filesep, 'BaseSets']);
+        mkdir([subRootPath, filesep, 'Session_' sess_str, filesep, 'TaskFolder', filesep, 'StimSets', filesep, 'BaseSets', filesep, 'Renderings']);
+        mkdir([subRootPath, filesep, 'Session_' sess_str, filesep, 'TaskFolder', filesep, 'StimSets', filesep, 'BaseSets', filesep, 'Stimuli']);
+        mkdir([subRootPath, filesep, 'Session_' sess_str, filesep, 'TaskFolder', filesep, 'StimSets', filesep, 'TaskStims']);
 
     end
     

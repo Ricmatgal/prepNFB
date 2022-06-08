@@ -776,9 +776,9 @@ for i=1:numel(st.callback)
         eval(st.callback{i});
     end
 end
-outcentre = st.centre;
-save outcentre outcentre
-assignin('base', 'outcentre', st.centre);
+% outcentre = st.centre;
+% save outcentre outcentre
+% assignin('base', 'outcentre', st.centre);
 
 
 

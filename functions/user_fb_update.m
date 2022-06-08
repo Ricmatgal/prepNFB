@@ -42,7 +42,8 @@ function user_fb_update(message, main_module_flag,color_flag)
     % if just a normal message 
     if main_module_flag == 0 && (color_flag == 1 || color_flag == 4)
         user_fb = [user_fb; message_a; '  ']; 
-    % if error message
+        
+    % if warning message
     elseif main_module_flag == 0 && color_flag == 2
         t = [pre rgb2Hex(color) '">' [t '!!!'] post];
         dashes = [pre rgb2Hex(color) '">' '----------------------------------------' post];
@@ -55,13 +56,18 @@ function user_fb_update(message, main_module_flag,color_flag)
         dashes = [pre rgb2Hex(color) '">' '----------------------------------------' post];
         
         user_fb = [user_fb; t; dashes ;message_a; dashes;'  '];
+        
     % if title message of a main action
     elseif main_module_flag == 1
         dashes = [pre rgb2Hex(color) '">' '----------------------------------------' post];
         
 %         user_fb = [user_fb; t; dashes ;message_a; '  '];
-        message_b = [pre rgb2Hex(color) '">' [t message_a{:}] post];
-        user_fb = [user_fb; message_b; dashes;  '  '];
+        message_b = [pre rgb2Hex(color) '">' [t message_a{1}] post];
+        message_c = {};
+        if size(message_a,1)>1
+             message_c = [message_c; message_a(2:end)];
+        end
+        user_fb = [user_fb; message_b; dashes; message_c; dashes;  '  '];
     end
     
     handles.lb_feedback_window=findall(0,'tag','fb_window');

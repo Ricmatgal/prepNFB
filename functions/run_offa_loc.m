@@ -22,7 +22,7 @@ function run_offa_loc(subID, projFolder)
 
 usingMRI = 1;
 if usingMRI
-    parportAddr = hex2dec('E030');     
+    parportAddr = hex2dec('2FD8');     
     config_io;
     % Set condition code to zero:
     outp(57392, 0);
@@ -83,7 +83,7 @@ Screen('Preference', 'ConserveVRAM', 64);
 AssertOpenGL();
 
 myscreens = Screen('Screens');
-screenid = max(myscreens);
+screenid = 1;%max(myscreens);
 
 fFullScreen = 1;
 if ~fFullScreen
@@ -128,7 +128,7 @@ ptb.Screen.allCoords                        = [ptb.Screen.xCoords; ptb.Screen.yC
 ptb.Screen.fix = [w/2-w/150, h/2-w/150, w/2+w/150, h/2+w/150];
 
 % accepted response keys
-ptb.Screen.respKey = KbName('1');
+ptb.Screen.respKey = KbName('1!');
     
 % Intro screen with instructions
 line1 = 'INSTRUCTIONS';
@@ -147,7 +147,7 @@ while wait4me == 0
    [keyIsDown, secs, keyCode]=KbCheck;
     rsp=KbName(keyCode);
     if ~(isempty(rsp))
-        if rsp=='5%'
+        if strcmp(rsp,'5%')==1 % rsp=='5%'
             wait4me=1;
             startIRM=GetSecs;
         end
@@ -160,7 +160,7 @@ if usingMRI
     wait(200);
     outp(parportAddr, 0);
 end
-
+tic;
 for i = 1: nb_bloc  % one bloc here, is one "block" of each type, (so it is 4 blocks of 10 picture)
     
     %start the loop for display pictures
@@ -334,7 +334,7 @@ for i = 1: nb_bloc  % one bloc here, is one "block" of each type, (so it is 4 bl
     end %of for j
     
 end %of for i
-
+toc
 Screen('Flip',ptb.Screen.wPtr);
 WaitSecs(interB);
 

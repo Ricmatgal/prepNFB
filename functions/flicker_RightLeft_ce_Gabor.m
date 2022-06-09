@@ -1,4 +1,5 @@
-function [ifi,waitframes,onsets]=flicker_RightLeft_ce(subID, projFolder)
+function [ifi,waitframes,onsets]=flicker_RightLeft_ce_Gabor(subID, projFolder)
+
 % Clear the workspace and the screen
 rootPath     = pwd; % needs to be dir where prep_NFB is run from.. if run as intended this should not be a problem.
 imPath       = [rootPath, filesep, 'Images_Localizer', filesep];
@@ -23,31 +24,47 @@ grey = white / 2;
 
 % Open an on screen window using PsychImaging and color it grey. REMOVE
 % NUMBERS IF YOU WANT FULL SCREEN
-[window, windowRect]           = PsychImaging('OpenWindow', screenNumber, grey, []);
 
+fullscreen = 1;
+
+if fullscreen 
+    [window, windowRect]           = Screen('OpenWindow', screenNumber, black, []);
+else
+    [window, windowRect]           = Screen('OpenWindow', screenNumber, black, [40 40 640 520]);
+end
 
 
 ifi = Screen('GetFlipInterval', window);
 
-maindir    ='C:\Users\mazzetti\Google Drive\Psychtoolbox_scripts\openNFT_SCRIPTS\prepNFB-master\functions\';
+maindir    ='C:\Users\gallir\Documents\python\gabor_images\'; % just for debugging
 [screenXpixels, screenYpixels] = Screen('WindowSize', window);% Get the size of the on screen window
 [xCenter, yCenter]             = RectCenter(windowRect);% Get the centre coordinate of the window
 
+filenames = dir(maindir);
+filenames = {filenames([filenames.isdir] == 0).name};
 
 fignum = 2;
 yPos   = yCenter;
 xPos   = linspace(screenXpixels * 0.2, screenXpixels * 0.8, fignum); % create position of figures (depending of how many figures drawn this line divides x coord accordingly into equally spaced parts)
 
-stimuli    = [maindir,filesep, 'stimuli', filesep];
-[wheel_image,~, alphawheel]   = imread([imPath ,'wheel_concentric.png']);
-wheel_image(:,:,4)            = alphawheel;
-our_texture   = Screen('MakeTexture', window, wheel_image);
-present_time = 15; %10 secs left and right
+gabor_images = cell(0);
+alpha_gabor_images = cell(0);
+our_textures = cell(0);
+
+for filename = filenames
+    [gabor_images{end+1},~, alpha_gabor_images{end+1}]   = imread([maindir,filename{1,1}]);
+end
+
+for gabor = gabor_images
+    our_textures{end+1}   = Screen('MakeTexture', window, gabor{1,1});
+end
+
+present_time = 15; % 10 secs left and right
 
 baseRect = [0 0 400 400];
 
 %% rectangle for wheel - including scaling of image with proportions kept
-[s1, s2, s3]      = size(wheel_image);
+[s1, s2, s3]      = size(gabor_images{1,1});
 aspectratio   = s2/s1; %to preserve aspect ratio and not stretch image when resizing
 % We will set the height of each drawn image to a fraction of the screens height
 heightScalers = 0.3;
@@ -62,8 +79,6 @@ for i = 1:2
     theRect         = [0 0 imageWidths imageHeights]; % dimension of rectangle where to display image
     dstRects1(:, i) = CenterRectOnPointd(theRect, xPos(i), yPos);
 end
-
-
 
 centeredRect = CenterRectOnPointd(baseRect, xCenter+300, yCenter);
 rectColor1 = [0 0 1];
@@ -89,15 +104,10 @@ lineWidthPix = 4;
 topPriorityLevel = MaxPriority(window);
 Priority(topPriorityLevel);
 
-%% Flip duration
-% Here we use to a waitframes number greater then 1 to flip at a rate not
-% equal to the monitors refreash rate. For this example, once per second,
-% to the nearest frame
-flipSecs = 0.05;% half of the freq
-waitframes = round(flipSecs / ifi);
 
 
 %% wait for MRI trigger
+disp('waiting for MRI trigger')
 wait4me = 0;
 while wait4me == 0
     [keyIsDown, secs, keyCode]=KbCheck;
@@ -112,7 +122,7 @@ end
 
 
 %% MRI SETTINGS
-usingMRI = 1;
+usingMRI = 0;
 if usingMRI
     parportAddr = hex2dec('2FD8');
     config_io;
@@ -130,45 +140,46 @@ pres_sequence = [1 1 2 1 2 2 2 1 2 1 1 2 2 1 2 1 2 1 2 1 2]; %1=left, 2=right
 for j=pres_sequence
     % Flip outside of the loop to get a time stamp
     vbl = Screen('Flip', window);
-    
     t0=clock;
-    triggerset =0; %set to zero at the beginning and turns to 1 at the end of the loop otherwise i send trigger at every flicker rate
+    triggerset  = 0; %set to zero at the beginning and turns to 1 at the end of the loop otherwise i send trigger at every flicker rate
+
     while etime(clock, t0) < present_time
-        
-        
-        Screen('DrawLines', window, CROSSCoords,...
-            lineWidthPix, white, [xCenter yCenter], 2);
-        tv1 = Screen('AsyncFlipEnd', window);
-        Screen('DrawTextures', window, our_texture, [],...
-            dstRects1(:, j), [], [], []);
-        
-        Screen('AsyncFlipBegin', window, tv1 + ifi/2);
-        flip_time = GetSecs;
+
+        for texture = our_textures
+    %         tv1 = Screen('AsyncFlipEnd', window);
+            Screen('DrawTextures', window, texture{1,1}, [],...
+                dstRects1(:, j), [], [], []);
+            Screen('DrawLines', window, CROSSCoords,...
+             lineWidthPix, [255 255 255], [xCenter yCenter], 0);
+            vbl = Screen('Flip', window);
+            flip_time = GetSecs;
+            WaitSecs(round(present_time/length(our_textures),1)); % 15 second total, 63 stimuli
+
         if triggerset == 0
             switch j %(presentation sequence , 1:left, 2:right)
                 case 1 %left
                     counterleft=counterleft+1;
                     ons(j,counterleft)=(flip_time-startIRM);fprintf(['\n FLIP TIME HERE'])
-                    % Send a trigger to biopac in line 1 - left cue
-                  
-                    'CASE 1'
-                    outp(parportAddr,1);
-                    wait(50);
-                    outp(parportAddr,0);
-%                     
+                    % Send a trigger to biopac in line 1 - left cue              
+%                     'CASE 1'
+%                     outp(parportAddr,1);
+%                     wait(50);
+%                     outp(parportAddr,0);             
                 case 2%right
                     counterright=counterright+1;
                     ons(j,counterright)=(flip_time-startIRM);fprintf(['\n FLIP TIME HERE'])
                     % Send a trigger to biopac in line 2 - right cue
-                     'CASE 2'
-                    outp(parportAddr,2); 
-                    wait(50);
-                    outp(parportAddr,0);
+%                      'CASE 2'
+%                     outp(parportAddr,2); 
+%                     wait(50);
+%                     outp(parportAddr,0);
             end
         end
-        
-        vbl = Screen('Flip', window, vbl + (waitframes - 0.3) * ifi);
+  
         triggerset=1;
+
+        end
+
     end
     
     % Draw the fixation cross in white, set it to the center of our screen and
@@ -196,5 +207,5 @@ fprintf(['SPM_onset file saved in: ', '%s\n'],rootPathData)
 % Clear the screen.
 sca;
 
-end
 
+end

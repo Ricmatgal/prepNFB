@@ -322,7 +322,8 @@ function pb_runLocTask_Callback(hObject, eventdata, handles)
         user_fb_update({'Project Folder does not exist!';'Check path and re-launch'},0, 3)
         return
      else
-        flicker_RightLeft_ce(subID, projFolder)
+%         flicker_RightLeft_ce(subID, projFolder)
+        flicker_RightLeft_ce_Gabor(subID, projFolder)
 %         run_V1_loc_flicker_fmri(subID, projFolder)
     end
     

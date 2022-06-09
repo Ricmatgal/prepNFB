@@ -1,4 +1,5 @@
-function [ifi,waitframes,onsets]=flicker_RightLeft_ce(subID, projFolder)
+function [ifi,waitframes,onsets]=flicker_RightLeft_ce_Gabor(subID, projFolder)
+
 % Clear the workspace and the screen
 rootPath     = pwd; % needs to be dir where prep_NFB is run from.. if run as intended this should not be a problem.
 imPath       = [rootPath, filesep, 'Images_Localizer', filesep];
@@ -23,31 +24,39 @@ grey = white / 2;
 
 % Open an on screen window using PsychImaging and color it grey. REMOVE
 % NUMBERS IF YOU WANT FULL SCREEN
-[window, windowRect]           = PsychImaging('OpenWindow', screenNumber, grey, []);
-
-
+[window, windowRect]           = Screen('OpenWindow', screenNumber, black, [40 40 640 520]);
 
 ifi = Screen('GetFlipInterval', window);
 
-maindir    ='C:\Users\mazzetti\Google Drive\Psychtoolbox_scripts\openNFT_SCRIPTS\prepNFB-master\functions\';
+maindir    ='C:\Users\gallir\Github\prepNFB_EDEA\Images_Localizer\gabor_wheels\'; % just for debugging
 [screenXpixels, screenYpixels] = Screen('WindowSize', window);% Get the size of the on screen window
 [xCenter, yCenter]             = RectCenter(windowRect);% Get the centre coordinate of the window
 
+filenames = dir(maindir);
+filenames = {filenames([filenames.isdir] == 0).name};
 
 fignum = 2;
 yPos   = yCenter;
 xPos   = linspace(screenXpixels * 0.2, screenXpixels * 0.8, fignum); % create position of figures (depending of how many figures drawn this line divides x coord accordingly into equally spaced parts)
 
-stimuli    = [maindir,filesep, 'stimuli', filesep];
-[wheel_image,~, alphawheel]   = imread([imPath ,'wheel_concentric.png']);
-wheel_image(:,:,4)            = alphawheel;
-our_texture   = Screen('MakeTexture', window, wheel_image);
-present_time = 15; %10 secs left and right
+gabor_images = cell(0);
+alpha_gabor_images = cell(0);
+our_textures = cell(0);
+
+for filename = filenames
+    [gabor_images{end+1},~, alpha_gabor_images{end+1}]   = imread([maindir,filename{1,1}]);
+end
+
+for gabor = gabor_images
+    our_textures{end+1}   = Screen('MakeTexture', window, gabor{1,1});
+end
+
+present_time = 15; % 10 secs left and right
 
 baseRect = [0 0 400 400];
 
 %% rectangle for wheel - including scaling of image with proportions kept
-[s1, s2, s3]      = size(wheel_image);
+[s1, s2, s3]      = size(gabor_images{1,1});
 aspectratio   = s2/s1; %to preserve aspect ratio and not stretch image when resizing
 % We will set the height of each drawn image to a fraction of the screens height
 heightScalers = 0.3;
@@ -62,8 +71,6 @@ for i = 1:2
     theRect         = [0 0 imageWidths imageHeights]; % dimension of rectangle where to display image
     dstRects1(:, i) = CenterRectOnPointd(theRect, xPos(i), yPos);
 end
-
-
 
 centeredRect = CenterRectOnPointd(baseRect, xCenter+300, yCenter);
 rectColor1 = [0 0 1];
@@ -89,12 +96,6 @@ lineWidthPix = 4;
 topPriorityLevel = MaxPriority(window);
 Priority(topPriorityLevel);
 
-%% Flip duration
-% Here we use to a waitframes number greater then 1 to flip at a rate not
-% equal to the monitors refreash rate. For this example, once per second,
-% to the nearest frame
-flipSecs = 0.05;% half of the freq
-waitframes = round(flipSecs / ifi);
 
 
 %% wait for MRI trigger
@@ -112,7 +113,7 @@ end
 
 
 %% MRI SETTINGS
-usingMRI = 1;
+usingMRI = 0;
 if usingMRI
     parportAddr = hex2dec('2FD8');
     config_io;
@@ -130,12 +131,12 @@ pres_sequence = [1 1 2 1 2 2 2 1 2 1 1 2 2 1 2 1 2 1 2 1 2]; %1=left, 2=right
 for j=pres_sequence
     % Flip outside of the loop to get a time stamp
     vbl = Screen('Flip', window);
-    
     t0=clock;
     triggerset =0; %set to zero at the beginning and turns to 1 at the end of the loop otherwise i send trigger at every flicker rate
     while etime(clock, t0) < present_time
         
-        
+        for texture = our_textures
+            
         Screen('DrawLines', window, CROSSCoords,...
             lineWidthPix, white, [xCenter yCenter], 2);
         tv1 = Screen('AsyncFlipEnd', window);
@@ -196,5 +197,7 @@ fprintf(['SPM_onset file saved in: ', '%s\n'],rootPathData)
 % Clear the screen.
 sca;
 
-end
 
+
+
+end

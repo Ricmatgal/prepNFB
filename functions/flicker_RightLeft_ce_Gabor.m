@@ -92,7 +92,7 @@ Screen('BlendFunction', window, 'GL_SRC_ALPHA', 'GL_ONE_MINUS_SRC_ALPHA');
 Screen('TextFont', window, 'Ariel');
 Screen('TextSize', window, 36);
 % Here we set the size of the arms of our fixation cross
-fixCrossDimPix = 20;
+fixCrossDimPix = 40;
 
 % Now we set the coordinates (these are all relative to zero we will let
 % the drawing routine center the cross in the center of our monitor for us)
@@ -107,6 +107,9 @@ Priority(topPriorityLevel);
 
 
 %% wait for MRI trigger
+Screen('DrawLines', window, CROSSCoords,...
+    lineWidthPix, [255 255 255], [xCenter yCenter], 2);
+Screen('Flip', window);
 disp('waiting for MRI trigger')
 wait4me = 0;
 while wait4me == 0
@@ -135,11 +138,13 @@ end
 
 
 %% Actual Printing
-pres_sequence = [1 1 2 1 2 2 2 1 2 1 1 2 2 1 2 1 2 1 2 1 2]; %1=left, 2=right
+% pres_sequence = [1 1 2 1 2 2 2 1 2 1 1 2 2 1 2 1 2 1 2 1 2]; %1=left, 2=right
+pres_sequence = [repelem(1,11) repelem(2,11)];
+pres_sequence(randperm(length(pres_sequence)))
 [counterleft, counterright]=deal(0);
 for j=pres_sequence
     % Flip outside of the loop to get a time stamp
-    vbl = Screen('Flip', window);
+    % vbl = Screen('Flip', window);
     t0=clock;
     triggerset  = 0; %set to zero at the beginning and turns to 1 at the end of the loop otherwise i send trigger at every flicker rate
 
@@ -150,7 +155,7 @@ for j=pres_sequence
             Screen('DrawTextures', window, texture{1,1}, [],...
                 dstRects1(:, j), [], [], []);
             Screen('DrawLines', window, CROSSCoords,...
-             lineWidthPix, [255 255 255], [xCenter yCenter], 0);
+             lineWidthPix, [255 255 255], [xCenter yCenter], 2);
             vbl = Screen('Flip', window);
             flip_time = GetSecs;
             WaitSecs(round(present_time/length(our_textures),1)); % 15 second total, 63 stimuli
@@ -186,7 +191,7 @@ for j=pres_sequence
     % set good quality antialiasing
     
     Screen('DrawLines', window, CROSSCoords,...
-        lineWidthPix, white, [xCenter yCenter], 2);
+        lineWidthPix, [255 255 255], [xCenter yCenter], 2);
     Screen('Flip', window);
     WaitSecs(2)
 end

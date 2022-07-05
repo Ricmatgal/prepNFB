@@ -18,8 +18,6 @@ Screen('Preference', 'ScreenToHead', 0, 1, 1);
 % screen and colors
 screens      = Screen('Screens');
 screenNumber = max(screens);
-% just for testing
-screenNumber = 1;
 white = WhiteIndex(screenNumber);
 black = BlackIndex(screenNumber);
 grey = white / 2;
@@ -136,7 +134,7 @@ end
 
 %% Showing the images
 pres_sequence = [repelem(1,10) repelem(2,10)]; % 10 times right and left 
-pres_sequence(randperm(length(pres_sequence)));
+pres_sequence(randperm(length(pres_sequence)))
 [counterleft, counterright]=deal(0);
 
 for j = pres_sequence
@@ -150,7 +148,7 @@ for j = pres_sequence
             Screen('DrawTextures', window, texture{1,1}, [],...
                 dstRects1(:, j), [], [], []);
             Screen('DrawLines', window, CROSSCoords,...
-             lineWidthPix, white, [xCenter yCenter], 2);
+             lineWidthPix, [255 255 255], [xCenter yCenter], 2);
             vbl = Screen('Flip', window);
             flip_time = GetSecs;
             WaitSecs(timeToPresent); % 10 second total, 63 stimuli
@@ -196,13 +194,13 @@ fprintf('TOTAL TIME: %f secs ',GetSecs - startIRM);
 names={'Left', 'Right'};
 durations = {present_time,present_time}; %presentation time
 [onsets]= cell(1,2);
-for k = 1:2 %1=left, 2=right
+for k=1:2 %1=left, 2=right
     onsets{k}=cell2mat(num2cell(ons(k,:)));
 end
 
 filename = 'Onsets_SPM.mat';
 save([rootPathData, filesep, filename], 'names', 'durations', 'onsets');
-fprintf(['\n SPM_onset file saved in: ', '%s\n'],rootPathData);
+fprintf(['SPM_onset file saved in: ', '%s\n'],rootPathData)
 % Flip to the screen
 %     vbl = Screen('Flip', window, vbl + (waitframes - 0.6) * ifi);
 % Clear the screen.

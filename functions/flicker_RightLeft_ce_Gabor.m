@@ -136,7 +136,7 @@ end
 
 %% Showing the images
 pres_sequence = [repelem(1,10) repelem(2,10)]; % 10 times right and left 
-pres_sequence(randperm(length(pres_sequence)));
+pres_sequence = pres_sequence(randperm(length(pres_sequence)));
 [counterleft, counterright]=deal(0);
 
 for j = pres_sequence

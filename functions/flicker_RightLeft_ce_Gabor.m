@@ -19,7 +19,6 @@ Screen('Preference', 'ScreenToHead', 0, 1, 1);
 screens      = Screen('Screens');
 screenNumber = max(screens);
 % just for testing
-screenNumber = 1;
 white = WhiteIndex(screenNumber);
 black = BlackIndex(screenNumber);
 grey = white / 2;
@@ -57,6 +56,7 @@ for gabor = gabor_images
 end
 
 present_time = 10; % 10 secs left and right
+nRepetition = 15;
 
 baseRect = [0 0 400 400]; % size of images presentation
 
@@ -105,7 +105,7 @@ Priority(topPriorityLevel);
 
 %% wait for MRI trigger
 Screen('DrawLines', window, CROSSCoords,...
-    lineWidthPix, white, [xCenter yCenter], 2);
+    lineWidthPix, [255 255 255], [xCenter yCenter], 2);
 Screen('Flip', window);
 disp('waiting for MRI trigger')
 wait4me = 0;
@@ -135,7 +135,7 @@ end
 
 
 %% Showing the images
-pres_sequence = [repelem(1,10) repelem(2,10)]; % 10 times right and left 
+pres_sequence = [repelem(1,nRepetition) repelem(2,nRepetition)]; 
 pres_sequence = pres_sequence(randperm(length(pres_sequence)));
 [counterleft, counterright]=deal(0);
 
@@ -150,7 +150,7 @@ for j = pres_sequence
             Screen('DrawTextures', window, texture{1,1}, [],...
                 dstRects1(:, j), [], [], []);
             Screen('DrawLines', window, CROSSCoords,...
-             lineWidthPix, white, [xCenter yCenter], 2);
+             lineWidthPix, [255 255 255], [xCenter yCenter], 2);
             vbl = Screen('Flip', window);
             flip_time = GetSecs;
             WaitSecs(timeToPresent); % 10 second total, 63 stimuli
@@ -184,7 +184,7 @@ for j = pres_sequence
     % set good quality antialiasing
     
     Screen('DrawLines', window, CROSSCoords,...
-        lineWidthPix, white, [xCenter yCenter], 2);
+        lineWidthPix, [255 255 255], [xCenter yCenter], 2);
     Screen('Flip', window);
     WaitSecs(1);
 

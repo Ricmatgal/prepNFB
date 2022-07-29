@@ -1,15 +1,26 @@
-function [ifi,waitframes,onsets]=flicker_RightLeft_ce_Gabor(subID, projFolder, fullScreen)
+function [onsets]=flicker_RightLeft_ce_Gabor(subID, projFolder, fullScreen,usingMRI)
 
-% Clear the workspace and the screen
+% function for localizer task via prepNFB.
+
+arguments
+
+    subID = '01';
+    projFolder = 'C:\Users\gallir\Documents\OpenNFT\projects\ProjectBBL';
+    fullScreen = 1;
+    usingMRI = 0;
+
+end
+
+sca;
+
+% directories
 rootPath     = pwd; % needs to be dir where prep_NFB is run from.. if run as intended this should not be a problem.
-imPath       = [rootPath, filesep, 'Images_Localizer', filesep, 'gabor_wheels', filesep];
-% projFolder   = rootPath; % just to make this run outside prepNF
-rootPathData = [projFolder, filesep, subID, filesep, 'Localizer', filesep, 'beh', filesep];
+imPath       = [rootPath, filesep, 'Images_Localizer', filesep, 'gabor_wheels', filesep]; % images path
+rootPathData = [projFolder, filesep, subID, filesep, 'Localizer', filesep, 'beh', filesep]; % where the onsets will be saved
 
 
 % Psychtoolbox settings
 PsychDefaultSetup(2)
-Screen('Preference', 'SkipSyncTests', 0);
 Screen('Preference', 'Verbosity', 0);
 Screen('Preference', 'SkipSyncTests',1);
 Screen('Preference', 'VisualDebugLevel',0);
@@ -18,7 +29,6 @@ Screen('Preference', 'ScreenToHead', 0, 1, 1);
 % screen and colors
 screens      = Screen('Screens');
 screenNumber = max(screens);
-% just for testing
 white = WhiteIndex(screenNumber);
 black = BlackIndex(screenNumber);
 grey = white / 2;
@@ -33,9 +43,8 @@ end
 
 ifi = Screen('GetFlipInterval', window);
 
-% maindir    ='C:\Users\gallir\Documents\python\gabor_images\'; % just for debugging
-[screenXpixels, screenYpixels] = Screen('WindowSize', window);% Get the size of the on screen window
-[xCenter, yCenter]             = RectCenter(windowRect);% Get the centre coordinate of the window
+[screenXpixels, screenYpixels] = Screen('WindowSize', window); % Get the size of the on screen window
+[xCenter, yCenter]             = RectCenter(windowRect); % Get the centre coordinate of the window
 
 % get the gabor images filenames and N
 filenames = dir(imPath);
@@ -55,14 +64,18 @@ for gabor = gabor_images
     our_textures{end+1}   = Screen('MakeTexture', window, gabor{1,1});
 end
 
-present_time = 10; % 10 secs left and right
+% experimental randomization
+present_time = 12; % 10 secs left and right
 nRepetition = 15;
+pres_sequence = [repelem(1,nRepetition) repelem(2,nRepetition)]; % presentation sequence 1:left 2:right unrandomized 
+pres_sequence = pres_sequence(randperm(length(pres_sequence))); % presentation sequence randomized
 
-baseRect = [0 0 400 400]; % size of images presentation
+
 
 % rectangle for wheel - including scaling of image with proportions kept
-[s1, s2, s3]      = size(gabor_images{1,1});
+[s1, s2, ~]  = size(gabor_images{1,1});
 aspectratio   = s2/s1; %to preserve aspect ratio and not stretch image when resizing
+
 % We will set the height of each drawn image to a fraction of the screens height
 heightScalers = 0.3;
 imageHeights  = screenYpixels .* heightScalers;
@@ -73,19 +86,15 @@ fignum = 2;
 yPos = yCenter;
 xPos = linspace(screenXpixels * 0.15, screenXpixels * 0.85, fignum); % create position of figures (depending of how many figures drawn this line divides x coord accordingly into equally spaced parts)
 
-dstRects1 = nan(4, 2); %4 x number of images
+dstRects1 = nan(4, 2); % 4 x number of images
 for i = 1:2
     theRect         = [0 0 imageWidths imageHeights]; % dimension of rectangle where to display image
     dstRects1(:, i) = CenterRectOnPointd(theRect, xPos(i), yPos);
 end
 
-%% Fixation Cross
+% Fixation Cross
 % Set up alpha-blending for smooth (anti-aliased) lines
 Screen('BlendFunction', window, 'GL_SRC_ALPHA', 'GL_ONE_MINUS_SRC_ALPHA');
-
-% Setup the text type for the window
-Screen('TextFont', window, 'Ariel');
-Screen('TextSize', window, 36);
 
 % Here we set the size of the arms of our fixation cross
 fixCrossDimPix = 40;
@@ -103,17 +112,22 @@ Priority(topPriorityLevel);
 
 
 
-%% wait for MRI trigger
+% wait for MRI trigger
 Screen('DrawLines', window, CROSSCoords,...
-    lineWidthPix, [255 255 255], [xCenter yCenter], 2);
+    lineWidthPix, [255 255 255], [xCenter yCenter], 2); % for some reason white is not taken..
 Screen('Flip', window);
-disp('waiting for MRI trigger')
+disp('Waiting for MRI trigger')
+
 wait4me = 0;
 while wait4me == 0
-    [keyIsDown, secs, keyCode]=KbCheck;
+
+    [~, ~, keyCode]=KbCheck;
     rsp=KbName(keyCode);
+
     if ~(isempty(rsp))
+
         if strcmp(rsp,'5%')==1
+
             wait4me=1;
             startIRM=GetSecs;
         end
@@ -121,9 +135,10 @@ while wait4me == 0
 end
 
 
-%% MRI SETTINGS
-usingMRI = 0;
+%% MRI settings
+
 if usingMRI
+
     parportAddr = hex2dec('2FD8');
     config_io;
     % Set condition code to zero:
@@ -134,54 +149,62 @@ if usingMRI
 end
 
 
-%% Showing the images
-pres_sequence = [repelem(1,nRepetition) repelem(2,nRepetition)]; 
-pres_sequence = pres_sequence(randperm(length(pres_sequence)));
-[counterleft, counterright]=deal(0);
+%% Experimental routine
+
+[counterleft, counterright]=deal(0); % initialize counters
 
 for j = pres_sequence
-    % Flip outside of the loop to get a time stamp
-    % vbl = Screen('Flip', window);
+
     triggerset  = 0; % set to zero at the beginning and turns to 1 at the end of the loop 
     timeToPresent = present_time/filenamesN; % presentation_time/number of images
 
         for texture = our_textures
-    %         tv1 = Screen('AsyncFlipEnd', window);
+
             Screen('DrawTextures', window, texture{1,1}, [],...
                 dstRects1(:, j), [], [], []);
             Screen('DrawLines', window, CROSSCoords,...
              lineWidthPix, [255 255 255], [xCenter yCenter], 2);
-            vbl = Screen('Flip', window);
+            Screen('Flip', window);
             flip_time = GetSecs;
             WaitSecs(timeToPresent); % 10 second total, 63 stimuli
 
         if triggerset == 0
+
             switch j % (presentation sequence , 1:left, 2:right)
+
                 case 1 %left
-                    counterleft = counterleft+1;
-                    ons(j,counterleft) = (flip_time-startIRM);fprintf(['\n FLIP TIME HERE'])
+
+                    counterleft = counterleft + 1;
+                    timestamp = flip_time-startIRM;
+                    ons(j,counterleft) = timestamp; 
+                    fprintf('ONSET RECORDED: %f \n',timestamp)
+
                     % Send a trigger to biopac in line 1 - left cue              
 %                     'CASE 1'
 %                     outp(parportAddr,1);
 %                     wait(50);
-%                     outp(parportAddr,0);             
+%                     outp(parportAddr,0);    
+
                 case 2 %right
                     counterright=counterright+1;
-                    ons(j,counterright)=(flip_time-startIRM);fprintf(['\n FLIP TIME HERE'])
+                    timestamp = flip_time-startIRM;
+                    ons(j,counterright) = timestamp; 
+                    fprintf('ONSET RECORDED: %f \n',timestamp)
+
                     % Send a trigger to biopac in line 2 - right cue
 %                      'CASE 2'
 %                     outp(parportAddr,2); 
 %                     wait(50);
 %                     outp(parportAddr,0);
             end
+
         end
   
-        triggerset=1;
+        triggerset = 1; % after first image is presented no more timestamps needed
 
         end
     
-    % Draw the fixation cross in white, set it to the center of our screen and
-    % set good quality antialiasing
+    % Keep the fixation cross between repetitions
     
     Screen('DrawLines', window, CROSSCoords,...
         lineWidthPix, [255 255 255], [xCenter yCenter], 2);
@@ -190,23 +213,28 @@ for j = pres_sequence
 
 end
 
-fprintf('TOTAL TIME: %f secs ',GetSecs - startIRM);
+fprintf('TOTAL TIME: %f secs \n', GetSecs - startIRM);
+
+
+%% Saving
 
 %create onset matrix
+
 names={'Left', 'Right'};
+
 durations = {present_time,present_time}; %presentation time
+
 [onsets]= cell(1,2);
+
 for k = 1:2 %1=left, 2=right
-    onsets{k}=cell2mat(num2cell(ons(k,:)));
+
+    onsets{k} = cell2mat(num2cell(ons(k,:)));
+
 end
 
-filename = 'Onsets_SPM.mat';
-save([rootPathData, filesep, filename], 'names', 'durations', 'onsets');
-fprintf(['\n SPM_onset file saved in: ', '%s\n'],rootPathData);
-% Flip to the screen
-%     vbl = Screen('Flip', window, vbl + (waitframes - 0.6) * ifi);
-% Clear the screen.
+filename = fullfile(rootPathData,'Onsets_SPM.mat');
+save(filename, 'names', 'durations', 'onsets');
+fprintf(['\n SPM_onset file saved in: ', '%s \n'],rootPathData);
 sca;
-
 
 end

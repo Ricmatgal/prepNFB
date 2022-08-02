@@ -22,7 +22,7 @@ function varargout = prep_NFB(varargin)
 
 % Edit the above text to modify the response to help prep_NFB
 
-% Last Modified by GUIDE v2.5 28-Aug-2020 12:52:25
+% Last Modified by GUIDE v2.5 02-Aug-2022 15:51:09
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -137,6 +137,14 @@ function eb_subjID_Callback(hObject, eventdata, handles)
     user_fb_update(message,1, 1);
     guidata(hObject, handles);
 
+
+function eb_mriID_Callback(hObject,eventdata,handles)
+
+    handles.mriID = get(hObject,'String');
+    message = {['MRI ID: ' handles.mriID]};
+    user_fb_update(message,1, 1);
+    guidata(hObject,handles);
+
 % edit button session nr    
 function eb_nr_sessions_Callback(hObject, eventdata, handles)
 
@@ -173,6 +181,7 @@ function eb_nr_ROIs_CreateFcn(hObject, eventdata, handles)
 function pb_initialize_Callback(hObject, eventdata, handles)
 
     info.subID      = get(handles.eb_subjID, 'String');
+    info.mriID      = get(handles.eb_mriID, 'String');
     info.projFolder = get(handles.eb_projectFolder,'String');
     info.session    = get(handles.eb_nr_sessions,'String');
     info.runs       = get(handles.eb_nr_run,'String');
@@ -185,6 +194,7 @@ function pb_initialize_Callback(hObject, eventdata, handles)
 % --- Executes on button press in pb_render_stims.
 function pb_render_stims_Callback(hObject, eventdata, handles)
     info.subID      = get(handles.eb_subjID, 'String');
+    info.mriID      = get(handles.eb_mriID, 'String');
     info.projFolder = get(handles.eb_projectFolder,'String');
     info.session    = get(handles.eb_nr_sessions,'String');
     info.runs       = get(handles.eb_nr_run,'String');
@@ -330,12 +340,13 @@ function pb_runLocTask_Callback(hObject, eventdata, handles)
 function pb_import_t1_1_Callback(hObject, eventdata, handles)
     user_fb_update({'Importing T1 to session 1...'},1, 1)
     user_fb_update({'Get ready to set origin at AC!'},0, 2)
+    mriID           = get(handles.eb_mriID, 'String');
     subID           = get(handles.eb_subjID, 'String');
     projFolder      = get(handles.eb_projectFolder,'String');
     watchFolder     = get(handles.eb_watchFolder,'String');
     impT1_1_sn      = get(handles.eb_imp_t1_1_sn, 'String');
 %     
-    dicom_imp('struct', subID, watchFolder, projFolder,...
+    dicom_imp('struct', subID, mriID, watchFolder, projFolder,...
         impT1_1_sn, 0, 1, 'Session_01', 1);
 
 function eb_imp_t1_1_sn_Callback(hObject, eventdata, handles)
@@ -360,6 +371,7 @@ function pb_analyze_loc_Callback(hObject, eventdata, handles)
     user_fb_update({m},1, 1);
     
     subinfo.subID       = get(handles.eb_subjID, 'String');
+    subinfo.mriID       = get(handles.eb_mriID, 'String');
     subinfo.projFolder  = get(handles.eb_projectFolder, 'String');
     subinfo.watchFolder = get(handles.eb_watchFolder, 'String');  
     subinfo.dcmSeries   = get(handles.eb_analyze_loc_sn, 'String');
@@ -512,6 +524,7 @@ function cb_old_struct_Callback(hObject, eventdata, handles)
     % log changes and report to user
     sessNR          = get(handles.eb_session, 'String');
     subID           = get(handles.eb_subjID, 'String');
+    mriID           = get(handles.eb_mriID, 'String');
     projFolder      = get(handles.eb_projectFolder, 'String');
     getDir          = [projFolder, filesep, subID, filesep, 'Session_01', filesep, 'T1'];
     oldStruct       = spm_select('FPList', getDir, ['^s' '.*192-01.nii']);;
@@ -537,6 +550,7 @@ function cb_new_struct_Callback(hObject, eventdata, handles)
 function pb_import_t1_2_Callback(hObject, eventdata, handles)
     
     subID           = get(handles.eb_subjID, 'String');
+    mriID           = get(handles.eb_mriID, 'String');
     projFolder      = get(handles.eb_projectFolder, 'String');
     watchFolder     = get(handles.eb_watchFolder, 'String'); 
     currentSession  = sprintf('%02s', get(handles.eb_session,'String'));
@@ -576,7 +590,7 @@ function pb_import_t1_2_Callback(hObject, eventdata, handles)
         user_fb_update({['Importing T1 to session ' currentSession]},1,1)
         user_fb_update({'Get ready to set origin at AC!'},0, 2)
         
-        dicom_imp('struct', subID, watchFolder, projFolder,...
+        dicom_imp('struct', subID, mriID, watchFolder, projFolder,...
             get(handles.eb_imp_t1_2_sn, 'String'), 0, 1, ['Session_' sprintf('%02s', get(handles.eb_session,'String'))], 192);
     end
     
@@ -599,6 +613,7 @@ function pb_analyze_rs_2_Callback(hObject, eventdata, handles)
     user_fb_update({'Creating MC template...'},1,1)
     
     subinfo.subID       = get(handles.eb_subjID, 'String');
+    subinfo.mriID       = get(handles.eb_mriID, 'String');
     subinfo.projFolder  = get(handles.eb_projectFolder, 'String');
     subinfo.watchFolder = get(handles.eb_watchFolder, 'String');  
     subinfo.dcmSeries   = get(handles.eb_analyze_rs_2_sn, 'String');
@@ -822,3 +837,16 @@ function pb_prt_manager_Callback(hObject, eventdata, handles)
     
     create_protocol({projFolder})
     
+
+
+% --- Executes during object creation, after setting all properties.
+function eb_mriID_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to eb_mriID (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end

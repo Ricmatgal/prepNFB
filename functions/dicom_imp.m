@@ -1,4 +1,4 @@
-function [imported_flag] = dicom_imp(sequence, subID, watchFolder, projFolder, imSer, f_flag, s_flag, Sess, expNrIms)
+function [imported_flag] = dicom_imp(sequence, subID, mriID, watchFolder, projFolder, imSer, f_flag, s_flag, Sess, expNrIms)
 
 volumes2skip = 10;
 imported_flag = 1;
@@ -21,7 +21,7 @@ if s_flag
         end
     end
     
-    s1   = spm_select('FPList',watchFolder,['004_0000' imSer '_000^*.']);
+    s1   = spm_select('FPList',watchFolder,[mriID '_0000' imSer '_000^*.']);
    
     if ~isempty(s1) && size(s1,1) == expNrIms    
         spm_jobman('initcfg')
@@ -33,7 +33,7 @@ if s_flag
         matlabbatch{1}.spm.util.import.dicom.convopts.format = 'nii';
         matlabbatch{1}.spm.util.import.dicom.convopts.icedims = 0;
         
-        ffn = spm_select('List',watchFolder,['004_0000' imSer '_000^*.']);
+        ffn = spm_select('List',watchFolder,[mriID '_0000' imSer '_000^*.']);
 %         user_fb_update({'Importing Filenames:'; ffn(1,:);ffn(2,:);ffn(3,:);'.';'.';ffn(end-1,:);ffn(end,:)},0,1)     
         user_fb_update({'Importing Filename:'; ffn(1,:);'.';'.'},0,1)  
 
@@ -78,7 +78,7 @@ if f_flag
             
             return
         end
-        f1   = spm_select('FPList',watchFolder,['004_0000' imSer '_^*.']);
+        f1   = spm_select('FPList',watchFolder,[mriID '_0000' imSer '_000^*.']);
         
     elseif strcmp(sequence, 'RestingState') == 1
         expDir    = [projFolder, filesep, subID, filesep, Sess, filesep, 'RestingState'];
@@ -96,7 +96,7 @@ if f_flag
             
             return
         end
-        f1   = spm_select('FPList',watchFolder,['004_0000' imSer '_^*.']);
+        f1   = spm_select('FPList',watchFolder,[mriID '_0000' imSer '_000^*.']);
         
         if size(f1,1) >= (expNrIms + volumes2skip + 1)
             % skip first couple of volumes to take into account t1
@@ -114,7 +114,7 @@ if f_flag
         matlabbatch{1}.spm.util.import.dicom.convopts.format = 'nii';
         matlabbatch{1}.spm.util.import.dicom.convopts.icedims = 0;
         
-        ffn = spm_select('List',watchFolder,['004_0000' imSer '_^*.']);
+        ffn = spm_select('List',watchFolder,[mriID '_0000' imSer '_000^*.']);
         
         user_fb_update({'Importing Filenames:'; ffn(1,:);ffn(2,:);ffn(3,:);'.';'.';ffn(end-1,:);ffn(end,:)},0,1)        
 

@@ -3,6 +3,7 @@ function analyze_loc_func(subinfo, data)
 % subID, watchFolder, projFolder, dcmSeries, Sess, expNrIms
 % (handles.subID, handles.watchFolder, handles.projFolder, handles.analyze_loc_sn, 'Session_01', 179);
 subID       = subinfo.subID;
+mriID       = subinfo.mriID;
 watchFolder = subinfo.watchFolder;
 projFolder  = subinfo.projFolder;
 dcmSeries   = subinfo.dcmSeries;
@@ -77,7 +78,7 @@ for ii = 1:numel(stepNames)
             % import funcitonal images, call funcion:
             user_fb_update({[num2str(ii) ') Importing dicom...']}, 0, 1)
 
-            import_flag = dicom_imp('Localizer', subID, watchFolder, projFolder, dcmSeries, 1, 0, Sess, expNrIms);
+            import_flag = dicom_imp('Localizer', subID, mriID, watchFolder, projFolder, dcmSeries, 1, 0, Sess, expNrIms);
 
             if import_flag == 0
                 user_fb_update({'Analysis aborted...'},0,3)

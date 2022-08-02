@@ -86,8 +86,8 @@ fignum = 2;
 yPos = yCenter;
 xPos = linspace(screenXpixels * 0.15, screenXpixels * 0.85, fignum); % create position of figures (depending of how many figures drawn this line divides x coord accordingly into equally spaced parts)
 
-dstRects1 = nan(4, 2); % 4 x number of images
-for i = 1:2
+dstRects1 = nan(4, fignum); % 4 x number of images
+for i = 1:fignum
     theRect         = [0 0 imageWidths imageHeights]; % dimension of rectangle where to display image
     dstRects1(:, i) = CenterRectOnPointd(theRect, xPos(i), yPos);
 end

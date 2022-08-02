@@ -314,7 +314,7 @@ end
 function pb_show_msk_Callback(hObject, eventdata, handles)
     % prep visualisation
     if get(handles.cb_str,'Value') == 1
-        templ1 = spm_select('FPList', handles.subinfo.subjStructDir, ['^s' '.*192-01.nii$']);
+        templ1 = spm_select('FPList', handles.subinfo.subjStructDir, ['^MF' '.*.nii$']);
     elseif get(handles.cb_epi,'Value') == 1
         templ1 = spm_select('FPList', handles.subinfo.epiPath, ['^mean' '.*.nii$']);
     end

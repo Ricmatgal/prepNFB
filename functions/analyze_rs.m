@@ -1,6 +1,7 @@
 function analyze_rs(subinfo)
 
 subID       = subinfo.subID;
+mriID       = subinfo.mriID;
 watchFolder = subinfo.watchFolder;
 projFolder  = subinfo.projFolder;
 imSer       = subinfo.dcmSeries;
@@ -12,7 +13,7 @@ smoothK = [6 6 6];
 
 % import funcitonal images, call funcion:
 user_fb_update({['0) Importing dicom...']}, 0, 1)
-import_flag = dicom_imp('RestingState', subID, watchFolder, projFolder, imSer, 1, 0, Sess , 15);
+import_flag = dicom_imp('RestingState', subID,mriID, watchFolder, projFolder, imSer, 1, 0, Sess , 15);
 
 if import_flag == 0
     user_fb_update({'Dir not empty: Analyses aborted..'}, 0, 3)

@@ -107,6 +107,8 @@ if f_flag
     
      if ~isempty(f1) && size(f1,1) ==  expNrIms
 
+        % let's try to use dicm2nii here
+
         matlabbatch{1}.spm.util.import.dicom.data = cellstr(f1);
         matlabbatch{1}.spm.util.import.dicom.root = 'flat';
         matlabbatch{1}.spm.util.import.dicom.outdir = {expDir};
@@ -119,7 +121,14 @@ if f_flag
         user_fb_update({'Importing Filenames:'; ffn(1,:);ffn(2,:);ffn(3,:);'.';'.';ffn(end-1,:);ffn(end,:)},0,1)        
 
         
-        spm_jobman('run', matlabbatch);
+        % spm_jobman('run', matlabbatch);
+
+        for i = 1:size(f1,1)
+            dicm2nii(f1(i,:),expDir,'.nii 3D')
+            file = dir(expDir); file = file(end-i).name;
+            movefile(fullfile(expDir,filesep,file),fullfile(expDir,filesep,['MF',ffn(i,1:end-4),'.nii']))
+        end
+
         user_fb_update({'Dicom import completed'}, 0, 4)
         clear matlabbatch
         

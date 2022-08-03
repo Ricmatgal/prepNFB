@@ -88,7 +88,8 @@ for ii = 1:numel(stepNames)
         case 'sliceTiming'
             clear matlabbatch
 
-            f1   = spm_select('List', funcDir, ['^f' '.*\.' rawFormat '$']);
+%            f1   = spm_select('List', funcDir, ['^f' '.*\.' rawFormat '$']);
+            f1   = spm_select('List', funcDir, ['^MF' '.*\.' rawFormat '$']);
             f2  = cellstr([repmat(funcDir,size(f1,1),1) f1]);
 
             matlabbatch{1}.spm.temporal.st.scans = {f2}; 
@@ -174,7 +175,7 @@ for ii = 1:numel(stepNames)
             f2struct        = cellstr([repmat(subjStructDir,size(f1struct,1),1) f1struct]);
 
             % retrieve the mean EPI image
-            mean_image      = spm_select('List', funcDir, ['^mean' '.*\.' rawFormat '$']);
+            mean_image      = spm_select('List', funcDir, ['^meanMF' '.*\.' rawFormat '$']);
 
             % and the resliced images
 %             rsim1   = spm_select('List', funcDir, ['^rf' '.*\.' rawFormat '$']);
@@ -258,6 +259,8 @@ for ii = 1:numel(stepNames)
             multiple_regressors = spm_select('List', funcDir, ['rp_' '.*\.' 'txt' '$']);
 %             f3 = spm_select('List', funcDir, ['^srf' '.*\.' rawFormat '$']);
             f3 = spm_select('List', funcDir, ['^srMF' '.*\.' rawFormat '$']);
+
+        
             f4  = cellstr([repmat(funcDir,size(f3,1),1) f3]);
 
             matlabbatch{1}.spm.stats.fmri_spec.sess.scans = f4; %{k}                   

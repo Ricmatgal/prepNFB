@@ -32,6 +32,7 @@ screenNumber = max(screens);
 white = WhiteIndex(screenNumber);
 black = BlackIndex(screenNumber);
 grey = white / 2;
+screenNumber = 1;
 
 % fullscreen or not
 if fullScreen 
@@ -77,14 +78,14 @@ pres_sequence = pres_sequence(randperm(length(pres_sequence))); % presentation s
 aspectratio   = s2/s1; %to preserve aspect ratio and not stretch image when resizing
 
 % We will set the height of each drawn image to a fraction of the screens height
-heightScalers = 0.3;
+heightScalers = 0.35;
 imageHeights  = screenYpixels .* heightScalers;
 imageWidths   = imageHeights .* aspectratio;
 
 % images positioning
 fignum = 2;
 yPos = yCenter;
-xPos = linspace(screenXpixels * 0.15, screenXpixels * 0.85, fignum); % create position of figures (depending of how many figures drawn this line divides x coord accordingly into equally spaced parts)
+xPos = linspace(screenXpixels * 0.20, screenXpixels * 0.80, fignum); % create position of figures (depending of how many figures drawn this line divides x coord accordingly into equally spaced parts)
 
 dstRects1 = nan(4, fignum); % 4 x number of images
 for i = 1:fignum

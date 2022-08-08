@@ -64,8 +64,8 @@ if ~exist([projFolder, filesep, subID], 'dir')
 
     end
 
-    % make config templates folder
-    mkdir([projFolder, filesep, 'config_templates'])
+%     % make config templates folder
+%     mkdir([projFolder, filesep, 'config_templates'])
 
     % make double blind folder
     mkdir([projFolder, filesep, 'double_blind'])

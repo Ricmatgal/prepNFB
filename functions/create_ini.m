@@ -7,7 +7,7 @@ function create_ini(subID, watchFolder, projFolder, prepNFBpath, Sess)
     
     % select mean image AND struct to get full path
     mean_image  = spm_select('FPList', epiPath, ['^mean' '.*\.nii$']);
-    struct_FP   = spm_select('FPList', structPath, ['^s' '.*\.nii$']);
+    struct_FP   = spm_select('FPList', structPath, ['^' '.*\.nii$']);
     
     workFolder  = [projFolder, filesep, subID, filesep, Sess];
     

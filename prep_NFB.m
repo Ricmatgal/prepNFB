@@ -448,8 +448,9 @@ function pb_create_ini_1_Callback(hObject, eventdata, handles)
     subID       = get(handles.eb_subjID, 'String');
     projFolder  = get(handles.eb_projectFolder,'String');
     watchFolder = get(handles.eb_watchFolder,'String');
+    prepNFBpath = pwd;
     
-    create_ini(subID, watchFolder, projFolder, 'Session_01')
+    create_ini(subID, watchFolder, projFolder,prepNFBpath, 'Session_01')
 
     
 % --- Executes on button press in cb_stimSet1_1.
@@ -680,8 +681,9 @@ function pb_create_ini_2_Callback(hObject, eventdata, handles)
     projFolder  = get(handles.eb_projectFolder, 'String');
     watchFolder = get(handles.eb_watchFolder, 'String'); 
     sessNR          = get(handles.eb_session,'String');
+    prepNFBpath = pwd;
     
-    create_ini(subID, watchFolder, projFolder, ['Session_0' sessNR])
+    create_ini(subID, watchFolder, projFolder,prepNFBpath, ['Session_0' sessNR])
 
 % --- Executes on button press in cb_stimSet1_2.
 function cb_stimSet1_2_Callback(hObject, eventdata, handles)

@@ -24,7 +24,7 @@ if ~exist([projFolder, filesep, subID], 'dir')
     % EyeTracker file Directory
     mkdir([subRootPath, filesep, 'EyeTracker']); 
     
-    % for speficfied nr of sessions
+    % for specified nr of sessions
     for this_session = 1:str2double(sessions)
         
         % make session nr in str '01' '02' etc..
@@ -63,6 +63,20 @@ if ~exist([projFolder, filesep, subID], 'dir')
         mkdir([subRootPath, filesep, 'Session_' sess_str, filesep, 'TaskFolder', filesep, 'StimSets', filesep, 'TaskStims']);
 
     end
+
+    % make config templates folder
+    mkdir([projFolder, filesep, 'config_templates'])
+
+    % make double blind folder
+    mkdir([projFolder, filesep, 'double_blind'])
+
+    % make stimulus folder
+    mkdir([projFolder, filesep, 'stimuli'])
+
+    % make protocol folder
+    mkdir([projFolder, filesep, 'protocols'])
+
+
     
     user_fb_update({['Project directories created for subject: ', subID]},1,1)
     user_fb_update({['Sessions: ' sessions];['Training Runs: ' runs];['ROIs: ' rois]},0, 1)

@@ -1,4 +1,4 @@
-function create_ini(subID, watchFolder, projFolder, Sess)
+function create_ini(subID, watchFolder, projFolder, prepNFBpath, Sess)
     
     % set some paths
     roiPath     = [projFolder, filesep, subID, filesep, 'Localizer', filesep, 'ROIs', filesep, Sess];
@@ -13,12 +13,14 @@ function create_ini(subID, watchFolder, projFolder, Sess)
     
     taskFolder  = [projFolder, filesep, subID, filesep, Sess, filesep, 'TaskFolder'];
 %     prtFolder   = [projFolder, filesep, 'config_templates', filesep, 'protocol_last.json'];
-    prtFolder   = [projFolder, filesep, 'config_templates', filesep, 'psc', filesep, 'run1_long_bas.json'];
-    stimFolder  = [projFolder, filesep, 'Stims'];
+%     prtFolder   = [projFolder, filesep, 'config_templates', filesep, 'psc', filesep, 'run1_long_bas.json'];
+    prtFolder   = [projFolder, filesep, 'protocols'];
+    stimFolder  = [projFolder, filesep, 'stimuli'];
     doubleBlindFolder = [projFolder, filesep, 'double_blind'];
     
     % open template and write to new ini
-    tmp_fid = fopen([projFolder, filesep, 'config_templates', filesep, 'NF_PSC_ContTask.ini'],'r+');
+    %tmp_fid = fopen([projFolder, filesep, 'config_templates', filesep, 'NF_PSC_ContTask.ini'],'r+');
+    tmp_fid = fopen([prepNFBpath, filesep, 'Settings', filesep, 'config_templates', filesep, 'NF_PSC_ContTask.ini'], 'r+');
     tmp_fid_w = fopen([projFolder, filesep, subID, filesep, Sess, filesep, 'Settings', filesep,...
         'Subject_' subID '_' Sess '.ini'],'w');
     

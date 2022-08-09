@@ -32,7 +32,7 @@ screenNumber = max(screens);
 white = WhiteIndex(screenNumber);
 black = BlackIndex(screenNumber);
 grey = white / 2;
-screenNumber = 1;
+screenNumber = 2;
 
 % fullscreen or not
 if fullScreen 

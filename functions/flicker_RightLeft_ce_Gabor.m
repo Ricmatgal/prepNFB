@@ -66,7 +66,7 @@ for gabor = gabor_images
 end
 
 % experimental randomization
-present_time = 12; % 10 secs left and right
+present_time = 15; % 10 secs left and right
 nRepetition = 15;
 pres_sequence = [repelem(1,nRepetition) repelem(2,nRepetition)]; % presentation sequence 1:left 2:right unrandomized 
 pres_sequence = pres_sequence(randperm(length(pres_sequence))); % presentation sequence randomized

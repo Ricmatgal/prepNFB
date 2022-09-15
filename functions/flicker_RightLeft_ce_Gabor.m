@@ -5,7 +5,7 @@ function [onsets]=flicker_RightLeft_ce_Gabor(subID, projFolder, fullScreen,using
 arguments
 
     subID = '01';
-    projFolder = 'C:\Users\gallir\Documents\OpenNFT\projects\ProjectBBL';
+    projFolder = 'C:\Users\gallir\Documents\OpenNFT\projects\NFB_EDEA_MRI';
     fullScreen = 1;
     usingMRI = 0;
 
@@ -32,7 +32,9 @@ screenNumber = max(screens);
 white = WhiteIndex(screenNumber);
 black = BlackIndex(screenNumber);
 grey = white / 2;
-screenNumber = 2;
+
+% only for debugging
+screenNumber = 1;
 
 % fullscreen or not
 if fullScreen 
@@ -66,7 +68,7 @@ for gabor = gabor_images
 end
 
 % experimental randomization
-present_time = 15; % secs left and right
+present_time = 10; % secs left and right
 nRepetition = 15;
 pres_sequence = [repelem(1,nRepetition) repelem(2,nRepetition)]; % presentation sequence 1:left 2:right unrandomized 
 pres_sequence = pres_sequence(randperm(length(pres_sequence))); % presentation sequence randomized
@@ -85,13 +87,23 @@ imageWidths   = imageHeights .* aspectratio;
 % images positioning
 fignum = 2;
 yPos = yCenter;
-xPos = linspace(screenXpixels * 0.20, screenXpixels * 0.80, fignum); % create position of figures (depending of how many figures drawn this line divides x coord accordingly into equally spaced parts)
+xPos = linspace(screenXpixels * 0.15, screenXpixels * 0.85, fignum); % create position of figures (depending of how many figures drawn this line divides x coord accordingly into equally spaced parts)
 
-dstRects1 = nan(4, fignum); % 4 x number of images
+dstRects = nan(4, fignum); % 4 x number of images
 for i = 1:fignum
     theRect         = [0 0 imageWidths imageHeights]; % dimension of rectangle where to display image
-    dstRects1(:, i) = CenterRectOnPointd(theRect, xPos(i), yPos);
+    dstRects(:, i) = CenterRectOnPointd(theRect, xPos(i), yPos);
 end
+
+
+% adjusted using Soraya function for distance 
+[solution_in_cm_mirror,solution_in_cm_stimuliscreen,solution_in_pixel_stimuliscreen] = compute_distance_readable_from_screen_center_overt_fmri(50,60, 6.45, 3);
+distanceStimuli = solution_in_pixel_stimuliscreen;
+
+dstRects(:,1) = CenterRectOnPointd(theRect, xCenter -  distanceStimuli , yPos);
+dstRects(:,2) = CenterRectOnPointd(theRect, xCenter +  distanceStimuli , yPos);
+
+
 
 % Fixation Cross
 % Set up alpha-blending for smooth (anti-aliased) lines
@@ -162,7 +174,7 @@ for j = pres_sequence
         for texture = our_textures
 
             Screen('DrawTextures', window, texture{1,1}, [],...
-                dstRects1(:, j), [], [], []);
+                dstRects(:, j), [], [], []);
             Screen('DrawLines', window, CROSSCoords,...
              lineWidthPix, [255 255 255], [xCenter yCenter], 2);
             Screen('Flip', window);

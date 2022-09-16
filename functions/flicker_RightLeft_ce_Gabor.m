@@ -34,7 +34,9 @@ black = BlackIndex(screenNumber);
 grey = white / 2;
 
 % only for debugging
-screenNumber = 1;
+if ~ usingMRI
+    screenNumber = 1;
+end
 
 % fullscreen or not
 if fullScreen 
@@ -151,14 +153,12 @@ end
 %% MRI settings
 
 if usingMRI
-
     parportAddr = hex2dec('2FD8');
     config_io;
     % Set condition code to zero:
     outp( parportAddr, 0);
     % Set automatic BIOPAC and eye tracker recording to "stop":
-    outp( parportAddr+2, bitset(inp( parportAddr+2), 3, 0));
-    
+    outp( parportAddr+2, bitset(inp( parportAddr+2), 3, 0));  
 end
 
 

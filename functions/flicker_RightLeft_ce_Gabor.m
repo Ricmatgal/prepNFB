@@ -35,7 +35,7 @@ grey = white / 2;
 
 % only for debugging
 if ~ usingMRI
-    screenNumber = 1;
+    screenNumber = 2;
 end
 
 % fullscreen or not

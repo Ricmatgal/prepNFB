@@ -65,7 +65,7 @@ function coreg_ROIs(subinfo, coreg)
 
             % save the batch, run it and clear it
             save([subinfo.projFolder, filesep, subinfo.subID, filesep, 'Localizer',...
-                filesep, 'ROIs', filesep, 'coregROIs_D2'], 'matlabbatch')
+                filesep, 'ROIs', filesep, 'coregROIs_D' num2str(subinfo.session)], 'matlabbatch')
 
             user_fb_update({'1) Coregistration'}, 0, 1)      
             tic
@@ -135,7 +135,7 @@ function coreg_ROIs(subinfo, coreg)
             matlabbatch{1}.spm.spatial.coreg.estwrite.roptions.interp = 4;
             matlabbatch{1}.spm.spatial.coreg.estwrite.roptions.wrap = [0 0 0];
             matlabbatch{1}.spm.spatial.coreg.estwrite.roptions.mask = 0;
-            matlabbatch{1}.spm.spatial.coreg.estwrite.roptions.prefix = 'sess2_';
+            matlabbatch{1}.spm.spatial.coreg.estwrite.roptions.prefix = ['sess' num2str(subinfo.session) '_'];
 
             % save the batch, run it and clear it
             save([subinfo.projFolder, filesep, subinfo.subID, filesep, 'Localizer',...
@@ -167,7 +167,7 @@ function coreg_ROIs(subinfo, coreg)
                 % reconsider
 
         %         movefile([spm_select('FPList',  tmpFolder2get, ['^sess2_' '.*\.' rawFormat '$'])], tmpFolder2go);
-                movefile([spm_select('FPList',  tmpFolder2get, ['^sess2_' coreg.ROInfo.Session(1).ROI(ii).name])], tmpFolder2go);
+                movefile([spm_select('FPList',  tmpFolder2get, [['^sess' num2str(subinfo.session)] '_' coreg.ROInfo.Session(1).ROI(ii).name])], tmpFolder2go);
 
 
             end

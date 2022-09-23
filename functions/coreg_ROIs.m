@@ -139,7 +139,7 @@ function coreg_ROIs(subinfo, coreg)
 
             % save the batch, run it and clear it
             save([subinfo.projFolder, filesep, subinfo.subID, filesep, 'Localizer',...
-                filesep, 'ROIs', filesep, 'coregROIs_D2'], 'matlabbatch')
+                filesep, 'ROIs', filesep, 'coregROIs_D' num2str(subinfo.session)], 'matlabbatch')
 
             user_fb_update({'1) Coregistration'},0,1)   
             tic
@@ -154,7 +154,6 @@ function coreg_ROIs(subinfo, coreg)
             % move new rois to their respective locations where openNFBT will
             % expect them --> ini
 
-            % make session move nr dynamic!!
             for ii = 1:size(coreg.ROIs,1)
                 tmp=dir(char(coreg.ROIs(ii)));
         %         tmpFolder2get = tmp.folder;
@@ -175,7 +174,7 @@ function coreg_ROIs(subinfo, coreg)
             % delete remaining files that were created in the process to keep a
             % clean folder
             delete([current_sess_templ_folder, filesep, 'EPI_template_sess_01.nii']);
-            delete([current_sess_templ_folder, filesep, 'sess2_EPI_template_sess_01.nii']);
+            delete([current_sess_templ_folder, filesep, 'sess' num2str(subinfo.session) '_EPI_template_sess_01.nii']);
             for ii = 1:size(coreg.ROIs,1)
                 delete([current_sess_templ_folder, filesep, coreg.ROInfo.Session(1).ROI(ii).name])
             end

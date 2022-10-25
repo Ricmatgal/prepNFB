@@ -486,6 +486,7 @@ function pb_run_behtask_1_Callback(hObject, eventdata, handles)
     screenid = 2;
     sessionID = '01';
     path_output = strcat(projFolder,filesep,subID,filesep,'Session',sessionID,'\TaskFolder\TaskResults');
+    version = version;
 
     run_beh_task(trainBlock,nBlocksRep,maxNTargets,fullScreen,keyboard,screenid,subID,sessionID,path_output,version)
 
@@ -702,8 +703,8 @@ function pb_run_behtask_2_Callback(hObject, eventdata, handles)
         version = 'EN';  
     end
     
-    trainBlock = true;
-    nBlocksRep = 10;
+    trainBlock = false;
+    nBlocksRep = 1;
     maxNTargets = 10;
     fullScreen = true;
     keyboard = 'mri'; % we use 1 and 2
@@ -711,6 +712,7 @@ function pb_run_behtask_2_Callback(hObject, eventdata, handles)
     sessionID = strcat('0',session);
     disp(sessionID)
     path_output = strcat(projFolder,filesep,subID,filesep,'Session',sessionID,'\TaskFolder\TaskResults');
+    version = version;
 
     run_beh_task(trainBlock,nBlocksRep,maxNTargets,fullScreen,keyboard,screenid,subID,sessionID,path_output,version)
 

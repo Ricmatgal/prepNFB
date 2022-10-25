@@ -69,7 +69,7 @@ for gabor = gabor_images
     our_textures{end+1}   = Screen('MakeTexture', window, gabor{1,1});
 end
 
-% experimental randomization
+% experimental randomization (take into account 0.5 sec of pause between trials)
 present_time = 10; % secs left and right
 nRepetition = 15;
 pres_sequence = [repelem(1,nRepetition) repelem(2,nRepetition)]; % presentation sequence 1:left 2:right unrandomized 
@@ -222,7 +222,7 @@ for j = pres_sequence
     Screen('DrawLines', window, CROSSCoords,...
         lineWidthPix, [255 255 255], [xCenter yCenter], 2);
     Screen('Flip', window);
-    WaitSecs(1);
+    WaitSecs(0.5);
 
 end
 

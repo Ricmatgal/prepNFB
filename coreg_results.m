@@ -64,39 +64,60 @@ handles.subinfo.roiPath = [subPath, filesep, 'Localizer', filesep, 'ROIs'];
 
 ROIs_available = struct;
 S = dir([handles.subinfo.roiPath, filesep, 'Session_*.*']);
+% clear the S struct if the directoy has nothinh
+
+
 folderNames = {S.name};
 folderDirs  = {S.folder};
 
+counter_session = 1;
+
 for ii = 1:numel(folderNames)
+    
     %for session
     tmpSessCont = dir([folderDirs{1}, filesep, folderNames{ii}, filesep, 'ROI_*.*']);
     tmpNames = {tmpSessCont.name};
     tmpDirs = {tmpSessCont.folder};
+
     
     for jj = 1:numel(tmpNames)
-        % for rois
-        % get roi names and put in struct
-        tmpROI = dir([tmpDirs{jj}, filesep, tmpNames{jj}, filesep, '*.nii']);
-        
-        ROIs_available.Session(ii).ROI(jj).sess = folderNames{ii};
-        ROIs_available.Session(ii).ROI(jj).name = tmpROI.name;
-        ROIs_available.Session(ii).ROI(jj).Fpath = [tmpROI.folder, filesep, tmpROI.name];    
+
+        if size(dir([tmpDirs{jj}, filesep, tmpNames{jj}]),1)>2 % check for ROIS
+            % for rois
+            % get roi names and put in struct
+            tmpROI = dir([tmpDirs{jj}, filesep, tmpNames{jj}, filesep, '*.nii']);
+            
+            ROIs_available.Session(ii).ROI(jj).sess = folderNames{ii};
+            ROIs_available.Session(ii).ROI(jj).name = tmpROI.name;
+            ROIs_available.Session(ii).ROI(jj).Fpath = [tmpROI.folder, filesep, tmpROI.name];    
+
+            counter_session = counter_session + 1;
+        end
+
     end
-        % add structural FP and epi FP to the structure so we can use the
-        % results of get(lb_) to index... 
-        % set paths
-        PS = [subPath, filesep, folderNames{ii}, filesep, 'T1', filesep];       % struc path
-        PE = [subPath, filesep, folderNames{ii}, filesep, 'EPI_Template_D1'];   % epi path
-        
-        % get full path to .nii
-%         ROIs_available.Session(ii).struct   = spm_select('FPList', PS, ['^s' '.*192-01.nii$']);
-        ROIs_available.Session(ii).struct   = spm_select('FPList', PS, ['^MF' '.*.nii$']);
-        ROIs_available.Session(ii).epi      = spm_select('FPList', PE, ['^mean' '.*.nii$']);
+
+        if size(dir([subPath, filesep, folderNames{ii}, filesep, 'T1', filesep]),1)>2 % check for the T1 and EPI
+
+
+            % add structural FP and epi FP to the structure so we can use the
+            % results of get(lb_) to index... 
+            % set paths
+            PS = [subPath, filesep, folderNames{ii}, filesep, 'T1', filesep];       % struc path
+            PE = [subPath, filesep, folderNames{ii}, filesep, 'EPI_Template_D1'];   % epi path
+            
+            % get full path to .nii
+    %         ROIs_available.Session(ii).struct   = spm_select('FPList', PS, ['^s' '.*192-01.nii$']);
+            ROIs_available.Session(ii).struct   = spm_select('FPList', PS, ['^MF' '.*.nii$']);
+            ROIs_available.Session(ii).epi      = spm_select('FPList', PE, ['^mean' '.*.nii$']);
+
+        end
 end
 
 handles.ROInfo = ROIs_available;
       
 guidata(hObject, handles);
+
+folderNames = folderNames(1:floor(counter_session/2));
 
 % set the mask names in the available msk list box
 if ~isempty(ROIs_available)

@@ -60,6 +60,16 @@ sca;
 projFolder=pwd;%pwd current folder
 cd(projFolder);
 
+
+%% PHYSIO 
+% Initialize the inpout32.dll I/O driver:
+config_io;
+parportAddr = hex2dec('2FD8'); % Shadow-BBL hexadecimal
+triggers = [128]; % 128 stimuli shown
+
+
+%%
+
 %----------------------------------------------------------------------
 %                       BIDS - Sub infos
 %----------------------------------------------------------------------
@@ -162,7 +172,7 @@ if fullScreen == 0
 else
     % full screen
     screen.wPtr = Screen('OpenWindow', screenid, grey);
-    HideCursor([screenid]); %to hide the mouse on the experiment screen
+    HideCursor(screenid); %to hide the mouse on the experiment screen
 end
 
 %----------------------------------------------------------------------
@@ -195,7 +205,7 @@ end
 % keyChosen = ["z","m"];keySlides = ['z','m']; % Keyboard
 
 keyLeft = KbName(convertStringsToChars(keyChosen(1))); keyRight = KbName(convertStringsToChars(keyChosen(2)));
-KbCheckList = [KbName('space'),KbName('ESCAPE'),keyLeft,keyRight];
+KbCheckList = [KbName('ESCAPE'),keyLeft,keyRight];
 RestrictKeysForKbCheck(KbCheckList); % other keys are ignored
 
 % Set up alpha-blending for smooth (anti-aliased) lines
@@ -297,51 +307,51 @@ blockCounter = 1;
 %Get the version
 if contains(Exp.version,'EN') %info.version=='EN'
     %instructions
-    indic0=char("Welcome to the experiment !\n\n Make yourself comfortable.\n\n Press space to continue. \n\n");
+    indic0=char("Welcome to the experiment !\n\n Make yourself comfortable.\n\n Press 1 or 2 to continue. \n\n");
     
     indic1=char("'During this experiment, you will see a serie of stimuli "+ ...
     "appearing around the fixation cross."+ ...
     "You should : \n\n"+...
     "Press: "+ keySlides(1)+ "\nif the target is missing its left side."+ ...
     "\nPress: "+keySlides(2)+"\nif target is missing its right side. "+...
-    "\n\nPress the space bar to continue.");
+    "\n\nPress 1 or 2 to continue.");
 
     indic2=char(['We will now show you one example of a trial. \n' ...
     'Here, the target appears on the right side.\n\n' ...
     'Remember to reply whether the right or left part of the target is missing and '...
     'IGNORE the missing part on top or bottom of the target.\n\n'...
-    ' \n\nPress the space bar to see the first example.']);
+    ' \n\nPress 1 or 2 to see the first example.']);
     
     indic3=char(['We will now show you another example of a trial. \n' ...
     'In this second example, the target appears on the left side. \n\n' ...
     'Remember to reply whether the right or left part of the target is missing and '...
     'IGNORE the missing part on top or bottom of the target. \n\n'...
-    ' \n\nPress the space bar to continue.']);
+    ' \n\nPress 1 or 2 to continue.']);
     
     indic4=char(['The target and distractors will change position ' ...
     'around a circle with the fixation cross as its center.' ...
     '\n\nYou must keep your eyes always fixating on the fixation cross.' ...
-    ' \n\nPress the space bar to continue.']);
+    ' \n\nPress the 1 or 2 to continue.']);
 
     %training
     indic5=char(['If you have any other question, contact the experimenter.' ...
-    '\n\n\nExperiment will start IMMEDIATELY with a first train block. \n\n\nPress the space bar to continue. ']);
+    '\n\n\nExperiment will start IMMEDIATELY with a first train block. \n\n\nPress 1 or 2 to continue. ']);
 
     %if score training too low 
     indic_failed_check = char("You did not perform well enough in the training.\n\n" + ...
     "We will restart the experiment with another training block.\n\n" + ...
     "If you have issues contact the experimenter.\n\n" + ...
-    "Press the space bar to continue.");
+    "Press 1 or 2 to continue.");
       
     %real experiment
     indic6=char("END of the practice block. \n\n\n If you have any other question, contact us." +...
-            "\n\n\nPress the space bar to continue. " );
-    indic61=char("Real experiment will start IMMEDIATELY. \n\n\n Press the space bar to continue. ");
+            "\n\n\nPress 1 or 2 to continue. " );
+    indic61=char("Real experiment will start IMMEDIATELY. \n\n\n Press 1 or 2 to continue. ");
 
 
     indic71=char('End of block : ');
     indic72=char(['\n\n\nWell done ! \n\nNow, you have a break. You can rest your eyes. ' ...
-            '\n\n\nPress space when you want to end the break and are ready to continue with this experiment.']);
+            '\n\n\nPress 1 or 2 when you want to end the break and are ready to continue with this experiment.']);
 
     %fin expe
     indic_endexpe=char('Done! Thank you for your time!');
@@ -349,51 +359,51 @@ if contains(Exp.version,'EN') %info.version=='EN'
   
 else %if FR, by default
     %instructions
-    indic0=char("Bienvenue dans cette expérience !\n\n Mettez-vous à l'aise.\n\nAppuyez sur espace pour continuer. \n\n");
+    indic0=char("Bienvenue dans cette expérience !\n\n Mettez-vous à l'aise.\n\nAppuyez sur 1 ou 2 pour continuer. \n\n");
     
     indic1=char("Pendant cette expérience, vous verrez une série de stimuli"+ ...
     " apparaître autour de la croix de fixation."+ ...
     "Vous devez : \n\n"+...
     "Appuyer sur : "+keySlides(1)+"\ns'il manque le côté gauche de la cible." +...
     "\nAppuyer sur : "+keySlides(2)+"\ns'il manque le côté droit de la cible. "+...
-    "\n\nAppuyez sur espace pour continuer.");
+    "\n\nAppuyez sur 1 ou 2 pour continuer.");
     
     indic2=char("Nous allons maintenant vous montrer un exemple. \n" +...
     "Ici, la cible apparaît sur le côté droit.\n\n" +...
     "N'oubliez pas de répondre si la partie droite ou gauche de la cible est manquante et "+...
     "IGNOREZ la partie manquante en haut ou en bas de la cible.\n\n"+...
-    "\n\nAppuyez sur espace pour voir le premier exemple.");
+    "\n\nAppuyez sur 1 ou 2 pour voir le premier exemple.");
     
     indic3=char("Nous allons maintenant vous montrer un autre exemple. \n" +...
     "Dans ce deuxième exemple, la cible apparaît sur le côté gauche. \n\n" +...
     "N'oubliez pas de répondre si la partie droite ou gauche de la cible est manquante et "+...
     "IGNOREZ la partie manquante en haut ou en bas de la cible. \n\n"+...
-    "\n\nAppuyez sur espace pour continuer.");    
+    "\n\nAppuyez sur 1 ou 2 pour continuer.");    
     
     indic4=char("La cible et les distracteurs vont changer de position "+...
     "autour d'un cercle dont le centre est la croix." +...
     "\n\nVous devez toujours garder vos yeux fixés sur la croix." +...
-    "\n\nAppuyez sur espace pour continuer.");  
+    "\n\nAppuyez sur 1 ou 2 pour continuer.");  
     
     %training
     indic5=char("Si vous avez d'autres questions, posez-les maintenant."+ ...
-    "\n\n\nL'expérience va commencer IMMÉDIATEMENT avec un premier bloc d'entrainement.\n\n\nAppuyez sur espace pour continuer. "); 
+    "\n\n\nL'expérience va commencer IMMÉDIATEMENT avec un premier bloc d'entrainement.\n\n\nAppuyez sur 1 ou 2 pour continuer. "); 
 
     %if score training too low
     indic_failed_check = char("Vous n'avez pas été assez performant lors de l'entrainement.\n\n" + ...
         "Nous recommencons l'expérience avec un autre bloc d'entraînement.\n\n" + ...
         "Si vous avez des problèmes, contactez-nous.\n\n" + ...
-        "Appuyez sur espace pour continuer.");
+        "Appuyez sur 1 ou 2 pour continuer.");
     
     %real experiment
     indic6=char("FIN du bloc d'entrainement. \n\n\n Si vous avez d'autres questions, posez-les maintenant." + ...
-            "\n\n\nAppuyez sur espace pour continuer. " );
-    indic61=char("La vraie expérience va commencer IMMÉDIATEMENT. \n\n\n Appuyez sur espace pour continuer. ");  
+            "\n\n\nAppuyez sur 1 ou 2 pour continuer. " );
+    indic61=char("La vraie expérience va commencer IMMÉDIATEMENT. \n\n\n Appuyez sur 1 ou 2 pour continuer. ");  
   
 
     indic71=char('Fin du bloc : ');
     indic72=char(['\n\n\nBien joué ! \n\nMaintenant, vous avez une pause. Vous pouvez reposer vos yeux. ' ...
-        '\n\n\nAppuyez sur espace lorsque vous voulez mettre fin à la pause et que vous êtes prêt à poursuivre cette expérience.']);
+        '\n\n\nAppuyez sur 1 ou 2 lorsque vous voulez mettre fin à la pause et que vous êtes prêt à poursuivre cette expérience.']);
 
     %fin expe
     indic_endexpe=char("C'est la fin de cette partie de l'expérience ! Merci pour votre temps !");
@@ -553,7 +563,10 @@ while trial < length(Exp.nTrials)
     tStart = GetSecs; % RT initialization
 
     while (GetSecs-tStart) < Exp.searchTime
-
+        
+        outp(parportAddr,triggers(1));
+        WaitSecs(0.05);
+        outp(parportAddr,0);
         drawFixCross(screen.wPtr, screen.allCoords, screen.white, screen.xCenter, screen.yCenter)
         drawTargets(screen.wPtr,targetsPositionsX,targetsPositionsY,screen.white,Exp.targetsSize,Exp.targetsWidth) %drawTargets(screen,x,y,color,size,width)
 

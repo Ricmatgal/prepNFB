@@ -485,7 +485,7 @@ function pb_run_behtask_1_Callback(hObject, eventdata, handles)
     keyboard = 'mri'; % we use 1 and 2
     screenid = 2;
     sessionID = '01';
-    path_output = strcat(projFolder,filesep,subID,filesep,'Session',sessionID,'\TaskFolder\TaskResults');
+    path_output = strcat(projFolder,filesep,subID,filesep,'Session_',sessionID,'\TaskFolder\TaskResults');
 
     run_beh_task(trainBlock,nBlocksRep,maxNTargets,fullScreen,keyboard,screenid,subID,sessionID,path_output,version)
 
@@ -586,7 +586,7 @@ function pb_import_t1_2_Callback(hObject, eventdata, handles)
         user_fb_update({'Get ready to set origin at AC!'},0, 2)
         
         dicom_imp('struct', subID, mriID, watchFolder, projFolder,...
-            get(handles.eb_imp_t1_2_sn, 'String'), 0, 1, ['Session_' sprintf('%02s', get(handles.eb_session,'String'))], 192);
+            get(handles.eb_imp_t1_2_sn, 'String'), 0, 1, ['Session_' sprintf('%02s', get(handles.eb_session,'String'))], 1);
     end
     
     
@@ -710,7 +710,7 @@ function pb_run_behtask_2_Callback(hObject, eventdata, handles)
     screenid = 2;
     sessionID = strcat('0',session);
     disp(sessionID)
-    path_output = strcat(projFolder,filesep,subID,filesep,'Session',sessionID,'\TaskFolder\TaskResults');
+    path_output = strcat(projFolder,filesep,subID,filesep,'Session_',sessionID,'\TaskFolder\TaskResults');
 
     run_beh_task(trainBlock,nBlocksRep,maxNTargets,fullScreen,keyboard,screenid,subID,sessionID,path_output,version)
 

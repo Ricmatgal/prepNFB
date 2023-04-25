@@ -16,7 +16,7 @@ arguments % defaults
     maxNTargets(1,1) double  = 10;
 
     fullScreen logical = false;
-    keyboard(1,1) string ='qwerty';
+    keyboard(1,1) string ='mri';
     screenid(1,1) double  = 0;  %put 0 to have the biggest screen used false
 
     subID(1,1) string ='sub-test';
@@ -619,7 +619,8 @@ while trial < length(Exp.nTrials)
 
     if or(rsp(trial).response == keyChosen(1) & rsp(trial).hemiObject == 1, rsp(trial).response == keyChosen(2) & rsp(trial).hemiObject == 2)
         rsp(trial).outcome = 'valid';
-    elseif ~or(rsp(trial).response == keyChosen(1) & rsp(trial).hemiObject == 1, rsp(trial).response == keyChosen(2) & rsp(trial).hemiObject == 2)
+    %elseif ~or(rsp(trial).response == keyChosen(1) & rsp(trial).hemiObject == 1, rsp(trial).response == keyChosen(2) & rsp(trial).hemiObject == 2)
+    else
         rsp(trial).outcome = 'invalid';
     end
 

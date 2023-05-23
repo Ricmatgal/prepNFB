@@ -1,4 +1,4 @@
-function create_ini(subID, watchFolder, projFolder, prepNFBpath, Sess)
+function create_ini(subID, watchFolder, projFolder, prepNFBpath, Sess, sessNR)
     
     % set some paths
     roiPath     = [projFolder, filesep, subID, filesep, 'Localizer', filesep, 'ROIs', filesep, Sess];
@@ -38,8 +38,8 @@ function create_ini(subID, watchFolder, projFolder, prepNFBpath, Sess)
     opennft_ini_data{25} = ['TaskFolder=' strrep(taskFolder, '\', '\\')];           % Task folder
     opennft_ini_data{26} = ['StimFolder=' strrep(stimFolder, '\', '\\')];           % Task folder
     opennft_ini_data{49} = ['ProjectFolder=' strrep(projFolder, '\', '\\')];        % Project folder
-    opennft_ini_data{50} = ['DoubleBlindDir= ' strrep(doubleBlindFolder, '\', '\\')];    % Double blind folder
-    
+    opennft_ini_data{50} = ['DoubleBlindDir=' strrep(doubleBlindFolder, '\', '\\')];    % Double blind folder
+    opennft_ini_data{51} = ['SessionNumber=' strcat('0',sessNR)];    % Double blind folder
     % optional, change ffa and ofa toggles. for now i prefer to indicitate
     % this in openNFT GUI
 %     opennft_ini_data{29} = regexpr(opennft_ini_data{29}, ; % FFA

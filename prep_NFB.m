@@ -334,7 +334,7 @@ function pb_runLocTask_Callback(hObject, eventdata, handles)
      else
 %         flicker_RightLeft_ce(subID, projFolder)
         flicker_RightLeft_ce_Gabor(subID, projFolder, 1, 1);
-%         run_V1_loc_flicker_fmri(subID, projFolder)
+55%         run_V1_loc_flicker_fmri(subID, projFolder)
     end
     
 function pb_import_t1_1_Callback(hObject, eventdata, handles)

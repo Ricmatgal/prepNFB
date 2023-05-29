@@ -27,7 +27,7 @@ function varargout = prep_NFB(varargin)
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
 gui_State = struct('gui_Name',       mfilename, ...
-                   'gui_Singleton',  gui_Singleton, ...2
+                   'gui_Singleton',  gui_Singleton, ...
                    'gui_OpeningFcn', @prep_NFB_OpeningFcn, ...
                    'gui_OutputFcn',  @prep_NFB_OutputFcn, ...
                    'gui_LayoutFcn',  [] , ...
@@ -334,7 +334,7 @@ function pb_runLocTask_Callback(hObject, eventdata, handles)
      else
 %         flicker_RightLeft_ce(subID, projFolder)
         flicker_RightLeft_ce_Gabor(subID, projFolder, 1, 1);
-55%         run_V1_loc_flicker_fmri(subID, projFolder)
+%         run_V1_loc_flicker_fmri(subID, projFolder)
     end
     
 function pb_import_t1_1_Callback(hObject, eventdata, handles)

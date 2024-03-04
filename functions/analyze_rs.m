@@ -13,7 +13,7 @@ smoothK = [6 6 6];
 
 % import funcitonal images, call funcion:
 user_fb_update({['0) Importing dicom...']}, 0, 1)
-import_flag = dicom_imp('RestingState', subID,mriID, watchFolder, projFolder, imSer, 1, 0, Sess , 15);
+import_flag = dicom_imp('RestingState', subID,mriID, watchFolder, projFolder, imSer, 1, 0, Sess ,50);
 
 if import_flag == 0
     user_fb_update({'Dir not empty: Analyses aborted..'}, 0, 3)
@@ -21,8 +21,8 @@ if import_flag == 0
 end
 
 % Hard coded. Make sure these correspond to the sequence specs
-nr_slices = 44;
-TR = 0.8;
+nr_slices = 51;
+TR = 1;
 TA = TR - (TR/nr_slices);
 SO = [nr_slices:-1:1];  
 RS = floor(nr_slices/2);
@@ -32,6 +32,7 @@ if subinfo.old_struct == 1
 elseif subinfo.new_struct == 1
     steps = {'realign', 'coreg'}; %, 'coreg'
 end
+
 message{1,1} = 'SETTINGS';
 message{2,1} = ['Slices: ' num2str(nr_slices)];
 message{3,1} = ['TR: ' num2str(TR)];

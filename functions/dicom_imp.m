@@ -1,6 +1,6 @@
 function [imported_flag] = dicom_imp(sequence, subID, mriID, watchFolder, projFolder, imSer, f_flag, s_flag, Sess, expNrIms)
 
-volumes2skip = 10;
+volumes2skip = 9;
 imported_flag = 1;
 
 if s_flag

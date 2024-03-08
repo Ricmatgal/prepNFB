@@ -434,7 +434,7 @@ function pb_analyze_rs_1_Callback(hObject, eventdata, handles)
     subinfo.projFolder  = get(handles.eb_projectFolder, 'String');
     subinfo.watchFolder = get(handles.eb_watchFolder, 'String');  
     subinfo.dcmSeries   = get(handles.eb_analyze_rs_1_sn, 'String');
-    subinfo.session     = ['Session_' sprintf('%02s', get(handles.eb_session,'String'))];
+    subinfo.session     = ['Session_01'];
     subinfo.new_struct  = get(handles.cb_new_struct,'Value');
     subinfo.old_struct  = get(handles.cb_old_struct,'Value');
     

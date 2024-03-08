@@ -42,6 +42,10 @@ if ~exist([projFolder, filesep, subID], 'dir')
                 'ROIs', filesep, 'Session_' sess_str, filesep, 'ROI_' num2str(this_roi)]);
             
         end
+        
+        curr_dir = pwd;
+        copyfile([curr_dir filesep 'Settings' filesep 'ACC.nii'],[projFolder, filesep, subID, filesep, 'Localizer', filesep,...
+                'ROIs', filesep, 'Session_' sess_str, filesep, 'ROI_' num2str(this_roi)]);
 
         % make specified nr of run folders within current_session
         for this_run = 1:str2double(runs)

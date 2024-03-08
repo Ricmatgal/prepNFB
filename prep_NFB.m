@@ -321,21 +321,23 @@ function pb_open_watchFolder_Callback(hObject, eventdata, handles)
 
 % --- Executes on button press in pb_runLocTask.
 function pb_runLocTask_Callback(hObject, eventdata, handles)
-     m = 'Initiating localizer task...';
-     user_fb_update({m}, 1, 1)
-     subID       = get(handles.eb_subjID, 'String');
-     projFolder  = get(handles.eb_projectFolder, 'String');
-     if isempty(str2num(subID)) 
-        user_fb_update({'Subject ID not specified!';'Check settings and re-launch'},0, 3)
-        return
-    elseif isdir(projFolder) == 0 
-        user_fb_update({'Project Folder does not exist!';'Check path and re-launch'},0, 3)
-        return
-     else
-%         flicker_RightLeft_ce(subID, projFolder)
-        flicker_RightLeft_ce_Gabor(subID, projFolder, 1, 1);
-%         run_V1_loc_flicker_fmri(subID, projFolder)
-    end
+%      m = 'Initiating localizer task...';
+%      user_fb_update({m}, 1, 1)
+%      subID       = get(handles.eb_subjID, 'String');
+%      projFolder  = get(handles.eb_projectFolder, 'String');
+%      if isempty(str2num(subID)) 
+%         user_fb_update({'Subject ID not specified!';'Check settings and re-launch'},0, 3)
+%         return
+%     elseif isdir(projFolder) == 0 
+%         user_fb_update({'Project Folder does not exist!';'Check path and re-launch'},0, 3)
+%         return
+%      else
+% %         flicker_RightLeft_ce(subID, projFolder)
+%         flicker_RightLeft_ce_Gabor(subID, projFolder, 1, 1);
+% %         run_V1_loc_flicker_fmri(subID, projFolder)
+%      end
+
+     user_fb_update({'Button deactivated!'},1,2)
     
 function pb_import_t1_1_Callback(hObject, eventdata, handles)
     user_fb_update({'Importing T1 to session 1...'},1, 1)
@@ -367,30 +369,31 @@ function eb_imp_t1_1_sn_CreateFcn(hObject, eventdata, handles)
 
 % --- Executes on button press in pb_analyze_loc.
 function pb_analyze_loc_Callback(hObject, eventdata, handles)
-    m = 'Localizer Tool..';
-    user_fb_update({m},1, 1);
-    
-    subinfo.subID       = get(handles.eb_subjID, 'String');
-    subinfo.mriID       = get(handles.eb_mriID, 'String');
-    subinfo.projFolder  = get(handles.eb_projectFolder, 'String');
-    subinfo.watchFolder = get(handles.eb_watchFolder, 'String');  
-    subinfo.dcmSeries   = get(handles.eb_analyze_loc_sn, 'String');
-    if isempty(str2num(subinfo.subID)) 
-        user_fb_update({'Subject ID not specified!'},0, 3)
-        return
-    elseif isdir([subinfo.projFolder, filesep, subinfo.subID]) == 0 
-        user_fb_update({'Subject directory does not exist!'},0, 3)
-        return
-    elseif isdir(subinfo.projFolder) == 0 
-        user_fb_update({'Project Folder does not exist!'},0, 3)
-        return
-    elseif isdir(subinfo.watchFolder) == 0 
-        user_fb_update({'Watch Folder does not exist!'},0, 3)
-        return
-    else 
-%         user_fb_update({['WatchFolder: ' subinfo.watchFolder]; ['dcm series: ' subinfo.dcmSeries]},0, 1)
-        analyze_loc(subinfo) 
-    end
+%     m = 'Localizer Tool..';
+%     user_fb_update({m},1, 1);
+%     
+%     subinfo.subID       = get(handles.eb_subjID, 'String');
+%     subinfo.mriID       = get(handles.eb_mriID, 'String');
+%     subinfo.projFolder  = get(handles.eb_projectFolder, 'String');
+%     subinfo.watchFolder = get(handles.eb_watchFolder, 'String');  
+%     subinfo.dcmSeries   = get(handles.eb_analyze_loc_sn, 'String');
+%     if isempty(str2num(subinfo.subID)) 
+%         user_fb_update({'Subject ID not specified!'},0, 3)
+%         return
+%     elseif isdir([subinfo.projFolder, filesep, subinfo.subID]) == 0 
+%         user_fb_update({'Subject directory does not exist!'},0, 3)
+%         return
+%     elseif isdir(subinfo.projFolder) == 0 
+%         user_fb_update({'Project Folder does not exist!'},0, 3)
+%         return
+%     elseif isdir(subinfo.watchFolder) == 0 
+%         user_fb_update({'Watch Folder does not exist!'},0, 3)
+%         return
+%     else 
+% %         user_fb_update({['WatchFolder: ' subinfo.watchFolder]; ['dcm series: ' subinfo.dcmSeries]},0, 1)
+%         analyze_loc(subinfo) 
+%     end
+    user_fb_update({'Button deactivated!'},1,2)
 
 function eb_analyze_loc_sn_Callback(hObject, eventdata, handles)
 
@@ -408,25 +411,26 @@ function eb_analyze_loc_sn_CreateFcn(hObject, eventdata, handles)
     
 % --- Executes on button press in pb_ROI.
 function pb_ROI_Callback(hObject, eventdata, handles)
-    user_fb_update({'Initiating ROI analyses..'},1, 1)
-%     create_ROIs(handles.subID, handles.projFolder) 
-    subinfo.subID           = get(handles.eb_subjID, 'String');
-    subinfo.projFolder      = get(handles.eb_projectFolder, 'String');
-    if isempty(subinfo.subID) || isdir(subinfo.projFolder) == 0 
-        user_fb_update({'Subject ID and/or Project Folder not (correctly) specified!'; 'Check Settings'}, 0, 3)
-        return
-    else 
-        create_ROIs_gui(subinfo)      
-    end
+%     user_fb_update({'Initiating ROI analyses..'},1, 1)
+% %     create_ROIs(handles.subID, handles.projFolder) 
+%     subinfo.subID           = get(handles.eb_subjID, 'String');
+%     subinfo.projFolder      = get(handles.eb_projectFolder, 'String');
+%     if isempty(subinfo.subID) || isdir(subinfo.projFolder) == 0 
+%         user_fb_update({'Subject ID and/or Project Folder not (correctly) specified!'; 'Check Settings'}, 0, 3)
+%         return
+%     else 
+%         create_ROIs_gui(subinfo)      
+%     end
+    user_fb_update({'Button deactivated!'},1,2)
 
 
 % --- Executes on button press in pb_analyze_rs_1.
 function pb_analyze_rs_1_Callback(hObject, eventdata, handles)
 
-    % %     fprintf('\nAnalyzing first images of resting state to get EPI template...')
-    % %     analyze_rs(handles.subID, handles.watchFolder, handles.projFolder, handles.analyze_rs_1_sn,...
-    % %         'Session_01');
-     user_fb_update({'Button deactivated!'},1,2)
+        fprintf('\nAnalyzing first images of resting state to get EPI template...')
+        analyze_rs(handles.subID, handles.watchFolder, handles.projFolder, handles.analyze_rs_1_sn,...
+            'Session_01');
+%      user_fb_update({'Button deactivated!'},1,2)
 
 function eb_analyze_rs_1_sn_Callback(hObject, eventdata, handles)
 
@@ -466,29 +470,31 @@ function cb_beh_task_lang_1_Callback(hObject, eventdata, handles)
 % --- Executes on button press in pb_run_behtask_1.
 function pb_run_behtask_1_Callback(hObject, eventdata, handles)
     
-    user_fb_update({'Running behavioral task...'},1,1)
-    
-    subID       = get(handles.eb_subjID, 'String');
-    projFolder  = get(handles.eb_projectFolder,'String');
-    
-    if isfield(handles,'cb_beh_task_1_lang')
-        if handles.cb_beh_task_1_lang == 1
-            version = 'FR';
-        end
-    else
-        version = 'EN';  
-    end
-    
-    trainBlock = true;
-    nBlocksRep = 10;
-    maxNTargets = 10;
-    fullScreen = true;
-    keyboard = 'mri'; % we use 1 and 2
-    screenid = 2;
-    sessionID = '01';
-    path_output = strcat(projFolder,filesep,subID,filesep,'Session_',sessionID,'\TaskFolder\TaskResults');
+%     user_fb_update({'Running behavioral task...'},1,1)
+%     
+%     subID       = get(handles.eb_subjID, 'String');
+%     projFolder  = get(handles.eb_projectFolder,'String');
+%     
+%     if isfield(handles,'cb_beh_task_1_lang')
+%         if handles.cb_beh_task_1_lang == 1
+%             version = 'FR';
+%         end
+%     else
+%         version = 'EN';  
+%     end
+%     
+%     trainBlock = true;
+%     nBlocksRep = 10;
+%     maxNTargets = 10;
+%     fullScreen = true;
+%     keyboard = 'mri'; % we use 1 and 2
+%     screenid = 2;
+%     sessionID = '01';
+%     path_output = strcat(projFolder,filesep,subID,filesep,'Session_',sessionID,'\TaskFolder\TaskResults');
+% 
+%     run_beh_task(trainBlock,nBlocksRep,maxNTargets,fullScreen,keyboard,screenid,subID,sessionID,path_output,version)
 
-    run_beh_task(trainBlock,nBlocksRep,maxNTargets,fullScreen,keyboard,screenid,subID,sessionID,path_output,version)
+    user_fb_update({'Button deactivated!'},1,2)
 
 % ================================================================
 %% ========================== Session > 1 ==========================

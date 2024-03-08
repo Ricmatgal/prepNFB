@@ -427,9 +427,29 @@ function pb_ROI_Callback(hObject, eventdata, handles)
 % --- Executes on button press in pb_analyze_rs_1.
 function pb_analyze_rs_1_Callback(hObject, eventdata, handles)
 
-        fprintf('\nAnalyzing first images of resting state to get EPI template...')
-        analyze_rs(handles.subID, handles.watchFolder, handles.projFolder, handles.analyze_rs_1_sn,...
-            'Session_01');
+    user_fb_update({'Creating MC template...'},1,1)
+    
+    subinfo.subID       = get(handles.eb_subjID, 'String');
+    subinfo.mriID       = get(handles.eb_mriID, 'String');
+    subinfo.projFolder  = get(handles.eb_projectFolder, 'String');
+    subinfo.watchFolder = get(handles.eb_watchFolder, 'String');  
+    subinfo.dcmSeries   = get(handles.eb_analyze_rs_1_sn, 'String');
+    subinfo.session     = ['Session_' sprintf('%02s', get(handles.eb_session,'String'))];
+    subinfo.new_struct  = get(handles.cb_new_struct,'Value');
+    subinfo.old_struct  = get(handles.cb_old_struct,'Value');
+    
+    if isempty(str2num(subinfo.subID)) 
+        user_fb_update({'Subject ID not specified!';'Check settings and re-launch'},0, 3)
+        return
+    elseif isdir(subinfo.projFolder) == 0 
+        user_fb_update({'Project Folder does not exist!';'Check path and re-launch'},0, 3)
+        return
+    elseif isdir(subinfo.watchFolder) == 0
+        user_fb_update({'Watch Folder does not exist!';'Check path and re-launch'},0, 3)
+        return
+    else 
+        analyze_rs(subinfo);
+    end
 %      user_fb_update({'Button deactivated!'},1,2)
 
 function eb_analyze_rs_1_sn_Callback(hObject, eventdata, handles)

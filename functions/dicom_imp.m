@@ -125,7 +125,7 @@ if f_flag
 
         for i = 1:size(f1,1)
             dicm2nii(f1(i,:),expDir,'.nii 3D')
-            file = dir(expDir); file = file(end-1).name;
+            file = dir(expDir); file = file(end-i).name;
             movefile(fullfile(expDir,filesep,file),fullfile(expDir,filesep,['MF',ffn(i,1:end-4),'.nii']))
         end
 

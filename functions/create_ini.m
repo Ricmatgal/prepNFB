@@ -1,7 +1,7 @@
 function create_ini(subID, watchFolder, projFolder, prepNFBpath, Sess, sessNR)
     
     % set some paths
-    roiPath     = [projFolder, filesep, subID, filesep, 'Localizer', filesep, 'ROIs', filesep, Sess, 'ROI_1'];
+    roiPath     = [projFolder, filesep, subID, filesep, 'Localizer', filesep, 'ROIs', filesep, Sess, filesep 'ROI_1'];
     epiPath     = [projFolder, filesep, subID, filesep, Sess, filesep, 'EPI_Template_D1'];
     structPath  = [projFolder, filesep, subID, filesep, Sess, filesep, 'T1'];
     

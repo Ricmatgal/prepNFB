@@ -474,8 +474,9 @@ function pb_create_ini_1_Callback(hObject, eventdata, handles)
     watchFolder = get(handles.eb_watchFolder,'String');
     prepNFBpath = pwd;
     sessNR          = get(handles.eb_session,'String');
+    mriID = get(handles.eb_mriID, 'String');
     
-    create_ini(subID, watchFolder, projFolder,prepNFBpath, 'Session_01',sessNR)
+    create_ini(subID, watchFolder, projFolder,prepNFBpath, 'Session_01',sessNR,mriID)
 
     
 
@@ -702,9 +703,10 @@ function pb_create_ini_2_Callback(hObject, eventdata, handles)
     projFolder  = get(handles.eb_projectFolder, 'String');
     watchFolder = get(handles.eb_watchFolder, 'String'); 
     sessNR          = get(handles.eb_session,'String');
+    mriID = get(handles.eb_mriID, 'String');
     prepNFBpath = pwd;
     
-    create_ini(subID, watchFolder, projFolder,prepNFBpath, ['Session_0' sessNR],sessNR)
+    create_ini(subID, watchFolder, projFolder,prepNFBpath, ['Session_0' sessNR],sessNR,mriID)
 
 % --- Executes on button press in cb_beh_task_lang_2.
 function cb_beh_task_lang_2_Callback(hObject, eventdata, handles)

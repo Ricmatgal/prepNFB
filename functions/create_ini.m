@@ -1,4 +1,4 @@
-function create_ini(subID, watchFolder, projFolder, prepNFBpath, Sess, sessNR)
+function create_ini(subID, watchFolder, projFolder, prepNFBpath, Sess, sessNR, mriID)
     
     % set some paths
     roiPath     = [projFolder, filesep, subID, filesep, 'Localizer', filesep, 'ROIs', filesep, Sess, filesep 'ROI_1'];
@@ -30,7 +30,8 @@ function create_ini(subID, watchFolder, projFolder, prepNFBpath, Sess, sessNR)
     opennft_ini_data = opennft_ini_data{1};
     opennft_ini_data{3}  = ['SubjectID=' subID];                                    % subID
     opennft_ini_data{4}  = ['WatchFolder=' strrep(watchFolder, '\', '\\')];         % WatchFolder
-    opennft_ini_data{8}  = ['FirstFileNameTxt=002_{Image Series No:06}_{#:06}.dcm'];% Forst file name
+    opennft_ini_data{8}  = ['FirstFileNameTxt=' mriID '_{Image Series No:06}_{#:06}.dcm'];% Forst file name
+    opennft_ini_data{10} = ['nrOfVolumes=' int2str(510)];
     opennft_ini_data{11} = ['nrSkipVol=' int2str(1)];
     opennft_ini_data{13} = ['TR=' int2str(1000)];
     opennft_ini_data{14} = ['MatrixSizeX=' int2str(84)];
